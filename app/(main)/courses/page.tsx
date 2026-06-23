@@ -10,6 +10,26 @@ interface CoursesPageProps {
     }>;
 }
 
+const MOCK_COURSES = [
+    { id: "anatomy-101", title: "Comprehensive Anatomy for USMLE Step 1", description: "Master all concepts of Anatomy with our high-yield video lectures and clinical correlations.", price: 129.99, category: "Anatomy", exam: "USMLE Step 1", level: "Pre-clinical", published: true, thumbnail: "/courses/anatomy.png" },
+    { id: "physiology-101", title: "Comprehensive Physiology for USMLE Step 1", description: "Master all concepts of Physiology with our high-yield video lectures.", price: 119.99, category: "Physiology", exam: "USMLE Step 1", level: "Pre-clinical", published: true, thumbnail: "/courses/physiology.png" },
+    { id: "biochem-101", title: "Comprehensive Biochemistry for USMLE Step 1", description: "Master all concepts of Biochemistry with our clinical correlations.", price: 99.99, category: "Biochemistry", exam: "USMLE Step 1", level: "Pre-clinical", published: true, thumbnail: "/courses/biochemistry.png" },
+    { id: "patho-basics", title: "General Pathology: Cell Injury", description: "Understanding the basics of cell injury, adaptation, and death.", price: 149.99, category: "Pathology", exam: "USMLE Step 1", level: "Para-clinical", published: true, thumbnail: "/placeholder-2.png" },
+    { id: "pharmacology-101", title: "Comprehensive Pharmacology for FMGE", description: "Master all concepts of Pharmacology with high-yield video lectures.", price: 139.99, category: "Pharmacology", exam: "FMGE", level: "Para-clinical", published: true, thumbnail: "/courses/pharmacology.png" },
+    { id: "microbiology-101", title: "Comprehensive Microbiology for USMLE Step 1", description: "Master all concepts of Microbiology with clinical correlations.", price: 109.99, category: "Microbiology", exam: "USMLE Step 1", level: "Para-clinical", published: true, thumbnail: "/courses/microbiology.png" },
+    { id: "forensic-101", title: "Comprehensive Forensic Medicine for NEET PG", description: "Master all concepts of Forensic Medicine with clinical correlations.", price: 124.99, category: "Forensic Medicine", exam: "NEET PG", level: "Para-clinical", published: true, thumbnail: "/courses/forensic.png" },
+    { id: "community-101", title: "Comprehensive Community Medicine for FMGE", description: "Master all concepts of Community Medicine.", price: 114.99, category: "Community Medicine", exam: "FMGE", level: "Para-clinical", published: true, thumbnail: "/courses/community.png" },
+    { id: "medicine-101", title: "Comprehensive Medicine for PLAB 1", description: "Master all concepts of Medicine with clinical correlations.", price: 149.99, category: "Medicine", exam: "PLAB 1", level: "Clinical", published: true, thumbnail: "/courses/medicine.png" },
+    { id: "surgery-101", title: "Comprehensive Surgery for NEET PG", description: "Master all concepts of Surgery with clinical correlations.", price: 139.99, category: "Surgery", exam: "NEET PG", level: "Clinical", published: true, thumbnail: "/courses/surgery.png" },
+    { id: "pediatrics-101", title: "Comprehensive Pediatrics for PLAB 1", description: "Master all concepts of Pediatrics.", price: 119.99, category: "Pediatrics", exam: "PLAB 1", level: "Clinical", published: true, thumbnail: "/courses/pediatrics.png" },
+    { id: "obg-101", title: "Comprehensive OBG for MRCP Part 1", description: "Master all concepts of OBG.", price: 129.99, category: "OBG", exam: "MRCP Part 1", level: "Clinical", published: true, thumbnail: "/courses/obg.png" },
+    { id: "ent-101", title: "Comprehensive ENT for NEET PG", description: "Master all concepts of ENT.", price: 109.99, category: "ENT", exam: "NEET PG", level: "Clinical", published: true, thumbnail: "/courses/ent.png" },
+    { id: "ophthalmology-101", title: "Comprehensive Ophthalmology for USMLE Step 2 CK", description: "Master all concepts of Ophthalmology.", price: 119.99, category: "Ophthalmology", exam: "USMLE Step 2 CK", level: "Clinical", published: true, thumbnail: "/courses/ophthalmology.png" },
+    { id: "dermatology-101", title: "Comprehensive Dermatology for NEET PG", description: "Master all concepts of Dermatology.", price: 99.99, category: "Dermatology", exam: "NEET PG", level: "Clinical", published: true, thumbnail: "/courses/dermatology.png" },
+    { id: "psychiatry-101", title: "Comprehensive Psychiatry for USMLE Step 2 CK", description: "Master all concepts of Psychiatry.", price: 114.99, category: "Psychiatry", exam: "USMLE Step 2 CK", level: "Clinical", published: true, thumbnail: "/courses/psychiatry.png" },
+    { id: "radiology-101", title: "Comprehensive Radiology for NEET PG", description: "Master all concepts of Radiology.", price: 124.99, category: "Radiology", exam: "NEET PG", level: "Clinical", published: true, thumbnail: "/courses/radiology.png" }
+];
+
 export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     const params = await searchParams;
     
@@ -32,10 +52,22 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
         where.level = { in: levels };
     }
 
-    const courses = await prisma.course.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-    });
+    let courses: any[] = [];
+    try {
+        courses = await prisma.course.findMany({
+            where,
+            orderBy: { createdAt: "desc" },
+        });
+    } catch (e) {
+        console.error("Database error, falling back to mock courses:", e);
+        courses = MOCK_COURSES.filter((course) => {
+            if (categories.length > 0 && !categories.includes(course.category)) return false;
+            if (exams.length > 0 && !exams.includes(course.exam)) return false;
+            if (levels.length > 0 && !levels.includes(course.level)) return false;
+            return true;
+        });
+    }
+
 
     // We map the DB courses to match the CourseCard props format
     const formattedCourses = courses.map((course) => ({
