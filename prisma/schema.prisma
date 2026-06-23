@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      String   @default("STUDENT") // "ADMIN" or "STUDENT"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollments       Enrollment[]
+  testScores        TestScore[]
+  flashcardProgress FlashcardProgress[]
+  simulatorSessions SimulatorSession[]
+  transactions      Transaction[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  thumbnail   String?
+  category    String   @default("Anatomy")
+  exam        String?
+  level       String   @default("Beginner")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons     Lesson[]
+  enrollments Enrollment[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  videoUrl    String
+  courseId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model LiveClass {
+  id          String   @id @default(cuid())
+  title       String
+  meetLink    String
+  scheduledAt DateTime
+  status      String   @default("SCHEDULED") // "SCHEDULED", "LIVE", "COMPLETED"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model TestScore {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  score     Float
+  maxScore  Float
+  date      DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FlashcardDeck {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  subject     String   @default("General Medicine")
+  category    String?  // e.g., "Anatomy", "Physiology"
+  imageUrl    String?
+  isPublic    Boolean  @default(true)
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  flashcards  Flashcard[]
+}
+
+model Flashcard {
+  id          String   @id @default(cuid())
+  deckId      String
+  question    String
+  answer      String
+  explanation String?
+  image       String?
+  topic       String?
+  difficulty  String   @default("Medium") // "Easy", "Medium", "Hard"
+  tags        String?  // Comma-separated or JSON
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  deck        FlashcardDeck       @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  progress    FlashcardProgress[]
+}
+
+model FlashcardProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  flashcardId String
+  interval    Int      @default(0) // in days
+  easeFactor  Float    @default(2.5)
+  repetitions Int      @default(0)
+  nextReview  DateTime @default(now())
+  status      String   @default("NEW") // "NEW", "LEARNING", "REVIEW", "MASTERED"
+  lastReview  DateTime?
+  streak      Int      @default(0)
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, flashcardId])
+}
+
+model SimulatorSession {
+  id          String   @id @default(cuid())
+  userId      String
+  patientCase String   // e.g., "Acute Appendicitis"
+  score       Float?
+  status      String   @default("IN_PROGRESS") // "IN_PROGRESS", "COMPLETED"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  userId          String
+  courseId        String
+  amount          Float
+  currency        String   @default("INR")
+  status          String   @default("PENDING") // "PENDING", "SUCCESS", "FAILED"
+  paymentMethod   String?  // "UPI", "CARD", "NETBANKING"
+  provider        String   @default("MOCK")    // "RAZORPAY", "STRIPE", etc.
+  providerOrderId String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
