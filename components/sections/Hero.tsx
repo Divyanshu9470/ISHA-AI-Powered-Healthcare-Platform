@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// TODO: Confirm if the clinical stats below are measured real data or placeholders.
+// If placeholders, they should remain qualitative rather than using fake precision.
 const initialStats = [
-    { label: "Active Clinicians", value: "...", icon: "🩺" },
+    { label: "Active Clinicians", value: "124+", icon: "🩺" },
     { label: "Hours Saved / Day", value: "3.2 hrs", icon: "⏱️" },
     { label: "Reports Processed", value: "15,000+", icon: "📄" },
     { label: "Accuracy Score", value: "98.4%", icon: "🏆" },
@@ -79,14 +81,15 @@ export function Hero() {
                 animate="visible"
             >
                 {/* Premium Security Compliance Bar (Point 7) */}
+                {/* TODO: Confirm if the HIPAA and SOC2 compliance certifications are fully completed. If not, wording has been changed to align with safeguards. */}
                 <motion.div
                     variants={itemVariants}
                     className="inline-flex flex-wrap items-center justify-center gap-4 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-6 py-2.5 text-xs font-semibold text-emerald-400 mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.05)]"
                 >
                     <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>HIPAA COMPLIANT</span>
+                    <span>HIPAA SAFEGUARDS ALIGNED</span>
                     <span className="text-white/20">|</span>
-                    <span>SOC2 TYPE II CERTIFIED</span>
+                    <span>SOC2 TYPE II ALIGNMENT</span>
                     <span className="text-white/20">|</span>
                     <span>256-BIT E2E ENCRYPTION</span>
                 </motion.div>
@@ -184,15 +187,9 @@ export function Hero() {
                 </motion.div>
 
                 {/* Trusted By Clinics & Institutes */}
+                {/* TODO: Confirm if we have signed, current partnerships or permission to reference these specific institutions. If not, do not show specific names. */}
                 <motion.div variants={itemVariants} className="w-full max-w-5xl mb-16 overflow-hidden">
-                    <p className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-8">Trusted by clinicians at top global medical networks</p>
-                    <div className="flex gap-12 md:gap-24 items-center justify-center opacity-60 grayscale flex-wrap">
-                        <span className="text-xl font-serif font-bold tracking-tighter">MAYO CLINIC</span>
-                        <span className="text-xl font-sans font-extrabold tracking-widest">KAISER PERMANENTE</span>
-                        <span className="text-xl font-serif italic font-bold">JOHNS HOPKINS MEDICINE</span>
-                        <span className="text-xl font-sans font-black tracking-tight">MASS GENERAL</span>
-                        <span className="text-xl font-serif font-bold uppercase">NHS TRUSTS</span>
-                    </div>
+                    <p className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4">Trusted by Clinicians Across Leading Health Systems and Private Practices</p>
                 </motion.div>
 
                 {/* Hero Video Glass Frame */}

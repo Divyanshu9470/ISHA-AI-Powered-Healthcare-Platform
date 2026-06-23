@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useScrollAnimation } from "@/lib/useScrollAnimation";
 
+// TODO: Confirm if the pricing packages and dollar values below represent live tiers or placeholders.
 const tiers = [
     {
         name: "Sandbox Starter",
@@ -103,7 +104,11 @@ export function Pricing() {
 
                             <div className="flex items-baseline gap-2 mb-6">
                                 <span className="text-5xl font-extrabold text-white tracking-tight">{tier.price}</span>
-                                <span className="text-sm text-slate-500 font-light">{tier.period}</span>
+                                {tier.period && (
+                                    <span className="text-sm text-slate-500 font-light">
+                                        {tier.price.startsWith("$") ? `/ ${tier.period}` : `${tier.period}`}
+                                    </span>
+                                )}
                             </div>
 
                             <ul className="space-y-4 mb-8 flex-grow">

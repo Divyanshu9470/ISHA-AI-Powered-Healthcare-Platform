@@ -75,17 +75,23 @@ export function InteractiveDemo() {
     const [selectedReport, setSelectedReport] = useState<ReportType | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analyzedData, setAnalyzedData] = useState<typeof sampleData.CBC | null>(null);
+    const [activeTimeout, setActiveTimeout] = useState<any>(null);
 
     const handleSelectReport = (type: ReportType) => {
+        if (activeTimeout) {
+            clearTimeout(activeTimeout);
+        }
         setSelectedReport(type);
         setIsAnalyzing(true);
         setAnalyzedData(null);
 
         // Simulate AI analysis in 2.2 seconds
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             setAnalyzedData(sampleData[type]);
             setIsAnalyzing(false);
+            setActiveTimeout(null);
         }, 2200);
+        setActiveTimeout(timer);
     };
 
     return (

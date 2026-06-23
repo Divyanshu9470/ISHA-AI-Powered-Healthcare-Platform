@@ -4,6 +4,7 @@ import { Shield, Lock, Database, FileCheck, Award, HeartHandshake, CheckCircle }
 import { motion } from "framer-motion";
 import { useScrollAnimation } from "@/lib/useScrollAnimation";
 
+// TODO: Confirm that Dr. Sarah Chen, Dr. Raj Patel, and Dr. Elena Rostova are real, consenting individuals with accurate titles.
 const advisors = [
     {
         name: "Dr. Sarah Chen, MD",
@@ -25,9 +26,11 @@ const advisors = [
     }
 ];
 
+// TODO: Confirm if the HIPAA compliance audit and SOC2 Type II audit are officially completed. 
+// If still in progress, wording has been changed to represent 'alignment/safeguards'.
 const compliances = [
-    { name: "HIPAA Compliant", desc: "Full administrative, physical, and technical safeguards.", icon: Shield },
-    { name: "SOC2 Type II Certified", desc: "Rigorous independent audit of data security systems.", icon: CheckCircle },
+    { name: "Built to align with HIPAA safeguards", desc: "Full administrative, physical, and technical safeguards.", icon: Shield },
+    { name: "SOC2 Type II Alignment", desc: "Designed around independent audit guidelines for data security systems.", icon: CheckCircle },
     { name: "End-to-End Encryption", desc: "AES-256 encryption at rest and TLS 1.3 in transit.", icon: Lock },
     { name: "Data Isolation", desc: "Dedicated database instances per clinic to avoid co-mingling.", icon: Database }
 ];

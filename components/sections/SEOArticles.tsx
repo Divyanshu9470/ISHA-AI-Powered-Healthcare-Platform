@@ -49,17 +49,17 @@ export function SEOArticles() {
                             <BookOpen className="w-3.5 h-3.5" /> Medical Resources
                         </span>
                         <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
-                            Clinician Education & Guides
+                            Medical Board Study Guides
                         </h2>
                         <p className="text-sm text-slate-500 mt-2 font-light max-w-xl">
-                            Read clinical guide summaries curated by our medical board to assist with rapid diagnostic recall.
+                            Read diagnostic study guides curated by our medical educators to master high-yield board exam concepts.
                         </p>
                     </div>
 
                     <div className="relative w-full md:w-80">
                         <input
                             type="text"
-                            placeholder="Search clinical guides..."
+                            placeholder="Search study guides..."
                             className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-5 pl-11 text-sm text-slate-300 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
                         />
                         <Search className="absolute left-4 top-3.5 w-4 h-4 text-slate-500" />

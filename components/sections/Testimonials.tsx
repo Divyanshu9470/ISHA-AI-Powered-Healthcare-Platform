@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useScrollAnimation } from "@/lib/useScrollAnimation";
 import { useState, useEffect, useCallback } from "react";
 
+// TODO: Verify authenticity of the student testimonials below (confirming these are real, consenting individuals with accurate titles/scores).
 const testimonials = [
     {
         name: "Dr. Sarah Jenkins",
