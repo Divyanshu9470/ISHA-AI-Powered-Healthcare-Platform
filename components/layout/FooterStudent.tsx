@@ -30,7 +30,7 @@ export function FooterStudent() {
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6 }}
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
                     {/* Brand */}
                     <div className="lg:col-span-1">
                         <Link href="/students" className="flex items-center gap-2.5 mb-5 group">
@@ -86,15 +86,37 @@ export function FooterStudent() {
                         </ul>
                     </div>
 
-                    {/* Company Links */}
+                    {/* Helpful Resources Links */}
                     <div>
-                        <h3 className="font-semibold text-foreground mb-5 text-sm uppercase tracking-wider">Company</h3>
+                        <h3 className="font-semibold text-foreground mb-5 text-sm uppercase tracking-wider">Helpful Resources</h3>
                         <ul className="space-y-3 text-sm">
                             {[
-                                { name: "About Us", href: "/about" },
-                                { name: "Careers", href: "/careers" },
-                                { name: "Blog", href: "/blog" },
-                                { name: "Contact", href: "/contact" }
+                                { name: "Site Map", href: "/sitemap" },
+                                { name: "Terms of Use", href: "/terms" },
+                                { name: "Privacy Center", href: "/privacy" },
+                                { name: "Security Center", href: "/security" },
+                                { name: "Accessibility Center", href: "/accessibility" }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-1 group">
+                                        <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* About Us Links */}
+                    <div>
+                        <h3 className="font-semibold text-foreground mb-5 text-sm uppercase tracking-wider">About Us</h3>
+                        <ul className="space-y-3 text-sm">
+                            {[
+                                { name: "Contact Us", href: "/contact" },
+                                { name: "Company", href: "/about" },
+                                { name: "Our Programs", href: "/courses" },
+                                { name: "Blogs", href: "/blog" },
+                                { name: "FAQs", href: "/faq" }
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-1 group">
