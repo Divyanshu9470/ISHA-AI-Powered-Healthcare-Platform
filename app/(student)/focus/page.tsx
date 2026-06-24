@@ -1,8 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Play, Pause, RotateCcw, Headphones, Users, CheckCircle2, Circle, Volume2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Play, Pause, RotateCcw, Headphones, Users, CheckCircle2, 
+  Circle, Volume2, ShieldAlert, Trophy, Brain, Activity, 
+  Stethoscope, Clock, Zap, Heart, RefreshCw, BarChart2, Flame 
+} from "lucide-react";
 
 const SOUNDSCAPES = [
   { id: "lofi", name: "Lofi Study Beats", url: "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" },
@@ -30,8 +34,8 @@ export default function FocusPage() {
   const [newTaskText, setNewTaskText] = useState("");
   const [isAddingTask, setIsAddingTask] = useState(false);
 
-  // Brain Game State
-  const [showBrainGame, setShowBrainGame] = useState(false);
+  // Brain Games Hub Modal State
+  const [showBrainGamesHub, setShowBrainGamesHub] = useState(false);
 
   // Timer Logic
   useEffect(() => {
@@ -113,20 +117,22 @@ export default function FocusPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-[#07070a] text-white flex font-sans relative overflow-hidden">
+      {/* Background Radial Glow */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-blue-900/20 mix-blend-overlay"></div>
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/20 to-purple-950/20 mix-blend-overlay" />
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[150px]" />
+        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[150px]" />
       </div>
 
       <div className="container mx-auto px-4 py-12 relative z-10 flex flex-col lg:flex-row gap-8 items-start justify-center pt-24">
         
         {/* Left Column: Timer */}
         <div className="flex-1 flex flex-col items-center justify-center w-full">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-[3rem] shadow-2xl flex flex-col items-center w-full max-w-md">
+          <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 md:p-12 rounded-[3rem] shadow-2xl flex flex-col items-center w-full max-w-md">
             
             {/* Duration Selector */}
-            <div className="flex items-center gap-2 mb-8 bg-black/20 p-1.5 rounded-full border border-white/5">
+            <div className="flex items-center gap-2 mb-8 bg-black/40 p-1.5 rounded-full border border-white/5">
               {[15, 25, 45, 60].map(mins => (
                 <button 
                   key={mins}
@@ -139,13 +145,13 @@ export default function FocusPage() {
             </div>
 
             <div className="text-sm uppercase tracking-widest text-slate-400 font-semibold mb-8 flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-red-500 animate-pulse' : 'bg-slate-500'}`}></span>
+              <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`}></span>
               {isActive ? 'Focusing...' : 'Ready to Focus'}
             </div>
 
             <div className="relative mb-12 flex justify-center w-full">
               <svg className="w-64 h-64 transform -rotate-90">
-                <circle cx="128" cy="128" r="120" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-white/10" />
+                <circle cx="128" cy="128" r="120" stroke="rgba(255,255,255,0.05)" strokeWidth="4" fill="transparent" />
                 <circle cx="128" cy="128" r="120" stroke="currentColor" strokeWidth="4" fill="transparent" 
                   strokeDasharray={120 * 2 * Math.PI} 
                   strokeDashoffset={120 * 2 * Math.PI * (1 - timeLeft / maxTime)} 
@@ -159,26 +165,26 @@ export default function FocusPage() {
             </div>
 
             <div className="flex items-center gap-6">
-              <button onClick={toggleTimer} className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+              <button onClick={toggleTimer} className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                 {isActive ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-1" />}
               </button>
-              <button onClick={resetTimer} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                <RotateCcw className="w-5 h-5" />
+              <button onClick={resetTimer} className="w-12 h-12 rounded-full bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+                <RotateCcw className="w-5 h-5 text-slate-300" />
               </button>
             </div>
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-4">
             <button 
-              onClick={() => setShowBrainGame(true)}
-              className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full font-bold shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all hover:-translate-y-1"
+              onClick={() => setShowBrainGamesHub(true)}
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-bold shadow-[0_0_35px_rgba(79,70,229,0.3)] hover:shadow-[0_0_45px_rgba(79,70,229,0.5)] transition-all hover:-translate-y-0.5 flex items-center gap-2.5 text-base tracking-wide"
             >
-              🧠 Launch Brain Warmup
+              <Brain className="w-5 h-5 text-white animate-pulse" /> Launch Games Hub (Brain Warmup)
             </button>
             
-            <div className="flex items-center gap-4 bg-white/5 px-6 py-3 rounded-full border border-white/10 backdrop-blur-md">
-              <Users className="w-5 h-5 text-green-400" />
-              <span className="text-sm font-medium">1,248 students focusing right now</span>
+            <div className="flex items-center gap-4 bg-white/5 px-6 py-3 rounded-full border border-white/5 backdrop-blur-md">
+              <Users className="w-5 h-5 text-green-400 animate-pulse" />
+              <span className="text-sm font-medium text-slate-300">1,248 students warming up right now</span>
             </div>
           </div>
         </div>
@@ -186,8 +192,8 @@ export default function FocusPage() {
         {/* Right Column: Tasks & Ambience */}
         <div className="w-full lg:w-96 flex flex-col gap-6">
           {/* Soundscape Mixer */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-xl">
-            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-xl">
+            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-slate-100">
               <Headphones className="w-5 h-5 text-purple-400" /> Soundscape Mixer
             </h3>
             <div className="space-y-5">
@@ -197,7 +203,7 @@ export default function FocusPage() {
                     <span className={`text-sm transition-colors ${activeSounds[sound.id] ? 'text-white font-medium' : 'text-slate-400'}`}>
                       {sound.name}
                     </span>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors ${activeSounds[sound.id] ? 'bg-blue-500' : 'bg-slate-700'}`}>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors ${activeSounds[sound.id] ? 'bg-blue-500' : 'bg-slate-800'}`}>
                       <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${activeSounds[sound.id] ? 'left-5' : 'left-0.5'}`}></div>
                     </div>
                   </div>
@@ -210,7 +216,7 @@ export default function FocusPage() {
                         min="0" max="1" step="0.01" 
                         value={volumes[sound.id] ?? 0.5} 
                         onChange={(e) => changeVolume(sound.id, parseFloat(e.target.value))}
-                        className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
                       />
                     </motion.div>
                   )}
@@ -220,8 +226,8 @@ export default function FocusPage() {
           </div>
 
           {/* Study Goals */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-xl">
-            <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
+          <div className="bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 flex items-center justify-between text-slate-100">
               Study Goals
               <span className="text-xs font-normal text-slate-400">
                 {tasks.filter(t => t.completed).length}/{tasks.length} Done
@@ -230,8 +236,8 @@ export default function FocusPage() {
             <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
               {tasks.map(task => (
                 <div key={task.id} onClick={() => toggleTask(task.id)} className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-colors ${task.completed ? 'bg-white/5' : 'hover:bg-white/5 border border-white/5'}`}>
-                  {task.completed ? <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" /> : <Circle className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />}
-                  <span className={`text-sm leading-relaxed ${task.completed ? 'text-slate-500 line-through' : 'text-slate-200'}`}>{task.text}</span>
+                  {task.completed ? <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" /> : <Circle className="w-5 h-5 text-slate-600 shrink-0 mt-0.5" />}
+                  <span className={`text-sm leading-relaxed ${task.completed ? 'text-slate-500 line-through' : 'text-slate-300'}`}>{task.text}</span>
                 </div>
               ))}
             </div>
@@ -250,7 +256,7 @@ export default function FocusPage() {
                   <button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium py-2 rounded-xl transition-colors">
                     Save Goal
                   </button>
-                  <button type="button" onClick={() => setIsAddingTask(false)} className="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium py-2 rounded-xl transition-colors">
+                  <button type="button" onClick={() => setIsAddingTask(false)} className="px-4 bg-slate-800 hover:bg-slate-750 text-slate-300 text-sm font-medium py-2 rounded-xl transition-colors">
                     Cancel
                   </button>
                 </div>
@@ -258,7 +264,7 @@ export default function FocusPage() {
             ) : (
               <button 
                 onClick={() => setIsAddingTask(true)} 
-                className="w-full mt-4 py-3 border border-dashed border-white/20 rounded-xl text-sm text-slate-400 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+                className="w-full mt-4 py-3 border border-dashed border-white/10 rounded-xl text-sm text-slate-400 hover:text-white hover:border-white/20 hover:bg-white/5 transition-all"
               >
                 + Add Custom Goal
               </button>
@@ -267,63 +273,88 @@ export default function FocusPage() {
         </div>
       </div>
 
-      {showBrainGame && <BrainGameModal onClose={() => setShowBrainGame(false)} />}
+      {showBrainGamesHub && <BrainGamesHubModal onClose={() => setShowBrainGamesHub(false)} />}
     </div>
   );
 }
 
-function BrainGameModal({ onClose }: { onClose: () => void }) {
-  const [selectedGame, setSelectedGame] = useState<'menu' | 'neural' | 'reaction' | 'pattern'>('menu');
+function BrainGamesHubModal({ onClose }: { onClose: () => void }) {
+  const [selectedGame, setSelectedGame] = useState<'menu' | 'symptom' | 'lab' | 'ecg' | 'drug' | 'race'>('menu');
 
-  if (selectedGame === 'neural') return <NeuralGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
-  if (selectedGame === 'reaction') return <ReactionStrikeGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
-  if (selectedGame === 'pattern') return <PatternRecallGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
+  if (selectedGame === 'symptom') return <SymptomDetectiveGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
+  if (selectedGame === 'lab') return <LabMasterGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
+  if (selectedGame === 'ecg') return <EcgChampionGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
+  if (selectedGame === 'drug') return <DrugMatchGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
+  if (selectedGame === 'race') return <DiagnosisRaceGame onClose={onClose} onBack={() => setSelectedGame('menu')} />;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 overflow-hidden">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative w-full max-w-4xl bg-[#0a0a0f] border border-white/10 rounded-[2rem] p-8 md:p-12 shadow-[0_0_100px_rgba(59,130,246,0.15)]"
+        className="relative w-full max-w-5xl bg-[#0a0a0f] border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-[0_0_100px_rgba(99,102,241,0.15)] overflow-y-auto max-h-[90vh]"
       >
         <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-white text-xl transition-colors">✕</button>
         
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">Choose Your Focus Warmup</h2>
-          <p className="text-slate-400 max-w-lg mx-auto">
-            Select a cognitive exercise to prime your brain for studying. Whether you need to calm your nerves, wake up your reflexes, or sharpen your working memory.
+        <div className="text-center mb-10">
+          <div className="inline-flex p-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-2xl mb-4">
+            <Brain className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-3 tracking-tight">Clinical Games Hub</h2>
+          <p className="text-slate-400 max-w-lg mx-auto text-sm leading-relaxed">
+            Gamified micro-drills to prime your medical recall, spatial interpretations, and reaction speeds before starting your lectures.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Option 1: Neural Flow */}
-          <div onClick={() => setSelectedGame('neural')} className="group cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/50 rounded-2xl p-6 transition-all hover:-translate-y-2">
-            <div className="w-16 h-16 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Game 1: Symptom Detective */}
+          <div onClick={() => setSelectedGame('symptom')} className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-blue-500/30 rounded-2xl p-6 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Stethoscope className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white text-center mb-2">Neural Flow</h3>
-            <p className="text-sm text-slate-400 text-center">Relax your muscle memory and lower your heart rate by smoothly gathering scattered energy.</p>
-            <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-blue-400 text-center">Calm & Centering</div>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Symptom Detective</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">Diagnose patient conditions based on presenting symptoms under a decaying speed-bonus timer.</p>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Speed & Diagnostics</div>
           </div>
 
-          {/* Option 2: Reaction Strike */}
-          <div onClick={() => setSelectedGame('reaction')} className="group cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 hover:border-red-500/50 rounded-2xl p-6 transition-all hover:-translate-y-2">
-            <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          {/* Game 2: Lab Master */}
+          <div onClick={() => setSelectedGame('lab')} className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-emerald-500/30 rounded-2xl p-6 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <BarChart2 className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white text-center mb-2">Reaction Strike</h3>
-            <p className="text-sm text-slate-400 text-center">Wake up your central nervous system by striking random targets as fast as possible.</p>
-            <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-red-400 text-center">Speed & Reflexes</div>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">Lab Master</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">Interpret abnormal values (blood, urine, endocrine panels) and identify the core pathophysiology.</p>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Lab Values Recall</div>
           </div>
 
-          {/* Option 3: Pattern Recall */}
-          <div onClick={() => setSelectedGame('pattern')} className="group cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-2xl p-6 transition-all hover:-translate-y-2">
-            <div className="w-16 h-16 rounded-full bg-yellow-500/20 text-yellow-400 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          {/* Game 3: ECG Champion */}
+          <div onClick={() => setSelectedGame('ecg')} className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-rose-500/30 rounded-2xl p-6 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Activity className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white text-center mb-2">Pattern Recall</h3>
-            <p className="text-sm text-slate-400 text-center">Expand your working memory by memorizing and repeating an ever-growing sequence.</p>
-            <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-yellow-400 text-center">Working Memory</div>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-rose-400 transition-colors">ECG Champion</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">Identify electrocardiogram patterns, arrhythmias, and conduction blockages from visual cues.</p>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-rose-400">Pattern Recognition</div>
+          </div>
+
+          {/* Game 4: Drug Match */}
+          <div onClick={() => setSelectedGame('drug')} className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-amber-500/30 rounded-2xl p-6 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Zap className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">Drug Match</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">Interact with active pharmacology pairings. Match drugs to their therapeutic indications quickly.</p>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Pharmacology Recall</div>
+          </div>
+
+          {/* Game 5: Diagnosis Race */}
+          <div onClick={() => setSelectedGame('race')} className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-purple-500/30 rounded-2xl p-6 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Flame className="w-6 h-6 animate-pulse" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">Diagnosis Race</h3>
+            <p className="text-xs text-slate-400 leading-relaxed mb-4">A high-velocity speed round. Answer as many rapid clinical True/False questions before time runs out.</p>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-purple-400">Reflexes & Accuracy</div>
           </div>
         </div>
       </motion.div>
@@ -332,247 +363,147 @@ function BrainGameModal({ onClose }: { onClose: () => void }) {
 }
 
 // ==============================
-// GAME 1: NEURAL FLOW (CANVAS)
+// GAME 1: SYMPTOM DETECTIVE
 // ==============================
-function NeuralGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [progress, setProgress] = useState(0);
-  const [gameState, setGameState] = useState<'playing' | 'won'>('playing');
+function SymptomDetectiveGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
+  const QUESTIONS = [
+    {
+      symptoms: "A 45-year-old male presents with sudden-onset, crushing substernal chest pain radiating to the left shoulder and jaw, associated with diaphoresis and severe dyspnea.",
+      options: ["Myocardial Infarction", "Gastroesophageal Reflux Disease", "Pulmonary Embolism", "Pneumothorax"],
+      correct: 0,
+      note: "Substernal crushing pain with radiation to left arm/jaw is highly characteristic of acute MI."
+    },
+    {
+      symptoms: "A 22-year-old female presents with acute onset of high fever, severe nuchal rigidity, photophobia, headache, and a non-blanching petechial rash.",
+      options: ["Tension Headache", "Meningococcal Meningitis", "Viral Encephalitis", "Migraine"],
+      correct: 1,
+      note: "Nuchal rigidity, photophobia, fever, and a petechial rash indicate Meningococcemia."
+    },
+    {
+      symptoms: "A 60-year-old female presents with acute pain in the right lower quadrant of the abdomen, fever, leukocytosis, and tenderness at McBurney's point.",
+      options: ["Acute Appendicitis", "Cholecystitis", "Diverticulitis", "Ovarian Cyst"],
+      correct: 0,
+      note: "McBurney's point tenderness indicates appendicitis."
+    }
+  ];
+
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [speedPoints, setSpeedPoints] = useState(1000);
+  const [answered, setAnswered] = useState(false);
+  const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+  const [ended, setEnded] = useState(false);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (answered || ended) return;
+    const interval = setInterval(() => {
+      setSpeedPoints(prev => Math.max(100, prev - 15));
+    }, 150);
+    return () => clearInterval(interval);
+  }, [currentIdx, answered, ended]);
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Particle[] = [];
-    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false, speed: 0 };
-    let lastMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      mouse.x = canvas.width / 2;
-      mouse.y = canvas.height / 2;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    class Particle {
-      x: number; y: number; size: number; baseX: number; baseY: number; color: string; vx: number; vy: number;
-      constructor(x: number, y: number) {
-        this.x = x; this.y = y; this.baseX = x; this.baseY = y;
-        this.size = Math.random() * 2 + 1;
-        this.vx = 0; this.vy = 0;
-        const colors = ['#60a5fa', '#a78bfa', '#34d399', '#f472b6'];
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-      }
-      draw() {
-        if (!ctx) return;
-        ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-      }
-      update() {
-        let dx = mouse.x - this.x; let dy = mouse.y - this.y; let distance = Math.sqrt(dx * dx + dy * dy);
-        if (mouse.speed > 25) {
-          if (distance < 200) { this.vx -= (dx / distance) * 5; this.vy -= (dy / distance) * 5; }
-        } else if (distance < 300) {
-          this.vx += (dx / distance) * 0.1; this.vy += (dy / distance) * 0.1;
-        } else {
-          this.vx += (this.baseX - this.x) * 0.01; this.vy += (this.baseY - this.y) * 0.01;
-        }
-        this.vx *= 0.92; this.vy *= 0.92;
-        this.x += this.vx; this.y += this.vy;
-      }
+  const handleSelect = (idx: number) => {
+    if (answered) return;
+    setSelectedOpt(idx);
+    setAnswered(true);
+    if (idx === QUESTIONS[currentIdx].correct) {
+      setScore(s => s + speedPoints);
     }
+  };
 
-    const init = () => {
-      particles = [];
-      const numParticles = window.innerWidth > 768 ? 400 : 200;
-      for (let i = 0; i < numParticles; i++) {
-        const radius = Math.random() * (canvas.width / 3) + 50;
-        const angle = Math.random() * Math.PI * 2;
-        particles.push(new Particle(canvas.width / 2 + Math.cos(angle) * radius, canvas.height / 2 + Math.sin(angle) * radius));
-      }
-    };
-    init();
+  const handleNext = () => {
+    if (currentIdx < QUESTIONS.length - 1) {
+      setCurrentIdx(currentIdx + 1);
+      setAnswered(false);
+      setSelectedOpt(null);
+      setSpeedPoints(1000);
+    } else {
+      setEnded(true);
+    }
+  };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const newX = e.clientX - rect.left; const newY = e.clientY - rect.top;
-      mouse.speed = Math.sqrt(Math.pow(newX - lastMouse.x, 2) + Math.pow(newY - lastMouse.y, 2));
-      mouse.x = newX; mouse.y = newY; lastMouse = { x: newX, y: newY }; mouse.active = true;
-    };
-    const handleMouseLeave = () => { mouse.active = false; mouse.speed = 0; };
-
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
-
-    let scoreCounter = 0;
-    const animate = () => {
-      if (!ctx) return;
-      ctx.fillStyle = 'rgba(10, 10, 15, 0.2)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      let gatheredCount = 0;
-
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update(); particles[i].draw();
-        if (Math.sqrt(Math.pow(mouse.x - particles[i].x, 2) + Math.pow(mouse.y - particles[i].y, 2)) < 80) gatheredCount++;
-      }
-
-      if (mouse.active) {
-        const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 100);
-        gradient.addColorStop(0, mouse.speed > 25 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(96, 165, 250, 0.2)');
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 100, 0, Math.PI * 2); ctx.fill();
-      }
-
-      if (mouse.speed < 15 && gatheredCount > particles.length * 0.8) scoreCounter += 0.5;
-      else if (scoreCounter > 0) scoreCounter -= 0.5;
-
-      const newProgress = Math.min(100, Math.max(0, scoreCounter));
-      setProgress(newProgress);
-      if (newProgress >= 100) { setGameState('won'); return; }
-      animationFrameId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [gameState]);
+  const curr = QUESTIONS[currentIdx];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4 overflow-hidden">
-      <div className="relative w-full max-w-5xl h-[70vh] rounded-[3rem] overflow-hidden flex flex-col border border-white/10 shadow-[0_0_150px_rgba(59,130,246,0.15)] bg-[#05050a]">
-        <button onClick={onBack} className="absolute top-6 left-8 text-slate-500 hover:text-white text-sm z-50 transition-colors uppercase tracking-widest">← Back</button>
-        <button onClick={onClose} className="absolute top-6 right-8 text-slate-500 hover:text-white text-2xl z-50 transition-colors">✕</button>
-        {gameState === 'playing' ? (
-          <>
-            <div className="absolute top-8 left-0 w-full text-center z-10 pointer-events-none px-4">
-              <h2 className="text-3xl font-serif text-white tracking-wider mb-2">Neural Gathering</h2>
-              <p className="text-sm text-slate-400 font-light max-w-md mx-auto">Move your cursor <span className="text-blue-400 font-medium">slowly and smoothly</span> to gather the energy. Moving fast scatters it.</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-2xl p-8 relative overflow-hidden shadow-[0_0_80px_rgba(59,130,246,0.1)]">
+        <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-xs transition-colors uppercase tracking-widest z-50">← Back</button>
+        <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-blue-400 tracking-wider uppercase mb-1">Symptom Detective</h2>
+          <span className="text-xs text-slate-400">Case {currentIdx + 1} of {QUESTIONS.length}</span>
+        </div>
+
+        {!ended ? (
+          <div className="space-y-6">
+            <div className="bg-white/5 border border-white/5 p-6 rounded-2xl leading-relaxed text-slate-200 text-sm">
+              <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest block mb-2">Patient Presentation</span>
+              &ldquo;{curr.symptoms}&rdquo;
             </div>
-            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full cursor-crosshair touch-none" />
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 md:w-96 z-10 pointer-events-none">
-              <div className="flex justify-between text-xs text-slate-400 mb-2 uppercase tracking-widest font-semibold"><span>Scattered</span><span>Gathered</span></div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden backdrop-blur-md border border-white/5">
-                <motion.div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" style={{ width: `${progress}%` }} />
+
+            <div className="flex justify-between items-center px-2">
+              <div className="text-xs text-slate-400">Speed Bonus Value: <span className="text-blue-400 font-mono font-bold text-sm">{speedPoints} pts</span></div>
+              <div className="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500" style={{ width: `${(speedPoints / 1000) * 100}%` }} />
               </div>
             </div>
-          </>
-        ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-black/40 backdrop-blur-md">
-            <h3 className="text-5xl font-serif text-white mb-4 tracking-tight">Centered & Focused</h3>
-            <p className="text-slate-400 mb-10 max-w-lg text-center text-lg leading-relaxed font-light">Your physical movements are calmed, and your neural energy is centered.</p>
-            <button onClick={onClose} className="px-12 py-4 bg-white hover:bg-slate-200 text-black rounded-full font-bold shadow-[0_0_40px_rgba(255,255,255,0.2)]">Begin Study Session</button>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
 
-// ==============================
-// GAME 2: REACTION STRIKE
-// ==============================
-function ReactionStrikeGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [gameState, setGameState] = useState<'start' | 'playing' | 'ended'>('start');
-  const [targetPos, setTargetPos] = useState({ x: 50, y: 50 });
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (gameState === 'playing' && timeLeft > 0) {
-      timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    } else if (timeLeft === 0 && gameState === 'playing') {
-      setGameState('ended');
-    }
-    return () => clearInterval(timer);
-  }, [gameState, timeLeft]);
-
-  const moveTarget = () => {
-    // Keep target within 10% to 90% of screen to avoid edges
-    setTargetPos({
-      x: Math.floor(Math.random() * 80) + 10,
-      y: Math.floor(Math.random() * 80) + 10
-    });
-  };
-
-  const startGame = () => {
-    setScore(0);
-    setTimeLeft(30);
-    setGameState('playing');
-    moveTarget();
-  };
-
-  const handleStrike = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent modal from catching it
-    if (gameState !== 'playing') return;
-    setScore(s => s + 1);
-    moveTarget();
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-5xl h-[70vh] relative overflow-hidden shadow-[0_0_100px_rgba(239,68,68,0.1)]">
-        <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-sm transition-colors uppercase tracking-widest z-50">← Back</button>
-        <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
-        
-        {/* Top UI */}
-        <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-start pointer-events-none z-40">
-          <div className="text-center w-full absolute top-6">
-            <h2 className="text-2xl font-bold text-red-400 uppercase tracking-widest opacity-50">Reaction Strike</h2>
-          </div>
-          <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md mt-10">
-            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Time</span>
-            <span className={`text-3xl font-mono ${timeLeft < 10 ? 'text-red-500 animate-pulse' : 'text-white'}`}>00:{timeLeft.toString().padStart(2, '0')}</span>
-          </div>
-          <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md text-right mt-10">
-            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Targets Hit</span>
-            <span className="text-3xl font-mono text-red-400">{score}</span>
-          </div>
-        </div>
-
-        {/* Game Area */}
-        {gameState === 'start' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-30 bg-black/40">
-            <div className="w-24 h-24 mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
-              <svg className="w-12 h-12 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {curr.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(i)}
+                  disabled={answered}
+                  className={`p-4 rounded-xl text-sm font-semibold border text-left transition-all ${
+                    answered
+                      ? i === curr.correct
+                        ? "bg-green-500/10 border-green-500 text-green-400"
+                        : i === selectedOpt
+                          ? "bg-red-500/10 border-red-500 text-red-400"
+                          : "bg-slate-900/40 border-white/5 text-slate-500"
+                      : "bg-white/5 border-white/5 text-slate-200 hover:bg-white/10 hover:border-white/10 hover:scale-[1.01]"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
             </div>
-            <h3 className="text-3xl font-bold text-white mb-2">Reaction Strike</h3>
-            <p className="text-slate-400 mb-8 max-w-sm text-center">A target will appear randomly. Click it as fast as possible. You have 30 seconds.</p>
-            <button onClick={startGame} className="px-8 py-3 bg-red-600 hover:bg-red-500 text-white rounded-full font-bold shadow-[0_0_20px_rgba(220,38,38,0.4)]">Start Drill</button>
-          </div>
-        )}
 
-        {gameState === 'playing' && (
-          <div className="absolute inset-0 cursor-crosshair" onClick={() => { /* Miss penalty could go here */ }}>
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-              key={score} // Forces re-animation on new target
-              onClick={handleStrike}
-              className="absolute w-16 h-16 -ml-8 -mt-8 rounded-full border-4 border-red-500 bg-red-500/20 flex items-center justify-center hover:bg-red-500/40"
-              style={{ left: `${targetPos.x}%`, top: `${targetPos.y}%` }}
-            >
-              <div className="w-4 h-4 bg-red-500 rounded-full" />
-            </motion.div>
-          </div>
-        )}
+            {answered && (
+              <div className="bg-blue-500/5 border border-blue-500/10 p-4 rounded-xl text-xs text-slate-400">
+                <span className="font-bold text-blue-400 block mb-1">Clinical Note</span>
+                {curr.note}
+              </div>
+            )}
 
-        {gameState === 'ended' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-30 bg-black/80 backdrop-blur-md">
-            <h3 className="text-4xl font-bold text-white mb-2">Nervous System Online! ⚡</h3>
-            <p className="text-slate-300 mb-8 text-center">You struck <span className="text-red-400 font-bold text-xl">{score}</span> targets in 30 seconds.</p>
-            <div className="flex gap-4">
-              <button onClick={startGame} className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold">Try Again</button>
-              <button onClick={onClose} className="px-8 py-3 bg-red-600 hover:bg-red-500 text-white rounded-full font-bold">Start Focus Session</button>
+            <div className="flex justify-end pt-4">
+              <button
+                onClick={handleNext}
+                disabled={!answered}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+              >
+                {currentIdx === QUESTIONS.length - 1 ? "Finish Game" : "Next Case"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Investigation Complete</h3>
+            <p className="text-sm text-slate-400">Your Detective Score: <span className="text-blue-400 font-mono font-bold text-lg">{score} pts</span></p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                setCurrentIdx(0);
+                setScore(0);
+                setSpeedPoints(1000);
+                setAnswered(false);
+                setSelectedOpt(null);
+                setEnded(false);
+              }} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl text-xs font-bold">Restart</button>
+              <button onClick={onClose} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold">Done</button>
             </div>
           </div>
         )}
@@ -582,115 +513,539 @@ function ReactionStrikeGame({ onClose, onBack }: { onClose: () => void, onBack: 
 }
 
 // ==============================
-// GAME 3: PATTERN RECALL
+// GAME 2: LAB MASTER
 // ==============================
-function PatternRecallGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
-  const [sequence, setSequence] = useState<number[]>([]);
-  const [userStep, setUserStep] = useState(0);
-  const [gameState, setGameState] = useState<'start' | 'showing' | 'playing' | 'lost'>('start');
-  const [activeSquare, setActiveSquare] = useState<number | null>(null);
-  const [level, setLevel] = useState(1);
+function LabMasterGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
+  const QUESTIONS = [
+    {
+      values: "pH: 7.25, PaCO2: 55 mmHg (Normal: 35-45), HCO3-: 25 mEq/L (Normal: 22-26)",
+      question: "What is the primary acid-base disorder?",
+      options: ["Respiratory Acidosis", "Respiratory Alkalosis", "Metabolic Acidosis", "Metabolic Alkalosis"],
+      correct: 0,
+      note: "pH is acidic (<7.35) and PaCO2 is elevated (>45) causing respiratory acidosis."
+    },
+    {
+      values: "Serum Calcium: 12.5 mg/dL (Normal: 8.5-10.2), PTH (Parathyroid Hormone): Elevated",
+      question: "Which diagnosis is consistent with these lab results?",
+      options: ["Hypoparathyroidism", "Primary Hyperparathyroidism", "Vitamin D Deficiency", "Renal Osteodystrophy"],
+      correct: 1,
+      note: "Both elevated calcium and elevated PTH indicate primary hyperparathyroidism."
+    },
+    {
+      values: "TSH: <0.01 μIU/mL (Normal: 0.4-4.0), Free T4: 3.2 ng/dL (Normal: 0.8-1.8)",
+      question: "Interpret this thyroid panel status.",
+      options: ["Primary Hypothyroidism", "Graves' Disease (Hyperthyroidism)", "Euthyroid Sick Syndrome", "Subclinical Hypothyroidism"],
+      correct: 1,
+      note: "Suppressed TSH with elevated free T4 signals primary hyperthyroidism."
+    }
+  ];
 
-  const startRound = (currentSeq: number[]) => {
-    setGameState('showing');
-    setUserStep(0);
-    const newSeq = [...currentSeq, Math.floor(Math.random() * 9)];
-    setSequence(newSeq);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+  const [ended, setEnded] = useState(false);
 
-    // Play sequence
-    let i = 0;
-    const interval = setInterval(() => {
-      setActiveSquare(newSeq[i]);
-      
-      // Turn off highlight after 400ms
-      setTimeout(() => setActiveSquare(null), 400);
-
-      i++;
-      if (i >= newSeq.length) {
-        clearInterval(interval);
-        setTimeout(() => setGameState('playing'), 600); // Wait a bit before letting user play
-      }
-    }, 800);
+  const handleSelect = (idx: number) => {
+    if (answered) return;
+    setSelectedOpt(idx);
+    setAnswered(true);
+    if (idx === QUESTIONS[currentIdx].correct) {
+      setScore(s => s + 1);
+    }
   };
 
-  const startGame = () => {
-    setLevel(1);
-    startRound([]);
-  };
-
-  const handleSquareClick = (index: number) => {
-    if (gameState !== 'playing') return;
-
-    setActiveSquare(index);
-    setTimeout(() => setActiveSquare(null), 200);
-
-    if (index === sequence[userStep]) {
-      // Correct click
-      if (userStep + 1 === sequence.length) {
-        // Round complete
-        setGameState('showing');
-        setTimeout(() => {
-          setLevel(l => l + 1);
-          startRound(sequence);
-        }, 1000);
-      } else {
-        setUserStep(s => s + 1);
-      }
+  const handleNext = () => {
+    if (currentIdx < QUESTIONS.length - 1) {
+      setCurrentIdx(currentIdx + 1);
+      setAnswered(false);
+      setSelectedOpt(null);
     } else {
-      // Wrong click
-      setGameState('lost');
+      setEnded(true);
+    }
+  };
+
+  const curr = QUESTIONS[currentIdx];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-2xl p-8 relative overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.1)]">
+        <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-xs transition-colors uppercase tracking-widest z-50">← Back</button>
+        <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-emerald-400 tracking-wider uppercase mb-1">Lab Master</h2>
+          <span className="text-xs text-slate-400">Panel {currentIdx + 1} of {QUESTIONS.length}</span>
+        </div>
+
+        {!ended ? (
+          <div className="space-y-6">
+            <div className="bg-slate-900 border border-white/5 p-6 rounded-2xl text-center">
+              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest block mb-3">Laboratory Report</span>
+              <div className="text-lg font-mono text-white tracking-wide">{curr.values}</div>
+            </div>
+
+            <div className="text-sm font-semibold text-slate-300 mb-2">{curr.question}</div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {curr.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(i)}
+                  disabled={answered}
+                  className={`p-4 rounded-xl text-sm font-semibold border text-left transition-all ${
+                    answered
+                      ? i === curr.correct
+                        ? "bg-green-500/10 border-green-500 text-green-400"
+                        : i === selectedOpt
+                          ? "bg-red-500/10 border-red-500 text-red-400"
+                          : "bg-slate-900/40 border-white/5 text-slate-500"
+                      : "bg-white/5 border-white/5 text-slate-200 hover:bg-white/10 hover:border-white/10 hover:scale-[1.01]"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            {answered && (
+              <div className="bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-xl text-xs text-slate-400">
+                <span className="font-bold text-emerald-400 block mb-1">Physiologic Rationale</span>
+                {curr.note}
+              </div>
+            )}
+
+            <div className="flex justify-end pt-4">
+              <button
+                onClick={handleNext}
+                disabled={!answered}
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+              >
+                {currentIdx === QUESTIONS.length - 1 ? "Complete" : "Next Panel"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Lab Master Finished</h3>
+            <p className="text-sm text-slate-400">Your Score: <span className="text-emerald-400 font-mono font-bold text-lg">{score}/{QUESTIONS.length} correct</span></p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                setCurrentIdx(0);
+                setScore(0);
+                setAnswered(false);
+                setSelectedOpt(null);
+                setEnded(false);
+              }} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl text-xs font-bold">Restart</button>
+              <button onClick={onClose} className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">Done</button>
+            </div>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+// ==============================
+// GAME 3: ECG CHAMPION
+// ==============================
+function EcgChampionGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
+  const QUESTIONS = [
+    {
+      description: "No P waves present, replaced by rapid, irregular fibrillatory waves with an irregularly irregular narrow QRS rhythm.",
+      options: ["Atrial Fibrillation", "Ventricular Tachycardia", "Third-Degree AV Block", "Atrial Flutter"],
+      correct: 0,
+      note: "Absent P waves and an irregularly irregular QRS rate is the diagnostic signature of atrial fibrillation."
+    },
+    {
+      description: "ST-segment elevation in leads II, III, and aVF, with reciprocal ST-segment depression in leads I and aVL.",
+      options: ["Inferior Wall MI", "Anterior Wall MI", "Pericarditis", "Left Bundle Branch Block"],
+      correct: 0,
+      note: "ST elevation in II, III, aVF localizes the infarction to the inferior wall (RCA territory)."
+    },
+    {
+      description: "Sawtooth-like flutter waves (F waves) present at a regular rate of 300 bpm, with a 2:1 conduction block.",
+      options: ["Atrial Flutter", "Atrial Fibrillation", "Torsades de Pointes", "Sinus Bradycardia"],
+      correct: 0,
+      note: "Sawtooth baseline patterns represent atrial flutter."
+    }
+  ];
+
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+  const [ended, setEnded] = useState(false);
+
+  const handleSelect = (idx: number) => {
+    if (answered) return;
+    setSelectedOpt(idx);
+    setAnswered(true);
+    if (idx === QUESTIONS[currentIdx].correct) {
+      setScore(s => s + 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIdx < QUESTIONS.length - 1) {
+      setCurrentIdx(currentIdx + 1);
+      setAnswered(false);
+      setSelectedOpt(null);
+    } else {
+      setEnded(true);
+    }
+  };
+
+  const curr = QUESTIONS[currentIdx];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-2xl p-8 relative overflow-hidden shadow-[0_0_80px_rgba(244,63,94,0.1)]">
+        <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-xs transition-colors uppercase tracking-widest z-50">← Back</button>
+        <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-rose-500 tracking-wider uppercase mb-1">ECG Champion</h2>
+          <span className="text-xs text-slate-400">Pattern {currentIdx + 1} of {QUESTIONS.length}</span>
+        </div>
+
+        {!ended ? (
+          <div className="space-y-6">
+            <div className="bg-slate-900 border border-white/5 p-6 rounded-2xl">
+              <span className="text-xs font-semibold text-rose-500 uppercase tracking-widest block mb-2">ECG Waveform Description</span>
+              <p className="text-slate-300 text-sm leading-relaxed">&ldquo;{curr.description}&rdquo;</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {curr.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(i)}
+                  disabled={answered}
+                  className={`p-4 rounded-xl text-sm font-semibold border text-left transition-all ${
+                    answered
+                      ? i === curr.correct
+                        ? "bg-green-500/10 border-green-500 text-green-400"
+                        : i === selectedOpt
+                          ? "bg-red-500/10 border-red-500 text-red-400"
+                          : "bg-slate-900/40 border-white/5 text-slate-500"
+                      : "bg-white/5 border-white/5 text-slate-200 hover:bg-white/10 hover:border-white/10 hover:scale-[1.01]"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            {answered && (
+              <div className="bg-rose-500/5 border border-rose-500/10 p-4 rounded-xl text-xs text-slate-400">
+                <span className="font-bold text-rose-500 block mb-1">Physiologic Rationale</span>
+                {curr.note}
+              </div>
+            )}
+
+            <div className="flex justify-end pt-4">
+              <button
+                onClick={handleNext}
+                disabled={!answered}
+                className="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+              >
+                {currentIdx === QUESTIONS.length - 1 ? "Complete" : "Next Wave"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">ECG Challenge Completed</h3>
+            <p className="text-sm text-slate-400">Your Score: <span className="text-rose-500 font-mono font-bold text-lg">{score}/{QUESTIONS.length} correct</span></p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                setCurrentIdx(0);
+                setScore(0);
+                setAnswered(false);
+                setSelectedOpt(null);
+                setEnded(false);
+              }} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl text-xs font-bold">Restart</button>
+              <button onClick={onClose} className="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold">Done</button>
+            </div>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+// ==============================
+// GAME 4: DRUG MATCH
+// ==============================
+function DrugMatchGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
+  const DRUGS = [
+    { id: "metformin", label: "Metformin", pairId: "diabetes" },
+    { id: "lisinopril", label: "Lisinopril", pairId: "hypertension" },
+    { id: "atorvastatin", label: "Atorvastatin", pairId: "lipid" },
+    { id: "omeprazole", label: "Omeprazole", pairId: "gerd" }
+  ];
+
+  const INDICATIONS = [
+    { id: "lipid", label: "HMG-CoA Reductase Inhibitor / Hypercholesterolemia" },
+    { id: "diabetes", label: "AMPK Activator / Type 2 Diabetes" },
+    { id: "gerd", label: "Proton Pump Inhibitor / GERD" },
+    { id: "hypertension", label: "ACE Inhibitor / Hypertension" }
+  ];
+
+  const [selectedDrug, setSelectedDrug] = useState<string | null>(null);
+  const [selectedIndication, setSelectedIndication] = useState<string | null>(null);
+  const [matches, setMatches] = useState<string[]>([]);
+  const [wrongMatch, setWrongMatch] = useState<boolean>(false);
+
+  const handleDrugClick = (id: string) => {
+    if (matches.includes(id)) return;
+    setSelectedDrug(id);
+    if (selectedIndication) {
+      checkMatch(id, selectedIndication);
+    }
+  };
+
+  const handleIndicationClick = (id: string) => {
+    const matchingDrug = DRUGS.find(d => d.pairId === id);
+    if (!matchingDrug || matches.includes(matchingDrug.id)) return;
+    setSelectedIndication(id);
+    if (selectedDrug) {
+      checkMatch(selectedDrug, id);
+    }
+  };
+
+  const checkMatch = (drugId: string, indId: string) => {
+    const drug = DRUGS.find(d => d.id === drugId);
+    if (drug && drug.pairId === indId) {
+      setMatches(prev => [...prev, drugId]);
+      setSelectedDrug(null);
+      setSelectedIndication(null);
+    } else {
+      setWrongMatch(true);
+      setTimeout(() => {
+        setWrongMatch(false);
+        setSelectedDrug(null);
+        setSelectedIndication(null);
+      }, 800);
+    }
+  };
+
+  const ended = matches.length === DRUGS.length;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-2xl p-8 relative overflow-hidden shadow-[0_0_80px_rgba(245,158,11,0.1)]">
+        <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-sm transition-colors uppercase tracking-widest z-50">← Back</button>
+        <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-amber-500 tracking-wider uppercase mb-1">Drug Match</h2>
+          <span className="text-xs text-slate-400">Match the pharmacology pairings</span>
+        </div>
+
+        {!ended ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-6 pt-4">
+              {/* Drugs List */}
+              <div className="space-y-3">
+                <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-2">Pharmacotherapy Agent</span>
+                {DRUGS.map(d => {
+                  const isMatched = matches.includes(d.id);
+                  return (
+                    <button
+                      key={d.id}
+                      onClick={() => handleDrugClick(d.id)}
+                      className={`w-full p-4 text-left rounded-xl text-sm font-semibold border transition-all ${
+                        isMatched
+                          ? "bg-green-500/10 border-green-500/30 text-green-500/50 cursor-default"
+                          : selectedDrug === d.id
+                            ? wrongMatch 
+                              ? "bg-red-500/20 border-red-500 text-red-400"
+                              : "bg-amber-500/20 border-amber-500 text-amber-400"
+                            : "bg-white/5 border-white/5 text-slate-200 hover:bg-white/10 hover:border-white/10"
+                      }`}
+                    >
+                      {d.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Indications List */}
+              <div className="space-y-3">
+                <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-2">Indications / Mechanisms</span>
+                {INDICATIONS.map(i => {
+                  const matchDrug = DRUGS.find(d => d.pairId === i.id);
+                  const isMatched = matchDrug ? matches.includes(matchDrug.id) : false;
+                  return (
+                    <button
+                      key={i.id}
+                      onClick={() => handleIndicationClick(i.id)}
+                      className={`w-full p-4 text-left rounded-xl text-xs font-semibold border transition-all ${
+                        isMatched
+                          ? "bg-green-500/10 border-green-500/30 text-green-500/50 cursor-default"
+                          : selectedIndication === i.id
+                            ? wrongMatch
+                              ? "bg-red-500/20 border-red-500 text-red-400"
+                              : "bg-amber-500/20 border-amber-500 text-amber-400"
+                            : "bg-white/5 border-white/5 text-slate-200 hover:bg-white/10 hover:border-white/10"
+                      }`}
+                    >
+                      {i.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {wrongMatch && (
+              <div className="text-center text-xs font-semibold text-red-400 animate-pulse mt-2">
+                Incorrect Mechanism Matching. Try Again!
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Pharmacology Matched!</h3>
+            <p className="text-sm text-slate-400">All drug mechanisms correctly aligned.</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                setMatches([]);
+                setSelectedDrug(null);
+                setSelectedIndication(null);
+              }} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl text-xs font-bold">Restart</button>
+              <button onClick={onClose} className="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold">Done</button>
+            </div>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+// ==============================
+// GAME 5: DIAGNOSIS RACE
+// ==============================
+function DiagnosisRaceGame({ onClose, onBack }: { onClose: () => void, onBack: () => void }) {
+  const DRILLS = [
+    { statement: "Beta-blockers are contraindicated in patients with acute severe bronchial asthma.", answer: true },
+    { statement: "The first-line drug for clinical anaphylaxis is intravenous antihistamine.", answer: false },
+    { statement: "Kussmaul breathing is classically seen in patients with Diabetic Ketoacidosis.", answer: true },
+    { statement: "The definitive treatment for tension pneumothorax is waiting for an immediate chest X-ray.", answer: false },
+    { statement: "Gouty arthritis is characterized by negatively birefringent needle-shaped crystals.", answer: true },
+    { statement: "A positive McBurney's sign is diagnostic for acute cholecystitis.", answer: false },
+    { statement: "Amylase is more specific than lipase for diagnosing acute pancreatitis.", answer: false }
+  ];
+
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(20);
+  const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
+
+  useEffect(() => {
+    if (!started || ended) return;
+    if (timeLeft <= 0) {
+      setEnded(true);
+      return;
+    }
+    const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    return () => clearInterval(timer);
+  }, [started, ended, timeLeft]);
+
+  const handleAnswer = (val: boolean) => {
+    if (val === DRILLS[currentIdx].answer) {
+      setScore(s => s + 1);
+    }
+    if (currentIdx < DRILLS.length - 1) {
+      setCurrentIdx(currentIdx + 1);
+    } else {
+      setEnded(true);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-[0_0_100px_rgba(234,179,8,0.1)]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0f0f15] border border-white/10 rounded-3xl w-full max-w-md p-8 relative overflow-hidden shadow-[0_0_80px_rgba(168,85,247,0.1)]">
         <button onClick={onBack} className="absolute top-5 left-5 text-slate-500 hover:text-white text-sm transition-colors uppercase tracking-widest z-50">← Back</button>
         <button onClick={onClose} className="absolute top-5 right-5 text-slate-500 hover:text-white text-xl z-50">✕</button>
-        
-        <div className="text-center mb-8 mt-6">
-          <h2 className="text-2xl font-bold text-yellow-400 tracking-widest uppercase mb-2">Pattern Recall</h2>
-          <p className="text-sm text-slate-400">Memorize the sequence.</p>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-purple-400 tracking-wider uppercase mb-1">Diagnosis Race</h2>
+          <span className="text-xs text-slate-400">Rapid-fire speed round</span>
         </div>
 
-        <div className="flex justify-between items-center mb-8 bg-white/5 p-4 rounded-xl border border-white/5">
-          <div><span className="text-xs text-slate-400 uppercase tracking-widest">Level</span><div className="text-3xl font-bold text-white">{level}</div></div>
-          <div className="text-right">
-            <span className="text-xs text-slate-400 uppercase tracking-widest">Status</span>
-            <div className={`text-xl font-bold uppercase mt-1 ${gameState === 'showing' ? 'text-blue-400 animate-pulse' : gameState === 'playing' ? 'text-green-400' : 'text-red-400'}`}>
-              {gameState === 'showing' ? 'Watch' : gameState === 'playing' ? 'Your Turn' : gameState === 'lost' ? 'Failed' : 'Ready'}
+        {!started ? (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-full flex items-center justify-center mx-auto">
+              <Flame className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Rapid True / False Race</h3>
+            <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+              Answer as many medical statements correctly as you can in 20 seconds.
+            </p>
+            <button onClick={() => setStarted(true)} className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+              Start Race
+            </button>
+          </div>
+        ) : !ended ? (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+              <div>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest block">Time Left</span>
+                <span className="text-2xl font-bold text-white font-mono">{timeLeft}s</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest block">Correct Answers</span>
+                <span className="text-2xl font-bold text-purple-400 font-mono">{score}</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-900 border border-white/5 p-6 rounded-2xl min-h-[120px] flex items-center justify-center text-center">
+              <p className="text-slate-200 text-sm leading-relaxed">{DRILLS[currentIdx].statement}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => handleAnswer(true)}
+                className="py-4 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 rounded-xl font-bold transition-all text-sm"
+              >
+                True
+              </button>
+              <button
+                onClick={() => handleAnswer(false)}
+                className="py-4 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-xl font-bold transition-all text-sm"
+              >
+                False
+              </button>
             </div>
           </div>
-        </div>
-
-        {/* 3x3 Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-6 max-w-[300px] mx-auto">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div
-              key={i}
-              onClick={() => handleSquareClick(i)}
-              className={`
-                aspect-square rounded-xl transition-all duration-200 cursor-pointer border-2
-                ${gameState === 'playing' ? 'hover:scale-95' : ''}
-                ${activeSquare === i ? 'bg-yellow-400 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.6)] scale-95' : 'bg-white/5 border-white/10'}
-              `}
-            />
-          ))}
-        </div>
-
-        {gameState === 'start' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-3xl backdrop-blur-sm">
-            <button onClick={startGame} className="px-8 py-3 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full font-bold shadow-[0_0_20px_rgba(202,138,4,0.4)]">Start Memory Test</button>
-          </div>
-        )}
-
-        {gameState === 'lost' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-3xl backdrop-blur-md">
-            <h3 className="text-3xl font-bold text-red-500 mb-2">Sequence Broken!</h3>
-            <p className="text-slate-300 mb-6">You reached Level {level}.</p>
-            <div className="flex flex-col gap-3">
-              <button onClick={startGame} className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold">Try Again</button>
-              <button onClick={onClose} className="px-8 py-3 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full font-bold">Start Focus Session</button>
+        ) : (
+          <div className="text-center py-10 space-y-6">
+            <div className="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-full flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold text-white">Race Over!</h3>
+            <p className="text-sm text-slate-400">Statements Correct: <span className="text-purple-400 font-mono font-bold text-lg">{score}</span></p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                setCurrentIdx(0);
+                setScore(0);
+                setTimeLeft(20);
+                setStarted(true);
+                setEnded(false);
+              }} className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-xl text-xs font-bold">Restart</button>
+              <button onClick={onClose} className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold">Done</button>
             </div>
           </div>
         )}
