@@ -56,11 +56,19 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     try {
         courses = await prisma.course.findMany({
             where,
+            include: {
+                lessons: true,
+                enrollments: true
+            },
             orderBy: { createdAt: "desc" },
         });
     } catch (e) {
         console.error("Database error, falling back to mock courses:", e);
-        courses = MOCK_COURSES.filter((course) => {
+        courses = MOCK_COURSES.map(c => ({
+            ...c,
+            lessons: [{ id: "l1" }, { id: "l2" }],
+            enrollments: []
+        })).filter((course) => {
             if (categories.length > 0 && !categories.includes(course.category)) return false;
             if (exams.length > 0 && !exams.includes(course.exam)) return false;
             if (levels.length > 0 && !levels.includes(course.level)) return false;
@@ -68,19 +76,38 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
         });
     }
 
+    // Map instructor by category to one of the real seeded board mentors
+    const mentorMap: { [key: string]: string } = {
+        "Anatomy": "Dr. Isha Mishra",
+        "Pathology": "Dr. Priya Sharma",
+        "Physiology": "Dr. Ashwani Kumar",
+        "Pharmacology": "Dr. Rajeev Seth",
+        "Biochemistry": "Dr. Amit Patel",
+        "Microbiology": "Dr. Priya Sharma",
+        "Medicine": "Dr. Ashwani Kumar",
+        "Surgery": "Dr. Rajeev Seth"
+    };
 
     // We map the DB courses to match the CourseCard props format
-    const formattedCourses = courses.map((course) => ({
-        id: course.id,
-        title: course.title,
-        instructor: "Dr. Ashwani Kumar", // Hardcoded for now
-        thumbnail: course.thumbnail || "/placeholder-1.png",
-        duration: "52h 15m", // Above 50 hours as requested
-        rating: 4.9,
-        students: 120 + Math.floor(Math.random() * 50),
-        category: course.category,
-        price: course.price,
-    }));
+    const formattedCourses = courses.map((course) => {
+        const lessonCount = course.lessons?.length || 0;
+        const totalMinutes = lessonCount * 45;
+        const hours = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
+        const durationStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+
+        return {
+            id: course.id,
+            title: course.title,
+            instructor: mentorMap[course.category] || "Dr. Isha Mishra",
+            thumbnail: course.thumbnail || "/placeholder-1.png",
+            duration: durationStr,
+            rating: 5.0,
+            students: course.enrollments?.length || 0,
+            category: course.category,
+            price: course.price,
+        };
+    });
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">

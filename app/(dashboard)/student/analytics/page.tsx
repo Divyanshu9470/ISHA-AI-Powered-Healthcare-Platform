@@ -1,27 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from "recharts";
 import { motion } from "framer-motion";
 import { BrainCircuit, Target, TrendingUp, Calendar, AlertTriangle } from "lucide-react";
-
-const performanceData = [
-  { name: "Week 1", score: 65 },
-  { name: "Week 2", score: 68 },
-  { name: "Week 3", score: 74 },
-  { name: "Week 4", score: 82 },
-  { name: "Week 5", score: 85 },
-];
-
-const subjectRadarData = [
-  { subject: "Anatomy", A: 85, fullMark: 100 },
-  { subject: "Pathology", A: 65, fullMark: 100 },
-  { subject: "Pharmacology", A: 90, fullMark: 100 },
-  { subject: "Physiology", A: 70, fullMark: 100 },
-  { subject: "Biochemistry", A: 60, fullMark: 100 },
-  { subject: "Microbiology", A: 80, fullMark: 100 },
-];
-
 import { useState, useEffect } from "react";
 
 export default function AnalyticsDashboard() {
@@ -34,10 +15,19 @@ export default function AnalyticsDashboard() {
       .then(data => {
         setStats(data);
         setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error loading analytics:", err);
+        setLoading(false);
       });
   }, []);
 
   if (loading) return <div className="p-8">Loading analytics...</div>;
+
+  const trajectoryData = stats?.performanceTrajectory || [];
+  const radarData = stats?.subjectRadarData || [];
+  const planItems = stats?.planItems || [];
+  const weakestSubjects = stats?.weakestSubjects || [];
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 bg-slate-50 min-h-screen">
@@ -52,7 +42,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <StatCard title="Predicted Rank" value="#4,201" icon={Target} color="text-purple-600" bg="bg-purple-100" />
+        <StatCard title="Predicted Rank" value={stats?.predictedRank || "N/A"} icon={Target} color="text-purple-600" bg="bg-purple-100" />
         <StatCard title="Avg Score" value={`${stats?.averageTestScore || 0}%`} icon={TrendingUp} color="text-green-600" bg="bg-green-100" />
         <StatCard title="Courses" value={stats?.totalEnrollments || 0} icon={Calendar} color="text-orange-600" bg="bg-orange-100" />
         <StatCard title="Arena Runs" value={stats?.totalSimulatorSessions || 0} icon={BrainCircuit} color="text-red-600" bg="bg-red-100" />
@@ -64,24 +54,30 @@ export default function AnalyticsDashboard() {
             <TrendingUp className="w-5 h-5 text-blue-500" /> Performance Trajectory
           </h3>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                <RechartsTooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="score" 
-                  stroke="#3b82f6" 
-                  strokeWidth={4} 
-                  dot={{ r: 6, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} 
-                  activeDot={{ r: 8 }} 
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {trajectoryData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trajectoryData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                  <RechartsTooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="score" 
+                    stroke="#3b82f6" 
+                    strokeWidth={4} 
+                    dot={{ r: 6, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} 
+                    activeDot={{ r: 8 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-slate-400 font-light">
+                No test data available yet. Start practicing to see your progress chart!
+              </div>
+            )}
           </div>
         </div>
 
@@ -90,13 +86,19 @@ export default function AnalyticsDashboard() {
             <AlertTriangle className="w-5 h-5 text-red-500" /> Weakness Radar
           </h3>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={subjectRadarData}>
-                <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" tick={{fill: '#475569', fontSize: 12}} />
-                <Radar name="Score" dataKey="A" stroke="#ef4444" fill="#ef4444" fillOpacity={0.3} />
-              </RadarChart>
-            </ResponsiveContainer>
+            {radarData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                  <PolarGrid stroke="#e2e8f0" />
+                  <PolarAngleAxis dataKey="subject" tick={{fill: '#475569', fontSize: 12}} />
+                  <Radar name="Score" dataKey="A" stroke="#ef4444" fill="#ef4444" fillOpacity={0.3} />
+                </RadarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-slate-400 font-light">
+                No radar data available yet.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -104,12 +106,17 @@ export default function AnalyticsDashboard() {
       <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10">
           <h2 className="text-2xl font-bold mb-2">Smart Study Planner</h2>
-          <p className="text-blue-200 max-w-2xl mb-6">Based on your recent tests, you are struggling with Biochemistry and Pathology. Here is your AI-optimized schedule for today.</p>
+          <p className="text-blue-200 max-w-2xl mb-6">
+            {weakestSubjects.length > 0 
+              ? `Based on your recent performance, you should focus on ${weakestSubjects.join(" and ")}. Here is your AI-optimized schedule for today.`
+              : "Take some practice tests to unlock your custom AI study schedule. In the meantime, here is a general high-yield routine:"
+            }
+          </p>
           
           <div className="space-y-4">
-            <PlanItem time="09:00 AM" title="Biochemistry: Enzyme Kinetics" duration="2 Hours" type="Video + Notes" />
-            <PlanItem time="11:30 AM" title="Pathology: Cellular Injury" duration="1.5 Hours" type="Mock Test" />
-            <PlanItem time="02:00 PM" title="Anatomy Revision" duration="1 Hour" type="Flashcards" />
+            {planItems.map((item: any, index: number) => (
+              <PlanItem key={index} time={item.time} title={item.title} duration={item.duration} type={item.type} />
+            ))}
           </div>
         </div>
         

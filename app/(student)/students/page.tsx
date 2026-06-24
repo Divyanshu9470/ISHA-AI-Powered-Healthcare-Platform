@@ -5,6 +5,7 @@ import { CourseCard } from "@/components/ui/CourseCard";
 import Link from "next/link";
 import { Sparkles, Trophy, BookOpen, GraduationCap, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
     title: "ISHA Med Prep — High-Yield Board Exam Courses & Simulators",
@@ -16,13 +17,53 @@ export const metadata: Metadata = {
     }
 };
 
-const FEATURED_COURSES = [
-    { id: "anatomy-101", title: "Comprehensive Anatomy for USMLE Step 1", instructor: "Dr. Ashwani Kumar", price: 129.99, category: "Anatomy", thumbnail: "/courses/anatomy.png", duration: "52h 15m", rating: 4.9, students: 142 },
-    { id: "physiology-101", title: "Comprehensive Physiology for USMLE Step 1", instructor: "Dr. Ashwani Kumar", price: 119.99, category: "Physiology", thumbnail: "/courses/physiology.png", duration: "48h 30m", rating: 4.8, students: 128 },
-    { id: "patho-basics", title: "General Pathology: Cell Injury", instructor: "Dr. Ashwani Kumar", price: 149.99, category: "Pathology", thumbnail: "/placeholder-2.png", duration: "55h 10m", rating: 4.9, students: 165 },
-];
+export default async function StudentsPage() {
+    let courses: any[] = [];
+    try {
+        courses = await prisma.course.findMany({
+            where: { published: true },
+            include: {
+                lessons: true,
+                enrollments: true
+            },
+            take: 3,
+            orderBy: { createdAt: "desc" }
+        });
+    } catch (e) {
+        console.error("Error fetching featured courses:", e);
+    }
 
-export default function StudentsPage() {
+    const mentorMap: { [key: string]: string } = {
+        "Anatomy": "Dr. Isha Mishra",
+        "Pathology": "Dr. Priya Sharma",
+        "Physiology": "Dr. Ashwani Kumar",
+        "Pharmacology": "Dr. Rajeev Seth",
+        "Biochemistry": "Dr. Amit Patel",
+        "Microbiology": "Dr. Priya Sharma",
+        "Medicine": "Dr. Ashwani Kumar",
+        "Surgery": "Dr. Rajeev Seth"
+    };
+
+    const featuredCourses = courses.map((course) => {
+        const lessonCount = course.lessons?.length || 0;
+        const totalMinutes = lessonCount * 45;
+        const hours = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
+        const durationStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+
+        return {
+            id: course.id,
+            title: course.title,
+            instructor: mentorMap[course.category] || "Dr. Isha Mishra",
+            thumbnail: course.thumbnail || "/placeholder-1.png",
+            duration: durationStr,
+            rating: 5.0,
+            students: course.enrollments?.length || 0,
+            category: course.category,
+            price: course.price,
+        };
+    });
+
     return (
         <div className="flex flex-col">
             <HeroStudent />
@@ -44,7 +85,7 @@ export default function StudentsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[
-                            { title: "High-Yield Video Lectures", desc: "1,200+ lectures covering all pre-clinical, para-clinical, and clinical subjects.", icon: <BookOpen className="w-6 h-6 text-blue-400" /> },
+                            { title: "High-Yield Video Lectures", desc: "Foundational, para-clinical, and clinical video lessons directly matching board topics.", icon: <BookOpen className="w-6 h-6 text-blue-400" /> },
                             { title: "Triage Simulation", desc: "Interactive virtual ER wards to put your diagnostic reasoning to the test.", icon: <Trophy className="w-6 h-6 text-emerald-400" /> },
                             { title: "Spaced Repetition (SRS)", desc: "Adaptive flashcards that track memory decay curves to maximize active recall.", icon: <Sparkles className="w-6 h-6 text-purple-400" /> },
                             { title: "Expert Mentorship", desc: "Direct guidance and live Q&A sessions from doctors and top-ranked board alumni.", icon: <GraduationCap className="w-6 h-6 text-amber-400" /> }
@@ -75,9 +116,14 @@ export default function StudentsPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {FEATURED_COURSES.map((course) => (
+                        {featuredCourses.map((course) => (
                             <CourseCard key={course.id} {...course} />
                         ))}
+                        {featuredCourses.length === 0 && (
+                            <div className="col-span-full text-center py-12 text-slate-400">
+                                No featured courses available.
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

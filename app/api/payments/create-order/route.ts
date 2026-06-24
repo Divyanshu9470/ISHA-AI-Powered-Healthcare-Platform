@@ -17,24 +17,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing courseId or amount" }, { status: 400 });
     }
 
-    // 1. Create a Razorpay Order (or Mock if keys missing)
-    let order;
-    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_ID !== "MISSING_KEY_ID") {
-      const options = {
-        amount: Math.round(amount * 100), // Razorpay expects amount in paise
-        currency: currency || "INR",
-        receipt: `receipt_${Math.random().toString(36).substring(7)}`,
-      };
-      order = await razorpay.orders.create(options);
-    } else {
-      console.log("Using Mock Razorpay Order (No keys found in .env)");
-      order = {
-        id: `mock_order_${Math.random().toString(36).substring(7)}`,
-        amount: Math.round(amount * 100),
-        currency: currency || "INR",
-        isMock: true
-      };
+    // Ensure Razorpay credentials are set in environment
+    if (!process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID === "MISSING_KEY_ID" || !process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ 
+        error: "Razorpay credentials are not configured. Please configure them in your environment variables." 
+      }, { status: 500 });
     }
+
+    const options = {
+      amount: Math.round(amount * 100), // Razorpay expects amount in paise
+      currency: currency || "INR",
+      receipt: `receipt_${Math.random().toString(36).substring(7)}`,
+    };
+    
+    const order = await razorpay.orders.create(options);
 
     // 2. Create a Pending Transaction in DB
     await prisma.transaction.create({
@@ -53,7 +49,7 @@ export async function POST(req: Request) {
       id: order.id,
       amount: order.amount,
       currency: order.currency,
-      isMock: (order as any).isMock || false
+      isMock: false
     }, { status: 201 });
 
   } catch (error) {

@@ -16,6 +16,7 @@ export default function FlashcardsDashboard() {
     const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
     const [decks, setDecks] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [cardStats, setCardStats] = useState({ streak: 0, retention: 0, rank: "N/A" });
 
     useEffect(() => {
         fetch("/api/flashcards/decks")
@@ -27,6 +28,17 @@ export default function FlashcardsDashboard() {
             })
             .catch(err => console.error(err))
             .finally(() => setIsLoading(false));
+    }, []);
+
+    useEffect(() => {
+        fetch("/api/flashcards/stats")
+            .then(res => res.json())
+            .then(data => {
+                if (data && !data.error) {
+                    setCardStats(data);
+                }
+            })
+            .catch(err => console.error(err));
     }, []);
 
     const categories = ["All", "Anatomy", "Physiology", "Pathology", "Pharmacology", "Biochemistry"];
@@ -88,9 +100,9 @@ export default function FlashcardsDashboard() {
                         </div>
                         
                         <div className="flex gap-4">
-                            <StatCard icon={Flame} label="Daily Streak" value="12 Days" color="text-orange-500" />
-                            <StatCard icon={Target} label="Retention" value="94%" color="text-teal" />
-                            <StatCard icon={Trophy} label="Rank" value="#42" color="text-yellow-500" />
+                            <StatCard icon={Flame} label="Daily Streak" value={`${cardStats.streak} Days`} color="text-orange-500" />
+                            <StatCard icon={Target} label="Retention" value={`${cardStats.retention}%`} color="text-teal" />
+                            <StatCard icon={Trophy} label="Rank" value={cardStats.rank} color="text-yellow-500" />
                         </div>
                     </div>
 
@@ -149,7 +161,7 @@ export default function FlashcardsDashboard() {
                         >
                             <FlashcardDeckCard 
                                 deck={deck} 
-                                progress={{ mastered: 45, total: 100 }}
+                                progress={deck.progress || { mastered: 0, total: deck._count?.flashcards || 1 }}
                             />
                         </motion.div>
                     ))}

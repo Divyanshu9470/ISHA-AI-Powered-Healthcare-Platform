@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   CreditCard, Smartphone, Building, Wallet, X, 
@@ -27,15 +27,10 @@ declare global {
 }
 
 export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
-  const [step, setStep] = useState<'methods' | 'processing' | 'mock_pay' | 'success'>('methods');
+  const [step, setStep] = useState<'methods' | 'processing' | 'success'>('methods');
   const [selectedMethod, setSelectedMethod] = useState<string>("upi");
   const [isIndia, setIsIndia] = useState(true);
-  const [mockOrderId, setMockOrderId] = useState<string | null>(null);
   
-  const [upiId, setUpiId] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [qrGenerated, setQrGenerated] = useState(false);
-
   const handlePayment = async () => {
     setStep('processing');
     
@@ -59,12 +54,6 @@ export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
       
       if (!res.ok) throw new Error(order.error || "Failed to create payment order");
 
-      if (order.isMock) {
-        setMockOrderId(order.id);
-        setStep('mock_pay');
-        return;
-      }
-      
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_dummy_id",
         amount: order.amount,
@@ -74,6 +63,7 @@ export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
         image: "/logo.png",
         order_id: order.id,
         handler: async function (response: any) {
+          setStep('processing');
           const verifyRes = await fetch('/api/payments/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -109,33 +99,6 @@ export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
     } catch (error: any) {
       console.error("Payment failed:", error);
       alert(error.message || "Something went wrong.");
-      setStep('methods');
-    }
-  };
-
-  const handleMockVerify = async () => {
-    setStep('processing');
-    try {
-      const verifyRes = await fetch('/api/payments/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          razorpay_order_id: mockOrderId,
-          razorpay_payment_id: "pay_mock_" + Math.random().toString(36).substring(7),
-          razorpay_signature: "mock_signature",
-          courseId: course.id,
-          isMock: true
-        }),
-      });
-
-      const verifyData = await verifyRes.json();
-      if (verifyData.status === "SUCCESS") {
-        setStep('success');
-      } else {
-        throw new Error("Verification failed");
-      }
-    } catch (error: any) {
-      alert(error.message || "Mock payment failed");
       setStep('methods');
     }
   };
@@ -274,74 +237,6 @@ export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
                 </div>
                 <h3 className="text-3xl font-bold text-white mb-3">Initializing Vault</h3>
                 <p className="text-slate-400 text-lg">Communicating with the payment provider...</p>
-              </motion.div>
-            )}
-            
-            {step === 'mock_pay' && (
-              <motion.div 
-                key="mock_pay"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <div className="mb-10 text-center">
-                  <div className="bg-orange-500/10 border border-orange-500/20 py-2 px-4 rounded-full text-orange-400 text-xs font-bold inline-block mb-4">
-                    MOCK PAYMENT MODE
-                  </div>
-                  <h2 className="text-3xl font-bold text-white mb-2">Complete Transaction</h2>
-                  <p className="text-slate-400">Transaction Ref: {mockOrderId?.slice(-8)}</p>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="p-6 bg-slate-900/50 border border-white/5 rounded-3xl">
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Simulate UPI Payment</label>
-                    <div className="flex gap-3">
-                      <input 
-                        type="text" 
-                        placeholder="yourname@upi" 
-                        value={upiId}
-                        onChange={(e) => setUpiId(e.target.value)}
-                        className="flex-1 bg-black/50 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-700"
-                      />
-                      <button 
-                        onClick={() => {
-                          setIsVerifying(true);
-                          setTimeout(() => {
-                            setIsVerifying(false);
-                            setQrGenerated(true);
-                          }, 1000);
-                        }}
-                        className="bg-white text-black px-6 rounded-2xl font-bold transition-all disabled:opacity-50"
-                        disabled={!upiId || isVerifying}
-                      >
-                        {isVerifying ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {qrGenerated && (
-                    <motion.div 
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="p-8 bg-white rounded-[2rem] w-56 h-56 mx-auto flex flex-col items-center justify-center shadow-2xl shadow-white/5"
-                    >
-                       <div className="grid grid-cols-6 gap-1.5">
-                          {[...Array(36)].map((_, i) => (
-                            <div key={i} className={`w-4 h-4 rounded-sm ${Math.random() > 0.5 ? 'bg-black' : 'bg-slate-100'}`} />
-                          ))}
-                       </div>
-                       <p className="text-[10px] text-slate-900 font-black mt-4 tracking-[0.2em] uppercase">Scan & Pay</p>
-                    </motion.div>
-                  )}
-
-                  <div className="pt-8">
-                    <button 
-                      onClick={handleMockVerify}
-                      className="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-xl transition-all shadow-xl shadow-blue-600/20"
-                    >
-                      I have paid ₹{course.price.toLocaleString()}
-                    </button>
-                  </div>
-                </div>
               </motion.div>
             )}
 

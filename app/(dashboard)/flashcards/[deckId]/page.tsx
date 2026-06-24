@@ -25,37 +25,49 @@ export default function StudySessionPage({ params }: { params: Promise<{ deckId:
         hard: 0,
         startTime: Date.now()
     });
+    const [loading, setLoading] = useState(true);
 
-    // Mock cards for the demo
     useEffect(() => {
-        const mockCards = [
-            {
-                id: "c1",
-                question: "What is the primary mechanism of action of Warfarin?",
-                answer: "Vitamin K Antagonist",
-                explanation: "Warfarin inhibits the enzyme vitamin K epoxide reductase, which is needed to recycle vitamin K. This prevents the activation of clotting factors II, VII, IX, and X.",
-                subject: "Pharmacology",
-                difficulty: "Medium"
-            },
-            {
-                id: "c2",
-                question: "Identify the anatomical structure passing through the optic canal.",
-                answer: "Optic Nerve (CN II) & Ophthalmic Artery",
-                explanation: "The optic canal is located in the lesser wing of the sphenoid bone. Injury to this area can lead to vision loss and vascular complications.",
-                subject: "Anatomy",
-                difficulty: "Hard"
-            },
-            {
-                id: "c3",
-                question: "Which heart valve is most commonly affected in Acute Rheumatic Fever?",
-                answer: "Mitral Valve",
-                explanation: "Mitral regurgitation is the most common finding in acute phases, potentially leading to mitral stenosis in chronic rheumatic heart disease.",
-                subject: "Pathology",
-                difficulty: "Easy"
-            }
-        ];
-        setCards(mockCards);
-    }, []);
+        fetch(`/api/flashcards/decks/${deckId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && !data.error && data.flashcards && data.flashcards.length > 0) {
+                    setCards(data.flashcards);
+                } else {
+                    // Fallback Mock cards if database has no cards for this deck
+                    setCards([
+                        {
+                            id: "c1",
+                            question: "What is the primary mechanism of action of Warfarin?",
+                            answer: "Vitamin K Antagonist",
+                            explanation: "Warfarin inhibits the enzyme vitamin K epoxide reductase, which is needed to recycle vitamin K. This prevents the activation of clotting factors II, VII, IX, and X.",
+                            subject: "Pharmacology",
+                            difficulty: "Medium"
+                        },
+                        {
+                            id: "c2",
+                            question: "Identify the anatomical structure passing through the optic canal.",
+                            answer: "Optic Nerve (CN II) & Ophthalmic Artery",
+                            explanation: "The optic canal is located in the lesser wing of the sphenoid bone. Injury to this area can lead to vision loss and vascular complications.",
+                            subject: "Anatomy",
+                            difficulty: "Hard"
+                        },
+                        {
+                            id: "c3",
+                            question: "Which heart valve is most commonly affected in Acute Rheumatic Fever?",
+                            answer: "Mitral Valve",
+                            explanation: "Mitral regurgitation is the most common finding in acute phases, potentially leading to mitral stenosis in chronic rheumatic heart disease.",
+                            subject: "Pathology",
+                            difficulty: "Easy"
+                        }
+                    ]);
+                }
+            })
+            .catch(err => {
+                console.error("Fetch deck cards error:", err);
+            })
+            .finally(() => setLoading(false));
+    }, [deckId]);
 
     const handleReview = async (rating: 'easy' | 'medium' | 'hard') => {
         const currentCard = cards[currentIndex];

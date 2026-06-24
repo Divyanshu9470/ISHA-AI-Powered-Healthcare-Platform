@@ -5,38 +5,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { CheckoutModalWrapper } from "@/components/payment/CheckoutModalWrapper";
 
-const MOCK_COURSES = [
-    {
-        id: "anatomy-101",
-        title: "Comprehensive Anatomy for USMLE Step 1",
-        description: "Master all concepts of Anatomy with our high-yield video lectures and clinical correlations.",
-        price: 129.99,
-        category: "Anatomy",
-        exam: "USMLE Step 1",
-        level: "Pre-clinical",
-        published: true,
-        thumbnail: "/courses/anatomy.png",
-        lessons: [
-            { id: "les1", title: "Introduction to Anatomy & Terminology", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Learn the foundational directional terms and plane reference concepts." },
-            { id: "les2", title: "Musculoskeletal Core Foundations", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Bones, muscles, and joint mechanics overview." }
-        ]
-    },
-    {
-        id: "patho-basics",
-        title: "General Pathology: Cell Injury",
-        description: "Understanding the basics of cell injury, adaptation, and death.",
-        price: 149.99,
-        category: "Pathology",
-        exam: "USMLE Step 1",
-        level: "Para-clinical",
-        published: true,
-        thumbnail: "/placeholder-2.png",
-        lessons: [
-            { id: "les3", title: "Cell Adaptation Pathways", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Overview of hypertrophy, hyperplasia, atrophy, and metaplasia." }
-        ]
-    }
-];
-
 export default async function CoursePlayerPage({ 
     params 
 }: { 
@@ -73,33 +41,12 @@ export default async function CoursePlayerPage({
             }
         }
     } catch (e) {
-        console.error("Database error in course details, using mock fallback:", e);
-        const found = MOCK_COURSES.find(c => c.id === slug);
-        if (found) {
-            course = found;
-        } else {
-            // Generate a pretty dynamic course fallback so no links fail
-            const titleFriendly = slug.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-            course = {
-                id: slug,
-                title: `Comprehensive ${titleFriendly} Course`,
-                description: `Master all concepts of ${titleFriendly} with our high-yield video lectures and clinical correlations.`,
-                price: 129.99,
-                thumbnail: "/placeholder-1.png",
-                lessons: [
-                    { id: "les-dyn-1", title: `Introduction to ${titleFriendly}`, videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", description: "Core concepts introduction video." },
-                    { id: "les-dyn-2", title: "Clinical Correlations & Board Prep", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", description: "High-yield correlations for exams." }
-                ]
-            };
-        }
-        // Let user play the fallback lessons
-        isEnrolled = true;
+        console.error("Database error in course details:", e);
     }
 
     if (!course) {
         notFound();
     }
-
 
     // Admins always have access
     if (session?.user?.role === "ADMIN") {

@@ -7,8 +7,11 @@ export async function GET() {
     const lessonCount = await prisma.lesson.count();
     const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
     
-    // Calculate a realistic success rate or use a high base
-    const successRate = 98; 
+    // Calculate a realistic success rate from test scores
+    const allScores = await prisma.testScore.findMany();
+    const successRate = allScores.length > 0
+      ? Math.round(allScores.filter(s => (s.score / s.maxScore) >= 0.5).length / allScores.length * 100)
+      : 95; 
 
     return NextResponse.json({
       activeStudents: studentCount,

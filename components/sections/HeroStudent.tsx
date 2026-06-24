@@ -42,10 +42,10 @@ export function HeroStudent() {
             .then(data => {
                 if (!data.error) {
                     setStats([
-                        { label: "Active Students", value: (data.activeStudents * 10 + 1024).toString() + "+", icon: <Users className="w-5 h-5 text-emerald-400" /> },
-                        { label: "Pass Rate", value: "98.2%", icon: <Trophy className="w-5 h-5 text-amber-400" /> },
-                        { label: "High-Yield Lectures", value: (data.videoLectures || 1200).toString() + "+", icon: <BookOpen className="w-5 h-5 text-blue-400" /> },
-                        { label: "Board Mentors", value: (data.expertMentors || 50).toString() + "+", icon: <GraduationCap className="w-5 h-5 text-purple-400" /> },
+                        { label: "Active Students", value: data.activeStudents.toString(), icon: <Users className="w-5 h-5 text-emerald-400" /> },
+                        { label: "Pass Rate", value: data.successRate.toString() + "%", icon: <Trophy className="w-5 h-5 text-amber-400" /> },
+                        { label: "High-Yield Lectures", value: data.videoLectures.toString(), icon: <BookOpen className="w-5 h-5 text-blue-400" /> },
+                        { label: "Board Mentors", value: data.expertMentors.toString(), icon: <GraduationCap className="w-5 h-5 text-purple-400" /> },
                     ]);
                 }
             })

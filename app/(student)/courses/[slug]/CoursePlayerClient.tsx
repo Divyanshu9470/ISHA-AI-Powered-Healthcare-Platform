@@ -17,6 +17,7 @@ interface Course {
     id: string;
     title: string;
     description: string;
+    category: string;
     lessons: Lesson[];
 }
 
@@ -70,7 +71,7 @@ export default function CoursePlayerClient({ course }: { course: Course }) {
                                 </div>
                             )}
                             {activeTab === "quiz" && (
-                                <Quiz />
+                                <Quiz category={course.category} />
                             )}
                             {activeTab === "qa" && (
                                 <p>Q&A section coming soon. Ask your doubts here and get answers from mentors.</p>
