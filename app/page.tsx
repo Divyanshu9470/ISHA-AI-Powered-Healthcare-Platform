@@ -1,93 +1,102 @@
 "use client";
 
+import { NavbarStudent } from "@/components/layout/NavbarStudent";
+import { FooterStudent } from "@/components/layout/FooterStudent";
+import { HeroStudent } from "@/components/sections/HeroStudent";
+import { InteractiveDemo } from "@/components/sections/InteractiveDemo";
+import { OmniNotesShowcase } from "@/components/sections/OmniNotesShowcase";
+import { ExamVaultShowcase } from "@/components/sections/ExamVaultShowcase";
+import { ConsultWardShowcase } from "@/components/sections/ConsultWardShowcase";
+import { BrainBreaksShowcase } from "@/components/sections/BrainBreaksShowcase";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { SEOArticles } from "@/components/sections/SEOArticles";
 import Link from "next/link";
-import { Stethoscope, GraduationCap, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function ChooserPage() {
+export default function Home() {
     return (
-        <div className="min-h-screen bg-[#030712] text-white flex flex-col items-center justify-center font-sans relative overflow-hidden px-4">
-            {/* Background elements */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.15]"></div>
-                <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-emerald-600/10 blur-[120px] rounded-full"></div>
-            </div>
+        <div className="flex flex-col min-h-screen bg-[#050505]">
+            <NavbarStudent />
+            
+            <main className="flex-grow">
+                {/* Hero section */}
+                <HeroStudent />
 
-            <div className="max-w-4xl w-full text-center relative z-10">
-                {/* Logo & Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-col items-center mb-12"
-                >
-                    <div className="bg-blue-500/10 p-3 rounded-2xl border border-blue-500/20 mb-4">
-                        <Stethoscope className="w-8 h-8 text-blue-400" />
+                {/* Practical Knowledge: Interactive Sandbox Demo */}
+                <div className="bg-slate-950 border-y border-white/5 py-12">
+                    <div className="container mx-auto px-4 text-center mb-8">
+                        <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-semibold uppercase tracking-wider mb-2">
+                            Active Diagnostics
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
+                            Practical Clinical Sandbox
+                        </h2>
+                        <p className="text-slate-400 font-light text-sm max-w-xl mx-auto mt-2">
+                            Build real clinical reasoning by analyzing sample lab results. Watch the AI parse parameters, suggest differentials, and generate diagnostic notes instantly.
+                        </p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                        Isha<span className="text-blue-400">Med</span>
-                    </h1>
-                    <p className="text-slate-400 mt-3 text-lg font-light">
-                        Select your platform to get started
-                    </p>
-                </motion.div>
-
-                {/* Chooser Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-                    {/* For Clinicians */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        whileHover={{ y: -5 }}
-                        className="bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-blue-500/30 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 group shadow-2xl relative overflow-hidden"
-                    >
-                        <div className="absolute top-0 left-0 w-full h-[3px] bg-blue-500/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div>
-                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
-                                <Stethoscope className="w-6 h-6" />
-                            </div>
-                            <h2 className="text-2xl font-bold text-white mb-3">For Clinicians</h2>
-                            <p className="text-slate-400 text-sm font-light leading-relaxed mb-8">
-                                AI Clinical Copilot designed for medical practices. Features advanced patient report OCR, voice SOAP dictation, probabilistic differentials, and secure EHR integrations.
-                            </p>
-                        </div>
-                        <Link
-                            href="/clinical-copilot"
-                            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 hover:scale-[1.01]"
-                        >
-                            Enter Clinical Suite <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </motion.div>
-
-                    {/* For Medical Students */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        whileHover={{ y: -5 }}
-                        className="bg-slate-900/40 backdrop-blur-xl border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 group shadow-2xl relative overflow-hidden"
-                    >
-                        <div className="absolute top-0 left-0 w-full h-[3px] bg-emerald-500/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div>
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
-                                <GraduationCap className="w-6 h-6" />
-                            </div>
-                            <h2 className="text-2xl font-bold text-white mb-3">For Medical Students</h2>
-                            <p className="text-slate-400 text-sm font-light leading-relaxed mb-8">
-                                High-yield medical board prep platform. Access subject-wise courses, interactive 3D Triage Simulator, Arena mode, spaced repetition flashcards, and Q&A forum.
-                            </p>
-                        </div>
-                        <Link
-                            href="/students"
-                            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 px-6 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10 hover:scale-[1.01]"
-                        >
-                            Enter Student Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </motion.div>
+                    <InteractiveDemo />
                 </div>
-            </div>
+
+                {/* Pillar 1: Omni-Disciplinary Notes Showcase */}
+                <OmniNotesShowcase />
+
+                {/* Pillar 2: The Exam Vault */}
+                <ExamVaultShowcase />
+
+                {/* Pillar 3: Consult the Ward (Q&A Board) */}
+                <ConsultWardShowcase />
+
+                {/* Pillar 4: Brain Breaks Mini-games */}
+                <BrainBreaksShowcase />
+
+                {/* Testimonials */}
+                <Testimonials />
+
+                {/* SEO educational resources */}
+                <SEOArticles />
+
+                {/* Student-Centric CTA */}
+                <section className="py-24 lg:py-32 relative overflow-hidden bg-gradient-to-r from-emerald-950 to-slate-950 text-white">
+                    <div className="absolute inset-0 pointer-events-none opacity-10">
+                        <div className="absolute top-[20%] left-[10%] w-2 h-2 bg-white rounded-full" />
+                        <div className="absolute bottom-[20%] right-[10%] w-3 h-3 bg-white rounded-full" />
+                    </div>
+                    <div className="container mx-auto px-4 md:px-6 text-center relative z-10 max-w-3xl">
+                        <span className="inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-semibold uppercase tracking-widest mb-6">
+                            <Sparkles className="w-3.5 h-3.5 animate-pulse" /> Clear Your Boards
+                        </span>
+                        <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                            Unlock Your Clinical Future Today
+                        </h2>
+                        <p className="text-base md:text-lg text-slate-300 mb-12 font-light leading-relaxed">
+                            Join thousands of medical students worldwide who use IshaMed to master theoretical concepts, analyze practical cases, and practice past papers.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link href="/register">
+                                <Button
+                                    size="lg"
+                                    className="rounded-full px-12 py-7 text-lg font-semibold bg-emerald-600 hover:bg-emerald-500 text-white border-0 hover:scale-[1.02] transition-transform duration-300"
+                                >
+                                    Start Studying Free <ArrowRight className="ml-2 w-5 h-5" />
+                                </Button>
+                            </Link>
+                            <Link href="/courses">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="rounded-full px-12 py-7 text-lg font-semibold border-white/20 text-white hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-sm bg-white/5"
+                                >
+                                    Explore Courses
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <FooterStudent />
         </div>
     );
 }
