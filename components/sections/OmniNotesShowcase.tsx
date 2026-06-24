@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Activity, Dna, AlertTriangle, Pill, ShieldAlert, Sparkles, Search } from "lucide-react";
 
@@ -171,9 +172,11 @@ export function OmniNotesShowcase() {
                                 <ShieldAlert className="w-4 h-4 text-emerald-400" />
                                 <span>Curated by Verified Board Pathologists</span>
                             </div>
-                            <div className="text-xs text-blue-400 font-semibold cursor-pointer hover:underline flex items-center gap-1">
-                                Open 3D Anatomy View &rarr;
-                            </div>
+                            <Link href="/simulator">
+                                <div className="text-xs text-blue-400 font-semibold cursor-pointer hover:underline flex items-center gap-1">
+                                    Open 3D Anatomy View &rarr;
+                                </div>
+                            </Link>
                         </div>
                     </div>
                 </div>

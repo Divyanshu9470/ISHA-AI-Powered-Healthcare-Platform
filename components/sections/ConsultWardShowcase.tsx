@@ -2,6 +2,7 @@
 
 import { MessageSquare, CheckCircle2, Award, User, MessageCircle, Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const LATEST_THREADS = [
     {
@@ -75,9 +76,11 @@ export function ConsultWardShowcase() {
                                     </div>
                                 </div>
 
-                                <h4 className="text-lg font-bold text-white mb-5">
-                                    {thread.title}
-                                </h4>
+                                <Link href="/forum">
+                                    <h4 className="text-lg font-bold text-white mb-5 hover:text-blue-400 transition-colors cursor-pointer">
+                                        {thread.title}
+                                    </h4>
+                                </Link>
 
                                 {/* Verified Response */}
                                 <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 relative overflow-hidden">
@@ -127,9 +130,11 @@ export function ConsultWardShowcase() {
                                 <span>Build your professional medical profile.</span>
                             </li>
                         </ul>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-2xl py-6 font-semibold shadow-lg shadow-blue-500/10">
-                            Apply for Verification
-                        </Button>
+                        <Link href="/forum">
+                            <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-2xl py-6 font-semibold shadow-lg shadow-blue-500/10">
+                                Apply for Verification
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

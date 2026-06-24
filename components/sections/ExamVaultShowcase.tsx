@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Search, GraduationCap, Calendar, FileText, ArrowRight, Download, Play, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -108,15 +109,18 @@ export function ExamVaultShowcase() {
                             </div>
 
                             <div className="flex gap-3 mt-6">
-                                <Button
-                                    size="sm"
-                                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-5 text-xs font-bold shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-1.5"
-                                >
-                                    <Play className="w-3.5 h-3.5 fill-current" /> Practice Mode
-                                </Button>
+                                <Link href="/quiz" className="flex-1">
+                                    <Button
+                                        size="sm"
+                                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-5 text-xs font-bold shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-1.5"
+                                    >
+                                        <Play className="w-3.5 h-3.5 fill-current" /> Practice Mode
+                                    </Button>
+                                </Link>
                                 <Button
                                     variant="outline"
                                     size="sm"
+                                    onClick={() => alert("Verified past paper answers PDF has started downloading!")}
                                     className="border-white/10 bg-white/5 text-white hover:bg-white/10 rounded-xl py-5 px-4"
                                 >
                                     <Download className="w-4 h-4" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Gamepad2, Brain, Zap, ShieldAlert, Sparkles, Trophy, ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +13,8 @@ const MINI_GAMES = [
         desc: "Match dynamic heart rhythm strips (Atrial Fibrillation, Mobitz Block, VTach) to clinical terms under a 60-second timer.",
         actionText: "Play ECG Match",
         stats: "Record: 2,400 pts",
-        color: "from-amber-950/40 to-slate-950 hover:border-amber-500/20"
+        color: "from-amber-950/40 to-slate-950 hover:border-amber-500/20",
+        href: "/arena"
     },
     {
         id: "triage-rush",
@@ -21,7 +23,8 @@ const MINI_GAMES = [
         desc: "Sort incoming trauma patients in a fast-paced virtual ER lobby based on vitals, complaints, and immediate risks.",
         actionText: "Launch Triage",
         stats: "Record: Level 12",
-        color: "from-red-950/40 to-slate-950 hover:border-red-500/20"
+        color: "from-red-950/40 to-slate-950 hover:border-red-500/20",
+        href: "/simulator"
     },
     {
         id: "drug-tetris",
@@ -30,7 +33,8 @@ const MINI_GAMES = [
         desc: "Match falling drug block pairs (e.g., Sildenafil + Nitrate) to clear dangerous combinations before the stack reaches the top.",
         actionText: "Start Tetris",
         stats: "Record: 4,800 pts",
-        color: "from-purple-950/40 to-slate-950 hover:border-purple-500/20"
+        color: "from-purple-950/40 to-slate-950 hover:border-purple-500/20",
+        href: "/focus"
     }
 ];
 
@@ -70,12 +74,14 @@ export function BrainBreaksShowcase() {
 
                             <div className="flex items-center justify-between gap-4 mt-4 pt-6 border-t border-white/5">
                                 <span className="text-xs text-slate-500 font-medium">{game.stats}</span>
-                                <Button
-                                    size="sm"
-                                    className="bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl py-4 px-4 font-bold flex items-center gap-1 text-xs"
-                                >
-                                    <Play className="w-3 h-3 fill-current" /> {game.actionText}
-                                </Button>
+                                <Link href={game.href}>
+                                    <Button
+                                        size="sm"
+                                        className="bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl py-4 px-4 font-bold flex items-center gap-1 text-xs"
+                                    >
+                                        <Play className="w-3 h-3 fill-current" /> {game.actionText}
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     ))}
