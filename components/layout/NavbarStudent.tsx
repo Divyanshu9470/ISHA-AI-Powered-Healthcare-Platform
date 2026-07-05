@@ -58,6 +58,7 @@ export function NavbarStudent() {
         { name: "Focus Zone", href: "/focus" },
         { name: "Quiz", href: "/quiz" },
         { name: "Flashcards", href: "/flashcards" },
+        { name: "Feedback", href: "/feedback" },
     ];
 
     const filteredNavLinks = [...navLinks];

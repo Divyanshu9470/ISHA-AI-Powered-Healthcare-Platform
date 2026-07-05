@@ -58,6 +58,7 @@ export function Navbar() {
         { name: "Focus Zone", href: "/focus" },
         { name: "Quiz", href: "/quiz" },
         { name: "Flashcards", href: "/flashcards" },
+        { name: "Feedback", href: "/feedback" },
     ];
 
     // Conditionally add links based on session

@@ -56,6 +56,7 @@ export function NavbarClinical() {
         { name: "Security & Trust", href: "/clinical-copilot#security" },
         { name: "Pricing", href: "/clinical-copilot#pricing" },
         { name: "Interactive Tool", href: "/copilot" },
+        { name: "Feedback", href: "/feedback" },
     ];
 
     return (

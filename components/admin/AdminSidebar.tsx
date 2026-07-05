@@ -11,6 +11,7 @@ import {
     Stethoscope,
     ChevronLeft,
     ChevronRight,
+    MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ const navItems = [
     { label: "Users", href: "/admin/users", icon: Users },
     { label: "Live Classes", href: "/admin/live-classes", icon: Video },
     { label: "Enrollments", href: "/admin/enrollments", icon: GraduationCap },
+    { label: "Feedback", href: "/admin/feedbacks", icon: MessageSquare },
 ];
 
 export function AdminSidebar() {

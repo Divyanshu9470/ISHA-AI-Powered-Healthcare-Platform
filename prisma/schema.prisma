@@ -162,3 +162,14 @@ model Transaction {
 
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Feedback {
+  id         String   @id @default(cuid())
+  name       String?
+  email      String?
+  type       String   @default("SUGGESTION") // "SUGGESTION", "BUG", "FEATURE_REQUEST", "OTHER"
+  message    String
+  rating     Int      @default(5)
+  difficulty String   @default("NONE") // "EASY", "NORMAL", "DIFFICULT", "NONE"
+  createdAt  DateTime @default(now())
+}
