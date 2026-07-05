@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Activity, AlertCircle, HeartPulse, Clock, Trophy, Shield, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { clinicalCases as allCases, ClinicalCase } from "./cases";
 
 export default function ArenaPage() {
-  const [activeCases, setActiveCases] = useState<ClinicalCase[]>([]);
+  const [activeCases, setActiveCases] = useState<ClinicalCase[]>(() => {
+    // Shuffle all cases and pick 3
+    const shuffled = [...allCases].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+  });
   const [gameState, setGameState] = useState<'finding' | 'incoming' | 'playing' | 'result' | 'finished'>('finding');
   const [currentCase, setCurrentCase] = useState(0);
   const [score, setScore] = useState(0);
@@ -15,13 +19,6 @@ export default function ArenaPage() {
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [visibleSymptoms, setVisibleSymptoms] = useState<number>(0);
-
-  // Initialize random cases on mount
-  useEffect(() => {
-    // Shuffle all cases and pick 3
-    const shuffled = [...allCases].sort(() => Math.random() - 0.5);
-    setActiveCases(shuffled.slice(0, 3));
-  }, []);
 
   // Finding Match
   useEffect(() => {
@@ -47,17 +44,44 @@ export default function ArenaPage() {
     }
   }, [gameState, visibleSymptoms, currentCase, activeCases]);
 
-  // Timer
-  useEffect(() => {
-    if (gameState === 'playing' && timeLeft > 0) {
-      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-      return () => clearInterval(timer);
-    } else if (timeLeft === 0 && gameState === 'playing') {
-      handleSelect(-1); // Timeout
-    }
-  }, [gameState, timeLeft]);
+  const [hasSaved, setHasSaved] = useState(false);
 
-  const handleSelect = (idx: number) => {
+  // Save results to backend
+  useEffect(() => {
+    if (gameState !== 'finished' || hasSaved || activeCases.length === 0) return;
+
+    const isWinner = score >= opponentScore;
+    const saveResults = async () => {
+        setHasSaved(true);
+        try {
+            await fetch('/api/simulator/results', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    patientCase: activeCases.map(c => c.id).join(", "),
+                    score: score,
+                    status: isWinner ? "WON" : "LOST",
+                }),
+            });
+        } catch (error) {
+            console.error('Failed to save arena results:', error);
+        }
+    };
+    saveResults();
+  }, [gameState, hasSaved, score, opponentScore, activeCases]);
+
+  const nextCase = useCallback(() => {
+    if (currentCase < activeCases.length - 1) {
+      setCurrentCase(prev => prev + 1);
+      setSelectedOption(null);
+      setVisibleSymptoms(0);
+      setGameState('incoming');
+    } else {
+      setGameState('finished');
+    }
+  }, [currentCase, activeCases.length]);
+
+  const handleSelect = useCallback((idx: number) => {
     if (selectedOption !== null || gameState !== 'playing' || activeCases.length === 0) return;
     setSelectedOption(idx);
     
@@ -76,18 +100,17 @@ export default function ArenaPage() {
       }
       setTimeout(nextCase, 2500);
     }, 1000);
-  };
+  }, [selectedOption, gameState, activeCases, currentCase, timeLeft, visibleSymptoms, nextCase]);
 
-  const nextCase = () => {
-    if (currentCase < activeCases.length - 1) {
-      setCurrentCase(prev => prev + 1);
-      setSelectedOption(null);
-      setVisibleSymptoms(0);
-      setGameState('incoming');
-    } else {
-      setGameState('finished');
+  // Timer
+  useEffect(() => {
+    if (gameState === 'playing' && timeLeft > 0) {
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    } else if (timeLeft === 0 && gameState === 'playing') {
+      setTimeout(() => handleSelect(-1), 0); // Timeout
     }
-  };
+  }, [gameState, timeLeft, handleSelect]);
 
   if (gameState === 'finding' || activeCases.length === 0) {
     return (
@@ -108,28 +131,6 @@ export default function ArenaPage() {
 
   if (gameState === 'finished') {
     const isWinner = score >= opponentScore;
-    
-    // Save results to backend
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-        const saveResults = async () => {
-            try {
-                // Record the last case or the overall session
-                await fetch('/api/simulator/results', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        patientCase: activeCases.map(c => c.id).join(", "),
-                        score: score,
-                        status: isWinner ? "WON" : "LOST",
-                    }),
-                });
-            } catch (error) {
-                console.error('Failed to save arena results:', error);
-            }
-        };
-        saveResults();
-    }, [score, isWinner, activeCases]);
 
     return (
       <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 relative overflow-hidden text-center">

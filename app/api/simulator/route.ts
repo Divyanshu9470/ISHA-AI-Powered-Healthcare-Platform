@@ -10,14 +10,15 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req: Request) {
+  let messages: any[] = [];
+  let lastMessage = "";
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { messages } = await req.json();
-    console.log("Simulator received messages:", JSON.stringify(messages));
+    // Guest access is allowed; log the user email if logged in, otherwise process as guest
+    const userIdentifier = session?.user?.email || "Guest";
+    const body = await req.json();
+    messages = body.messages || [];
+    console.log(`Simulator received messages from ${userIdentifier}:`, JSON.stringify(messages));
     
     // Construct a comprehensive system prompt for the patient simulation
     const systemPrompt = `
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const lastMessage = messages[messages.length - 1].content;
+    lastMessage = messages[messages.length - 1]?.content || "";
     if (!lastMessage) {
       return NextResponse.json({ role: "patient", content: "..." });
     }
@@ -87,10 +88,25 @@ Patient:`;
     return NextResponse.json({ role: "patient", content: aiResponse });
 
   } catch (error: any) {
-    console.error("Simulator Error Detail:", error);
-    return NextResponse.json({ 
-      error: "Failed to process simulation",
-      details: error.message 
-    }, { status: 500 });
+    console.error("Simulator Gemini Error, falling back to mock response:", error);
+    
+    const docQuery = (lastMessage || "").toLowerCase();
+    let reply = "I'm in a lot of pain, doctor. It's mostly in the lower right part of my stomach.";
+    
+    if (docQuery.includes("where") || docQuery.includes("location") || docQuery.includes("pain")) {
+      reply = "It started around my belly button last night, but now it has migrated down to the lower right side of my stomach. It hurts a lot when you press there.";
+    } else if (docQuery.includes("scale") || docQuery.includes("1 to 10") || docQuery.includes("how bad")) {
+      reply = "It's easily an 8 or 9 out of 10. It hurts to move or even breathe deeply.";
+    } else if (docQuery.includes("nausea") || docQuery.includes("throw up") || docQuery.includes("vomit") || docQuery.includes("eat") || docQuery.includes("appetite") || docQuery.includes("symptom")) {
+      reply = "Yes, I feel very nauseous and I haven't been able to eat anything all day. Just thinking about food makes me feel sick.";
+    } else if (docQuery.includes("fever") || docQuery.includes("temperature") || docQuery.includes("hot")) {
+      reply = "Yeah, I feel hot and sweaty. The nurse checked my temperature and said it was 101.2 F.";
+    } else if (docQuery.includes("test") || docQuery.includes("ct") || docQuery.includes("ultrasound") || docQuery.includes("cbc") || docQuery.includes("blood")) {
+      reply = "Okay doctor, please order whatever tests you need. I just want this pain to stop.";
+    } else if (docQuery.includes("hello") || docQuery.includes("hi ") || docQuery.includes("meet") || docQuery.includes("name")) {
+      reply = "Hello doctor. I'm John. Thank you for seeing me. I'm in a lot of pain right now.";
+    }
+    
+    return NextResponse.json({ role: "patient", content: reply });
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BookOpen, Layers, Clock, TrendingUp, ChevronRight, GraduationCap } from "lucide-react";
@@ -24,6 +25,7 @@ interface FlashcardDeckProps {
 }
 
 export function FlashcardDeckCard({ deck, progress }: FlashcardDeckProps) {
+    const [imgError, setImgError] = useState(false);
     const completionRate = progress ? (progress.mastered / progress.total) * 100 : 0;
 
     return (
@@ -34,8 +36,13 @@ export function FlashcardDeckCard({ deck, progress }: FlashcardDeckProps) {
             >
                 {/* Visual Header */}
                 <div className="h-40 relative bg-slate-900 overflow-hidden">
-                    {deck.imageUrl ? (
-                        <img src={deck.imageUrl} alt={deck.title} className="w-full h-full object-cover opacity-60 grayscale-[0.3] group-hover:scale-110 transition-transform duration-700" />
+                    {deck.imageUrl && !imgError ? (
+                        <img 
+                            src={deck.imageUrl} 
+                            alt={deck.title} 
+                            onError={() => setImgError(true)}
+                            className="w-full h-full object-cover opacity-60 grayscale-[0.3] group-hover:scale-110 transition-transform duration-700" 
+                        />
                     ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-teal/20" />
                     )}

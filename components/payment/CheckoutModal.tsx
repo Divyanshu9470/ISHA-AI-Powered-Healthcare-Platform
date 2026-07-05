@@ -54,6 +54,14 @@ export function CheckoutModal({ isOpen, onClose, course }: CheckoutModalProps) {
       
       if (!res.ok) throw new Error(order.error || "Failed to create payment order");
 
+      if (order.isMock) {
+        // If this is a mock order (Razorpay keys not configured), skip Razorpay popup and simulate success
+        setTimeout(() => {
+          setStep('success');
+        }, 1500);
+        return;
+      }
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_dummy_id",
         amount: order.amount,

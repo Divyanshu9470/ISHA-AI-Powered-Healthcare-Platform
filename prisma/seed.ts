@@ -211,7 +211,7 @@ async function main() {
             title: "Cardiovascular Pathology",
             description: "High-yield flashcards covering valvular diseases, cardiomyopathies, and congenital heart defects.",
             subject: "Pathology",
-            imageUrl: "https://images.unsplash.com/photo-1530026339112-2884161bd984?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/cardiovascular-pathology.png",
             cards: [
                 { question: "What is the most common cause of Mitral Stenosis?", answer: "Rheumatic Heart Disease", explanation: "Rheumatic fever causes fibrous thickening and calcification of the valve leaflets and chordae tendineae." },
                 { question: "Which valvular lesion is associated with water-hammer pulse?", answer: "Aortic Regurgitation", explanation: "The rapid upstroke and collapse of the arterial pulse is caused by a large stroke volume and rapid backflow." },
@@ -223,7 +223,7 @@ async function main() {
             title: "Upper Limb Anatomy",
             description: "Detailed muscular insertions, nerve supplies, and clinical correlations of the brachial plexus.",
             subject: "Anatomy",
-            imageUrl: "https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/upper-limb-anatomy.png",
             cards: [
                 { question: "What nerve is injured in Erb-Duchenne palsy?", answer: "Upper Trunk of Brachial Plexus (C5-C6)", explanation: "Caused by traction on the neck, resulting in a 'waiter's tip' arm position." },
                 { question: "Which muscle initiates abduction of the arm?", answer: "Supraspinatus (0-15 degrees)", explanation: "The deltoid muscle continues abduction up to 90 degrees." },
@@ -235,7 +235,7 @@ async function main() {
             title: "Antibiotics Masterclass",
             description: "Mechanism of action, spectrum of activity, and key side effects for USMLE/NEET-PG.",
             subject: "Pharmacology",
-            imageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/antibiotics-masterclass.png",
             cards: [
                 { question: "What is the mechanism of action of Penicillins?", answer: "Inhibits Cell Wall Synthesis", explanation: "Binds to penicillin-binding proteins (PBPs) to block cross-linking of peptidoglycan." },
                 { question: "Which antibiotic group is notorious for causing Gray Baby Syndrome?", answer: "Chloramphenicol", explanation: "Caused by the lack of glucuronyl transferase enzyme in neonates to metabolize the drug." },

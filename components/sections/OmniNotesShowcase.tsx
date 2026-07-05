@@ -172,7 +172,7 @@ export function OmniNotesShowcase() {
                                 <ShieldAlert className="w-4 h-4 text-emerald-400" />
                                 <span>Curated by Verified Board Pathologists</span>
                             </div>
-                            <Link href="/simulator">
+                            <Link href="/anatomy">
                                 <div className="text-xs text-blue-400 font-semibold cursor-pointer hover:underline flex items-center gap-1">
                                     Open 3D Anatomy View &rarr;
                                 </div>

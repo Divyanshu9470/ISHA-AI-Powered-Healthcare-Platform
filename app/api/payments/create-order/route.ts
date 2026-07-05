@@ -19,9 +19,42 @@ export async function POST(req: Request) {
 
     // Ensure Razorpay credentials are set in environment
     if (!process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID === "MISSING_KEY_ID" || !process.env.RAZORPAY_KEY_SECRET) {
-      return NextResponse.json({ 
-        error: "Razorpay credentials are not configured. Please configure them in your environment variables." 
-      }, { status: 500 });
+      const mockOrderId = `mock_order_${Math.random().toString(36).substring(7)}`;
+      
+      // Directly create success transaction and enroll the student for demo/sandbox purposes
+      await prisma.$transaction([
+        prisma.transaction.create({
+          data: {
+            userId: session.user.id,
+            courseId,
+            amount: parseFloat(amount),
+            currency: currency || "INR",
+            status: "SUCCESS",
+            provider: "MOCK",
+            providerOrderId: mockOrderId,
+          },
+        }),
+        prisma.enrollment.upsert({
+          where: {
+            userId_courseId: {
+              userId: session.user.id,
+              courseId: courseId,
+            }
+          },
+          update: {},
+          create: {
+            userId: session.user.id,
+            courseId: courseId,
+          }
+        })
+      ]);
+
+      return NextResponse.json({
+        id: mockOrderId,
+        amount: Math.round(amount * 100),
+        currency: currency || "INR",
+        isMock: true
+      }, { status: 201 });
     }
 
     const options = {

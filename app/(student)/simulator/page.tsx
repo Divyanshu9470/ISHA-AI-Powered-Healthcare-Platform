@@ -1,23 +1,61 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, User, Bot, Activity, FileText, Pill, ChevronLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Send, User, Bot, Activity, FileText, Pill, ChevronLeft, 
+  Award, HelpCircle, CheckCircle2, XCircle, RefreshCw, LogIn 
+} from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+
+const DIAGNOSIS_OPTIONS = [
+  "Acute Appendicitis",
+  "Acute Cholecystitis",
+  "Diverticulitis",
+  "Gastroenteritis",
+  "Renal Colic"
+];
 
 export default function SimulatorPage() {
+  const { data: session, status } = useSession();
+  
   const [messages, setMessages] = useState([
     { role: "system", content: "You are now interacting with a 45-year-old male patient complaining of severe abdominal pain." },
     { role: "patient", content: "Doctor, my stomach hurts so much. It started last night around my belly button and now it's moved to the lower right side." }
   ]);
+  const [orderedLabs, setOrderedLabs] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState("");
+  const [evaluationResult, setEvaluationResult] = useState<any>(null);
+  const [savingResult, setSavingResult] = useState(false);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     
     const newMessages = [...messages, { role: "doctor", content: input }];
     setMessages(newMessages);
+    
+    // Check if doctor ordered lab tests or imaging
+    const lowerInput = input.toLowerCase();
+    if (lowerInput.includes("cbc") || lowerInput.includes("blood count") || lowerInput.includes("inflammatory") || lowerInput.includes("complete blood")) {
+      if (!orderedLabs.includes("CBC")) {
+        setOrderedLabs(prev => [...prev, "CBC"]);
+      }
+    }
+    if (lowerInput.includes("ultrasound") || lowerInput.includes("usg") || lowerInput.includes("imaging") || lowerInput.includes("echo")) {
+      if (!orderedLabs.includes("Ultrasound")) {
+        setOrderedLabs(prev => [...prev, "Ultrasound"]);
+      }
+    }
+    if (lowerInput.includes("ct ") || lowerInput.includes("computed tomography") || lowerInput.includes("ct scan")) {
+      if (!orderedLabs.includes("CT Scan")) {
+        setOrderedLabs(prev => [...prev, "CT Scan"]);
+      }
+    }
+
     setInput("");
     setIsLoading(true);
 
@@ -42,8 +80,71 @@ export default function SimulatorPage() {
     }
   };
 
+  const handleSubmitDiagnosis = async (diagnosis: string) => {
+    setSelectedDiagnosis(diagnosis);
+    const doctorMessagesCount = messages.filter(m => m.role === "doctor").length;
+    
+    const isCorrect = diagnosis === "Acute Appendicitis";
+    const baseScore = isCorrect ? 80 : 0;
+    // Efficiency bonus: fewer questions asked results in a higher score
+    const efficiencyBonus = isCorrect ? Math.max(20 - doctorMessagesCount * 2, 0) : 0;
+    const finalScore = baseScore + efficiencyBonus;
+    
+    const evalData = {
+      isCorrect,
+      score: finalScore,
+      doctorMessagesCount,
+      diagnosis,
+      explanation: isCorrect 
+        ? "Excellent job, doctor! The patient presents with classic migratory abdominal pain (starting periumbilical and localizing to the RLQ), low-grade fever, tachycardia, and tenderness at McBurney's point. This is highly indicative of Acute Appendicitis."
+        : "Incorrect diagnosis. Although the patient presents with abdominal pain, the classic migration of pain from the umbilicus to the RLQ, associated with fever and McBurney's point tenderness, is pathognomonic for Acute Appendicitis."
+    };
+    
+    setEvaluationResult(evalData);
+    
+    if (status === "authenticated") {
+      setSavingResult(true);
+      try {
+        await fetch("/api/simulator/results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patientCase: "Case #842: John Doe (Appendicitis)",
+            score: finalScore,
+            status: isCorrect ? "COMPLETED" : "FAILED",
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to save results:", err);
+      } finally {
+        setSavingResult(false);
+      }
+    }
+  };
+
+  const handleRestart = () => {
+    setMessages([
+      { role: "system", content: "You are now interacting with a 45-year-old male patient complaining of severe abdominal pain." },
+      { role: "patient", content: "Doctor, my stomach hurts so much. It started last night around my belly button and now it's moved to the lower right side." }
+    ]);
+    setInput("");
+    setSelectedDiagnosis("");
+    setEvaluationResult(null);
+    setIsSubmitModalOpen(false);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans relative">
+      {/* Guest Practice Banner */}
+      {status === "unauthenticated" && (
+        <div className="bg-amber-500/10 border-b border-amber-500/20 text-amber-200 px-4 py-2.5 text-center text-xs sm:text-sm flex items-center justify-center gap-2 relative z-20">
+          <span>⚠️ You are practicing as a guest. Your diagnostic achievements won't be saved to your profile.</span>
+          <Link href="/login?callbackUrl=/simulator" className="underline font-bold hover:text-amber-100 flex items-center gap-1">
+            <LogIn className="w-3.5 h-3.5" /> Log In
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <header className="border-b border-white/10 bg-slate-900/50 backdrop-blur-md p-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-4">
@@ -58,7 +159,10 @@ export default function SimulatorPage() {
             <p className="text-sm text-slate-400">Chief Complaint: Abdominal Pain</p>
           </div>
         </div>
-        <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-lg shadow-emerald-600/20">
+        <button 
+          onClick={() => setIsSubmitModalOpen(true)}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-full font-medium transition-colors shadow-lg shadow-emerald-600/20"
+        >
           Submit Diagnosis
         </button>
       </header>
@@ -137,9 +241,9 @@ export default function SimulatorPage() {
             </div>
             <div className="max-w-4xl mx-auto mt-4 flex gap-3 text-sm">
               <span className="text-slate-500">Quick Actions:</span>
-              <button className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Order CBC</button>
-              <button className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Order Ultrasound</button>
-              <button className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Perform Physical Exam</button>
+              <button onClick={() => setInput("Order complete blood count (CBC) and check inflammatory markers.")} className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Order CBC</button>
+              <button onClick={() => setInput("Perform right lower quadrant abdominal ultrasound imaging.")} className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Order Ultrasound</button>
+              <button onClick={() => setInput("Perform a complete physical examination focusing on your abdomen.")} className="text-blue-400 hover:text-blue-300 underline underline-offset-4">Perform Physical Exam</button>
             </div>
           </div>
         </div>
@@ -174,9 +278,42 @@ export default function SimulatorPage() {
               </SidebarSection>
 
               <SidebarSection icon={FileText} title="Lab Results" color="text-blue-400">
-                <div className="text-sm text-slate-400 bg-slate-950 p-4 rounded-xl border border-white/5">
-                  <p>No tests ordered yet.</p>
-                  <p className="mt-2 text-xs italic">Use the chat to order specific lab tests or imaging.</p>
+                <div className="text-sm text-slate-400 bg-slate-950 p-4 rounded-xl border border-white/5 space-y-3">
+                  {orderedLabs.length === 0 ? (
+                    <>
+                      <p>No tests ordered yet.</p>
+                      <p className="mt-2 text-xs italic">Use the chat to order specific lab tests or imaging.</p>
+                    </>
+                  ) : (
+                    <div className="space-y-3">
+                      {orderedLabs.map((lab) => (
+                        <div key={lab} className="border-b border-white/5 pb-2 last:border-b-0 last:pb-0">
+                          <div className="font-semibold text-white text-xs uppercase tracking-wider">{lab}</div>
+                          {lab === "CBC" && (
+                            <div className="text-xs text-red-400 mt-1 font-mono leading-relaxed">
+                              • WBC: 14.5 x10³/µL (High)<br />
+                              • Neutrophils: 82% (High)<br />
+                              • CRP: 24 mg/L (High)
+                            </div>
+                          )}
+                          {lab === "Ultrasound" && (
+                            <div className="text-xs text-amber-400 mt-1 font-mono leading-relaxed">
+                              • Appendix: 8.5 mm (dilated)<br />
+                              • Target sign positive<br />
+                              • Free fluid in RLQ
+                            </div>
+                          )}
+                          {lab === "CT Scan" && (
+                            <div className="text-xs text-amber-400 mt-1 font-mono leading-relaxed">
+                              • Appendix: 9.0 mm dilated<br />
+                              • Pericecal fat stranding<br />
+                              • Appendicolith seen
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </SidebarSection>
 
@@ -190,6 +327,121 @@ export default function SimulatorPage() {
           </div>
         </div>
       </div>
+
+      {/* Submit Diagnosis Modal */}
+      <AnimatePresence>
+        {isSubmitModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !evaluationResult && setIsSubmitModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            />
+            
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative z-10 overflow-hidden"
+            >
+              {!evaluationResult ? (
+                <>
+                  <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <HelpCircle className="w-6 h-6 text-blue-400" /> Submit Diagnosis
+                  </h3>
+                  <p className="text-slate-400 text-sm mb-6">
+                    Based on your consultation and findings, select the primary diagnosis for Case #842.
+                  </p>
+                  
+                  <div className="space-y-3 mb-8">
+                    {DIAGNOSIS_OPTIONS.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => handleSubmitDiagnosis(opt)}
+                        className="w-full text-left p-4 rounded-xl border border-white/5 bg-slate-950 hover:bg-slate-800 hover:border-blue-500/50 text-slate-200 transition-all font-medium"
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setIsSubmitModalOpen(false)}
+                      className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-4">
+                  <div className="inline-flex p-3 rounded-full mb-4 bg-slate-950">
+                    {evaluationResult.isCorrect ? (
+                      <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+                    ) : (
+                      <XCircle className="w-12 h-12 text-red-500" />
+                    )}
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {evaluationResult.isCorrect ? "Diagnosis Correct!" : "Diagnosis Incorrect"}
+                  </h3>
+                  
+                  <div className="flex justify-center gap-4 my-6">
+                    <div className="bg-slate-950 border border-white/5 p-4 rounded-2xl w-32">
+                      <div className="text-[10px] text-slate-500 font-mono uppercase mb-1">Score</div>
+                      <div className="text-3xl font-bold text-white">{evaluationResult.score}</div>
+                    </div>
+                    <div className="bg-slate-950 border border-white/5 p-4 rounded-2xl w-32">
+                      <div className="text-[10px] text-slate-500 font-mono uppercase mb-1">Questions</div>
+                      <div className="text-3xl font-bold text-white">{evaluationResult.doctorMessagesCount}</div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-slate-300 leading-relaxed mb-6 px-4">
+                    {evaluationResult.explanation}
+                  </p>
+                  
+                  {status === "unauthenticated" && (
+                    <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl text-xs text-amber-200 mb-6 text-left">
+                      <span>Sign up for a free student profile to record your diagnostic score and compete on the leaderboard!</span>
+                      <div className="mt-2 text-right">
+                        <Link href="/register" className="underline font-bold hover:text-amber-100">
+                          Create Account →
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+
+                  {status === "authenticated" && (
+                    <div className="text-xs text-slate-500 mb-6">
+                      {savingResult ? "Saving diagnostic shift..." : "Shift recorded successfully on your student dashboard!"}
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-center gap-3">
+                    <button
+                      onClick={handleRestart}
+                      className="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2"
+                    >
+                      <RefreshCw className="w-4 h-4" /> Try Again
+                    </button>
+                    <button
+                      onClick={() => setIsSubmitModalOpen(false)}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors"
+                    >
+                      Close Report
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

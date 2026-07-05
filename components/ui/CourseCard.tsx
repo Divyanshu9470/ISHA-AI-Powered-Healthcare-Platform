@@ -30,14 +30,16 @@ export function CourseCard({
     price = 2999,
 }: CourseCardProps) {
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [imgError, setImgError] = useState(false);
 
     return (
         <div className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
             <div className="relative h-48 w-full bg-muted overflow-hidden">
-                {thumbnail ? (
+                {thumbnail && !imgError ? (
                     <img 
                         src={thumbnail} 
                         alt={title}
+                        onError={() => setImgError(true)}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (

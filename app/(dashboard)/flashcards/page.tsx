@@ -50,7 +50,7 @@ export default function FlashcardsDashboard() {
             title: "Cardiovascular Pathology",
             description: "High-yield flashcards covering valvular diseases, cardiomyopathies, and congenital heart defects.",
             subject: "Pathology",
-            imageUrl: "https://images.unsplash.com/photo-1530026339112-2884161bd984?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/cardiovascular-pathology.png",
             _count: { flashcards: 124 }
         },
         {
@@ -58,7 +58,7 @@ export default function FlashcardsDashboard() {
             title: "Upper Limb Anatomy",
             description: "Detailed muscular insertions, nerve supplies, and clinical correlations of the brachial plexus.",
             subject: "Anatomy",
-            imageUrl: "https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/upper-limb-anatomy.png",
             _count: { flashcards: 86 }
         },
         {
@@ -66,7 +66,7 @@ export default function FlashcardsDashboard() {
             title: "Antibiotics Masterclass",
             description: "Mechanism of action, spectrum of activity, and key side effects for USMLE/NEET-PG.",
             subject: "Pharmacology",
-            imageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop",
+            imageUrl: "/antibiotics-masterclass.png",
             _count: { flashcards: 210 }
         }
     ];

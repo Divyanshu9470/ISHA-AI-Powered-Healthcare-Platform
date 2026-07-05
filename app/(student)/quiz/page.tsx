@@ -16,6 +16,33 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<{ qIndex: number; selected: number; isCorrect: boolean }[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
 
+  const [hasSaved, setHasSaved] = useState(false);
+
+
+
+  // Save results to backend
+  useEffect(() => {
+    if (gameState !== 'results' || hasSaved || !subject || activeQuestions.length === 0) return;
+
+    const saveResults = async () => {
+        setHasSaved(true);
+        try {
+            await fetch('/api/tests/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject,
+                    score,
+                    maxScore: activeQuestions.length,
+                }),
+            });
+        } catch (error) {
+            console.error('Failed to save quiz results:', error);
+        }
+    };
+    saveResults();
+  }, [gameState, hasSaved, subject, score, activeQuestions.length]);
+
   const subjects = [
     { name: "Anatomy", icon: <BookOpen className="w-8 h-8 text-blue-400" />, color: "border-blue-500/50", bg: "bg-blue-500/10" },
     { name: "Physiology", icon: <Activity className="w-8 h-8 text-green-400" />, color: "border-green-500/50", bg: "bg-green-500/10" },
@@ -32,6 +59,7 @@ export default function QuizPage() {
     setAnswers([]);
     setSelectedOption(null);
     setShowExplanation(false);
+    setHasSaved(false);
     setGameState('playing');
   };
 
@@ -93,29 +121,6 @@ export default function QuizPage() {
   if (gameState === 'results') {
     const percentage = Math.round((score / activeQuestions.length) * 100);
 
-    // Save results to backend
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-        const saveResults = async () => {
-            try {
-                await fetch('/api/tests/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        subject,
-                        score,
-                        maxScore: activeQuestions.length,
-                    }),
-                });
-            } catch (error) {
-                console.error('Failed to save quiz results:', error);
-            }
-        };
-        if (subject && activeQuestions.length > 0) {
-            saveResults();
-        }
-    }, [subject, score, activeQuestions.length]);
-
     return (
       <div className="min-h-screen bg-[#050505] py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-[#050505] to-[#050505] pointer-events-none"></div>
@@ -141,7 +146,7 @@ export default function QuizPage() {
             </div>
 
             <div className="flex gap-4 justify-center">
-              <button onClick={() => setGameState('menu')} className="flex items-center gap-2 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all">
+              <button onClick={() => { setHasSaved(false); setGameState('menu'); }} className="flex items-center gap-2 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all">
                 <RotateCcw className="w-5 h-5" /> Choose Another Subject
               </button>
             </div>
@@ -159,7 +164,7 @@ export default function QuizPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
-            <button onClick={() => setGameState('menu')} className="text-slate-500 hover:text-white transition-colors text-sm uppercase tracking-widest font-semibold">
+            <button onClick={() => { setHasSaved(false); setGameState('menu'); }} className="text-slate-500 hover:text-white transition-colors text-sm uppercase tracking-widest font-semibold">
               ← Exit
             </button>
             <div className="h-4 w-px bg-white/20"></div>

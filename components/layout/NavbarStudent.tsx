@@ -14,7 +14,9 @@ export function NavbarStudent() {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        const timer = setTimeout(() => {
+            setMounted(true);
+        }, 0);
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
         };
@@ -22,11 +24,16 @@ export function NavbarStudent() {
         
         const stored = localStorage.getItem("theme");
         if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-            setIsDark(true);
+            setTimeout(() => {
+                setIsDark(true);
+            }, 0);
             document.documentElement.classList.add("dark");
         }
 
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener("scroll", handleScroll);
+        };
     }, []);
 
     if (!mounted) return null;
@@ -45,6 +52,7 @@ export function NavbarStudent() {
     const navLinks = [
         { name: "Home", href: "/students" },
         { name: "Courses", href: "/courses" },
+        { name: "Anatomy", href: "/anatomy" },
         { name: "Triage Simulator", href: "/simulator" },
         { name: "Arena Mode", href: "/arena" },
         { name: "Focus Zone", href: "/focus" },

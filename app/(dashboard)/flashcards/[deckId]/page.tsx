@@ -19,13 +19,21 @@ export default function StudySessionPage({ params }: { params: Promise<{ deckId:
     const [cards, setCards] = useState<any[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFinished, setIsFinished] = useState(false);
-    const [sessionStats, setSessionStats] = useState({
+    const [sessionStats, setSessionStats] = useState(() => ({
         easy: 0,
         medium: 0,
         hard: 0,
         startTime: Date.now()
-    });
+    }));
     const [loading, setLoading] = useState(true);
+    const [elapsedMinutes, setElapsedMinutes] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setElapsedMinutes(Math.floor((Date.now() - sessionStats.startTime) / 60000));
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [sessionStats.startTime]);
 
     useEffect(() => {
         fetch(`/api/flashcards/decks/${deckId}`)
@@ -192,7 +200,7 @@ export default function StudySessionPage({ params }: { params: Promise<{ deckId:
             {/* Floating Quick Stats */}
             <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-8 py-4 bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-50">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                    <Clock className="w-4 h-4 text-blue-500" /> {Math.floor((Date.now() - sessionStats.startTime) / 60000)}m elapsed
+                    <Clock className="w-4 h-4 text-blue-500" /> {elapsedMinutes}m elapsed
                 </div>
                 <div className="w-[1px] h-4 bg-white/10" />
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400">

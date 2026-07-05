@@ -20,6 +20,7 @@ interface FlashcardProps {
 
 export function Flashcard({ card, onReview }: FlashcardProps) {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [imgError, setImgError] = useState(false);
 
     return (
         <div className="relative w-full max-w-2xl mx-auto h-[500px] perspective-1000">
@@ -48,9 +49,14 @@ export function Flashcard({ card, onReview }: FlashcardProps) {
                             <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-6">
                                 {card.question}
                             </h2>
-                            {card.image && (
+                            {card.image && !imgError && (
                                 <div className="w-full max-w-xs aspect-video bg-muted rounded-2xl flex items-center justify-center border border-border overflow-hidden">
-                                    <img src={card.image} alt="Reference" className="w-full h-full object-cover" />
+                                    <img 
+                                        src={card.image} 
+                                        alt="Reference" 
+                                        onError={() => setImgError(true)}
+                                        className="w-full h-full object-cover" 
+                                    />
                                 </div>
                             )}
                         </div>
