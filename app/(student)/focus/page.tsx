@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Play, Pause, RotateCcw, Headphones, Users, CheckCircle2, 
   Circle, Volume2, ShieldAlert, Trophy, Brain, Activity, 
-  Stethoscope, Clock, Zap, Heart, RefreshCw, BarChart2, Flame 
+  Stethoscope, Clock, Zap, Heart, RefreshCw, BarChart2, Flame,
+  Shuffle
 } from "lucide-react";
 
 const SOUNDSCAPES = [
@@ -15,7 +16,15 @@ const SOUNDSCAPES = [
   { id: "space", name: "Deep Ambient Focus", url: "https://cdn.pixabay.com/audio/2021/11/25/audio_91b3cb18df.mp3" },
   { id: "brown", name: "Deep Brown Noise", url: "https://cdn.pixabay.com/audio/2023/04/11/audio_1ab25145cd.mp3" },
   { id: "rain", name: "Gentle Rain on Window", url: "https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3" },
-  { id: "cafe", name: "Cozy Study Cafe", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3" }
+  { id: "cafe", name: "Cozy Study Cafe", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3" },
+  { id: "forest", name: "Calm Forest Stream", url: "https://cdn.pixabay.com/audio/2022/01/26/audio_d0c6ff1101.mp3" },
+  { id: "binaural", name: "Binaural Focus Beats", url: "https://cdn.pixabay.com/audio/2022/03/10/audio_c2ed776c5b.mp3" },
+  { id: "bowls", name: "Tibetan Singing Bowls", url: "https://cdn.pixabay.com/audio/2023/02/28/audio_8218171120.mp3" },
+  { id: "spacedrone", name: "Cosmic Calming Drone", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_a16bc0b616.mp3" },
+  { id: "guitar", name: "Classical Guitar Calm", url: "https://cdn.pixabay.com/audio/2021/11/23/audio_0c9462d7a2.mp3" },
+  { id: "alpha", name: "Alpha Waves Meditative", url: "https://cdn.pixabay.com/audio/2022/10/18/audio_31913c0bbf.mp3" },
+  { id: "ocean", name: "Ocean Waves Relaxation", url: "https://cdn.pixabay.com/audio/2022/02/22/audio_1d48c08170.mp3" },
+  { id: "thunder", name: "Soft Rain & Light Thunder", url: "https://cdn.pixabay.com/audio/2023/05/30/audio_73144a2c10.mp3" }
 ];
 
 export default function FocusPage() {
@@ -25,6 +34,22 @@ export default function FocusPage() {
   const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
   const [volumes, setVolumes] = useState<Record<string, number>>({});
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const [soundscapes, setSoundscapes] = useState(SOUNDSCAPES);
+
+  const shuffleTracks = () => {
+    setSoundscapes(prev => {
+      const arr = [...prev];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
+  };
+
+  useEffect(() => {
+    shuffleTracks();
+  }, []);
 
   const [tasks, setTasks] = useState([
     { id: 1, text: "Review Upper Limb Anatomy", completed: false },
@@ -193,11 +218,20 @@ export default function FocusPage() {
         <div className="w-full lg:w-96 flex flex-col gap-6">
           {/* Soundscape Mixer */}
           <div className="bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-xl">
-            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-slate-100">
-              <Headphones className="w-5 h-5 text-purple-400" /> Soundscape Mixer
-            </h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-100">
+                <Headphones className="w-5 h-5 text-purple-400" /> Soundscape Mixer
+              </h3>
+              <button 
+                onClick={shuffleTracks} 
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:text-white bg-purple-500/10 border border-purple-500/20 hover:bg-purple-600/30 transition-all hover:scale-105"
+                title="Shuffle Tracks"
+              >
+                <Shuffle className="w-3.5 h-3.5" /> Shuffle
+              </button>
+            </div>
             <div className="space-y-5">
-              {SOUNDSCAPES.map(sound => (
+              {soundscapes.map(sound => (
                 <div key={sound.id} className="flex flex-col gap-2">
                   <div className="flex items-center justify-between cursor-pointer" onClick={() => toggleSound(sound.id, sound.url)}>
                     <span className={`text-sm transition-colors ${activeSounds[sound.id] ? 'text-white font-medium' : 'text-slate-400'}`}>
