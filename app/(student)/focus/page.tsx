@@ -6,37 +6,58 @@ import {
   Play, Pause, RotateCcw, Headphones, Users, CheckCircle2, 
   Circle, Volume2, ShieldAlert, Trophy, Brain, Activity, 
   Stethoscope, Clock, Zap, Heart, RefreshCw, BarChart2, Flame,
-  Shuffle, Loader2
+  Shuffle, Loader2, SkipBack, SkipForward, Repeat, Search, X
 } from "lucide-react";
 
 const SOUNDSCAPES = [
-  // ── Requested Vocal Songs ──────────────────────────────────────────────
-  { id: "daydream",     name: "🌙 Daydream — Luna",                   url: "/audio/daydream.mp3" },
-  { id: "oak_tree",    name: "🌳 Under the Oak Tree",                 url: "/audio/oak_tree.mp3" },
-  { id: "lover",       name: "💗 Lover — Taylor Swift",               url: "/audio/lover.mp3" },
-  { id: "backstreet",  name: "🎵 I Want It That Way — Backstreet Boys", url: "/audio/backstreet.mp3" },
-  { id: "nothing",     name: "💛 Nothing's Gonna Change My Love",     url: "https://archive.org/download/flashbackselecionadofile/NOTHING%20GONNA%20-%20CHANGE%20MY%20LOVE%20FOR%20YOU.mp3" },
-  { id: "notalone",    name: "🤍 You Are Not Alone — Michael Jackson", url: "https://archive.org/download/romanticas90/Michael%20Jackson%20-%20You%20Are%20Not%20Alone.mp3" },
-  { id: "everybreath", name: "🌬️ Every Breath You Take — The Police", url: "https://archive.org/download/flashbackselecionadofile/THE%20POLICE%20-%20EVERY%20BREATH%20YOU%20TAKE.mp3" },
-  { id: "kissme",      name: "😊 Kiss Me — Sixpence None the Richer", url: "https://archive.org/download/romanticas90/Sixpence%20None%20The%20Richer%20-%20Kiss%20Me.mp3" },
-  { id: "iris",        name: "🌺 Iris — Goo Goo Dolls",               url: "https://archive.org/download/kungtripmojusthitplay/GooGooDolls-Iris.mp3" },
-  { id: "smiths",      name: "🎸 Heaven Knows I'm Miserable — The Smiths", url: "https://archive.org/download/flashbackselecionadofile/HEART%20-%20ALONE.mp3" },
-  { id: "heavenknows", name: "✨ Heaven Knows — Bryan Adams (Heaven)",  url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20HEAVEN.mp3" },
-  // ── Bonus Classic Vocals ───────────────────────────────────────────────
-  { id: "myheartwill", name: "🚢 My Heart Will Go On — Celine Dion",  url: "https://archive.org/download/flashbackselecionadofile/CELINE%20DION%20-%20MY%20HEART%20WILL%20GO%20ON.mp3" },
-  { id: "rightwait",   name: "⏳ Right Here Waiting — Richard Marx",  url: "https://archive.org/download/flashbackselecionadofile/RICHARD%20MARX%20-%20RIGHT%20HERE%20WAITING.mp3" },
-  { id: "imagine",     name: "🕊️ Imagine — John Lennon",              url: "https://archive.org/download/flashbackselecionadofile/JOHN%20LENON%20-%20IMAGINE.mp3" },
-  { id: "wicked",      name: "🌹 Wicked Game — Chris Isaak",          url: "https://archive.org/download/flashbackselecionadofile/CHRIS%20ISAAK%20-%20WICKED%20GAME.mp3" },
-  { id: "everywhere",  name: "🌟 Everything I Do — Bryan Adams",       url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20EVERYTHING%20I%20DO%20IT%20FOR%20YOU.mp3" },
+  // ── 🇬🇧 English Classics ──────────────────────────────────────────────
+  { id: "daydream",     name: "🌙 Daydream — Luna",                    url: "/audio/daydream.mp3",    lang: "EN" },
+  { id: "oak_tree",    name: "🌳 Under the Oak Tree",                  url: "/audio/oak_tree.mp3",   lang: "EN" },
+  { id: "lover",       name: "💗 Lover — Taylor Swift",                url: "/audio/lover.mp3",      lang: "EN" },
+  { id: "backstreet",  name: "🎵 I Want It That Way — Backstreet Boys", url: "/audio/backstreet.mp3", lang: "EN" },
+  { id: "nothing",     name: "💛 Nothing's Gonna Change My Love",      url: "https://archive.org/download/flashbackselecionadofile/NOTHING%20GONNA%20-%20CHANGE%20MY%20LOVE%20FOR%20YOU.mp3", lang: "EN" },
+  { id: "notalone",    name: "🤍 You Are Not Alone — Michael Jackson",  url: "https://archive.org/download/romanticas90/Michael%20Jackson%20-%20You%20Are%20Not%20Alone.mp3", lang: "EN" },
+  { id: "everybreath", name: "🌬️ Every Breath You Take — The Police",  url: "https://archive.org/download/flashbackselecionadofile/THE%20POLICE%20-%20EVERY%20BREATH%20YOU%20TAKE.mp3", lang: "EN" },
+  { id: "kissme",      name: "😊 Kiss Me — Sixpence None the Richer",  url: "https://archive.org/download/romanticas90/Sixpence%20None%20The%20Richer%20-%20Kiss%20Me.mp3", lang: "EN" },
+  { id: "iris",        name: "🌺 Iris — Goo Goo Dolls",                url: "https://archive.org/download/kungtripmojusthitplay/GooGooDolls-Iris.mp3", lang: "EN" },
+  { id: "heavenknows", name: "✨ Heaven — Bryan Adams",                 url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20HEAVEN.mp3", lang: "EN" },
+  { id: "myheartwill", name: "🚢 My Heart Will Go On — Celine Dion",   url: "https://archive.org/download/flashbackselecionadofile/CELINE%20DION%20-%20MY%20HEART%20WILL%20GO%20ON.mp3", lang: "EN" },
+  { id: "rightwait",   name: "⏳ Right Here Waiting — Richard Marx",   url: "https://archive.org/download/flashbackselecionadofile/RICHARD%20MARX%20-%20RIGHT%20HERE%20WAITING.mp3", lang: "EN" },
+  { id: "imagine",     name: "🕊️ Imagine — John Lennon",               url: "https://archive.org/download/flashbackselecionadofile/JOHN%20LENON%20-%20IMAGINE.mp3", lang: "EN" },
+  { id: "wicked",      name: "🌹 Wicked Game — Chris Isaak",           url: "https://archive.org/download/flashbackselecionadofile/CHRIS%20ISAAK%20-%20WICKED%20GAME.mp3", lang: "EN" },
+  { id: "everywhere",  name: "🌟 Everything I Do — Bryan Adams",        url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20EVERYTHING%20I%20DO%20IT%20FOR%20YOU.mp3", lang: "EN" },
+  { id: "careless",   name: "🎷 Careless Whisper — George Michael",    url: "https://archive.org/download/flashbackselecionadofile/GEORGE%20MICHAEL%20-%20CARELES%20WHISPER.mp3", lang: "EN" },
+  { id: "hero",        name: "🦸 Hero — Mariah Carey",                  url: "https://archive.org/download/flashbackselecionadofile/MARIA%20CAREY%20-%20HERO.mp3", lang: "EN" },
+  { id: "sacrifice",   name: "🕯️ Sacrifice — Elton John",              url: "https://archive.org/download/flashbackselecionadofile/ELTON%20JOHN%20-%20SACRIFICE%20.mp3", lang: "EN" },
+  { id: "eternal",     name: "🔥 Eternal Flame — Roxette",              url: "https://archive.org/download/flashbackselecionadofile/ROXETE%20-%20ETERNAL%20FLAME%20.mp3", lang: "EN" },
+  { id: "heart_alone", name: "💔 Alone — Heart",                        url: "https://archive.org/download/flashbackselecionadofile/HEART%20-%20ALONE.mp3", lang: "EN" },
+  { id: "still_loving",name: "🦂 Still Loving You — Scorpions",         url: "https://archive.org/download/flashbackselecionadofile/SCORPIONS%20-%20STILL%20LOVING%20YOU.mp3", lang: "EN" },
+  { id: "neverup",    name: "🎤 Never Gonna Give You Up — Rick Astley", url: "https://archive.org/download/flashbackselecionadofile/RICK%20ASTLEY%20-%20NEVER%20GONNA%20GIVE%20YOU%20UP.mp3", lang: "EN" },
+  { id: "total_eclipse",name:"🌑 Total Eclipse of the Heart — Bonnie Tyler", url: "https://archive.org/download/flashbackselecionadofile/BONNIE%20TYLER%20-%20TOTAL%20ECLIPSE%20OF%20THE%20HEART.mp3", lang: "EN" },
+  { id: "more_than_words", name: "🎸 More Than Words — Extreme",        url: "https://archive.org/download/flashbackselecionadofile/EXTREME%20-%20MORE%20THAN%20WORDS.mp3", lang: "EN" },
+  { id: "iloveyou",    name: "💚 I Will Always Love You — Whitney",     url: "https://archive.org/download/flashbackselecionadofile/WHITNEY%20HOUSTON%20-%20I%20WILL%20ALWAYS%20LOVE%20YOU.mp3", lang: "EN" },
+  // ── 🇮🇳 Hindi / Bollywood ─────────────────────────────────────────────
+  { id: "tum_hi_ho",   name: "🌹 Tum Hi Ho — Aashiqui 2",              url: "https://archive.org/download/BollywoodHits2013/Tum%20Hi%20Ho%20-%20Aashiqui%202.mp3", lang: "HI" },
+  { id: "kal_ho",      name: "🌅 Kal Ho Na Ho — Title Track",           url: "https://archive.org/download/KalHoNaHo2003/01%20-%20Kal%20Ho%20Na%20Ho%20%28Title%20Song%29.mp3", lang: "HI" },
+  { id: "kabhi_alvida",name: "🛫 Kabhi Alvida Naa Kehna",               url: "https://archive.org/download/KabhibhiAlvidaNaaKehna/01%20-%20Kabhi%20Alvida%20Naa%20Kehna.mp3", lang: "HI" },
+  { id: "ae_dil",      name: "💜 Ae Dil Hai Mushkil — Title",           url: "https://archive.org/download/AeDilHaiMushkil2016/Ae%20Dil%20Hai%20Mushkil%20-%20Title%20Track.mp3", lang: "HI" },
+  { id: "raabta",      name: "✨ Raabta — Agent Sai Srinivasa",          url: "https://archive.org/download/RaabtaOriginalMotionPictureSoundtrack/01.%20Raabta%20%28Title%20Track%29.mp3", lang: "HI" },
+  { id: "channa_mereya",name:"💛 Channa Mereya — Ae Dil Hai Mushkil",  url: "https://archive.org/download/AeDilHaiMushkil2016/Channa%20Mereya.mp3", lang: "HI" },
+  { id: "mann",        name: "🎵 Mann — Title Song",                    url: "https://archive.org/download/MannOriginalMotionPictureSoundtrack/Mann%20-%20Title%20Song.mp3", lang: "HI" },
+  { id: "phir_le_aya", name: "🌙 Phir Le Aya Dil — Barfi",              url: "https://archive.org/download/BarfiSoundtrack/Phir%20Le%20Aya%20Dil.mp3", lang: "HI" },
 ];
 
 export default function FocusPage() {
   const [maxTime, setMaxTime] = useState(25 * 60);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);
-  const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
-  const [volumes, setVolumes] = useState<Record<string, number>>({});
-  const [loadingSounds, setLoadingSounds] = useState<Record<string, boolean>>({});
+  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoadingTrack, setIsLoadingTrack] = useState(false);
+  const [volume, setVolume] = useState(0.8);
+  const [isRepeat, setIsRepeat] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [langFilter, setLangFilter] = useState<"ALL"|"EN"|"HI">("ALL");
   const [likedSounds, setLikedSounds] = useState<Record<string, boolean>>(() => {
     if (typeof window !== 'undefined') {
       try { return JSON.parse(localStorage.getItem('ishamedLiked') || '{}'); } catch { return {}; }
@@ -71,16 +92,27 @@ export default function FocusPage() {
     setLikedSounds(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Derived: sort liked songs to top
-  const sortedSoundscapes = [...soundscapes].sort((a, b) => {
+  // Filtered + sorted list
+  const filteredSoundscapes = soundscapes
+    .filter(s => langFilter === 'ALL' || s.lang === langFilter)
+    .filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const sortedSoundscapes = [...filteredSoundscapes].sort((a, b) => {
     if (likedSounds[a.id] && !likedSounds[b.id]) return -1;
     if (!likedSounds[a.id] && likedSounds[b.id]) return 1;
     return 0;
   });
 
-  const activeSongName = Object.entries(activeSounds).find(([, v]) => v)
-    ? soundscapes.find(s => activeSounds[s.id])?.name
-    : null;
+  const currentTrack = soundscapes.find(s => s.id === currentTrackId) ?? null;
+
+  // Get next / prev track index from full sorted list
+  const getAdjacentTrack = (dir: 1 | -1) => {
+    const list = sortedSoundscapes;
+    const idx = list.findIndex(s => s.id === currentTrackId);
+    if (idx === -1) return list[0] ?? null;
+    const next = (idx + dir + list.length) % list.length;
+    return list[next];
+  };
 
   const [tasks, setTasks] = useState([
     { id: 1, text: "Review Upper Limb Anatomy", completed: false },
@@ -116,37 +148,62 @@ export default function FocusPage() {
     };
   }, []);
 
-  const toggleSound = (id: string, url: string) => {
-    const isCurrentlyActive = activeSounds[id];
-    
+  // ── Radio-mode: stop previous, play new ───────────────────────────────
+  const playTrack = (id: string, url: string) => {
+    // Stop currently playing track
+    if (currentTrackId && currentTrackId !== id && audioRefs.current[currentTrackId]) {
+      audioRefs.current[currentTrackId].pause();
+      audioRefs.current[currentTrackId].currentTime = 0;
+    }
+
+    // If clicking the same track → toggle pause/play
+    if (currentTrackId === id) {
+      if (isPlaying) {
+        audioRefs.current[id]?.pause();
+        setIsPlaying(false);
+      } else {
+        audioRefs.current[id]?.play().catch(() => {});
+        setIsPlaying(true);
+      }
+      return;
+    }
+
+    // Create audio element if not cached
     if (!audioRefs.current[id]) {
       const audio = new Audio(url);
-      audio.loop = true;
-      audio.volume = volumes[id] ?? 0.7;
-      // Loading events
-      audio.addEventListener('waiting', () => setLoadingSounds(p => ({ ...p, [id]: true })));
-      audio.addEventListener('playing', () => setLoadingSounds(p => ({ ...p, [id]: false })));
-      audio.addEventListener('canplay', () => setLoadingSounds(p => ({ ...p, [id]: false })));
+      audio.volume = volume;
+      audio.addEventListener('waiting', () => setIsLoadingTrack(true));
+      audio.addEventListener('playing', () => setIsLoadingTrack(false));
+      audio.addEventListener('canplay', () => setIsLoadingTrack(false));
+      audio.addEventListener('ended', () => {
+        if (isRepeat) {
+          audio.currentTime = 0;
+          audio.play().catch(() => {});
+        } else {
+          const next = getAdjacentTrack(1);
+          if (next) playTrack(next.id, next.url);
+        }
+      });
       audioRefs.current[id] = audio;
     }
 
-    if (isCurrentlyActive) {
-      audioRefs.current[id].pause();
-      setActiveSounds(prev => ({ ...prev, [id]: false }));
-      setLoadingSounds(prev => ({ ...prev, [id]: false }));
-    } else {
-      setLoadingSounds(prev => ({ ...prev, [id]: true }));
-      audioRefs.current[id].play()
-        .then(() => setLoadingSounds(p => ({ ...p, [id]: false })))
-        .catch(e => { console.log("Audio play failed:", e); setLoadingSounds(p => ({ ...p, [id]: false })); });
-      setActiveSounds(prev => ({ ...prev, [id]: true }));
-    }
+    setCurrentTrackId(id);
+    setIsLoadingTrack(true);
+    setIsPlaying(true);
+    audioRefs.current[id].play()
+      .then(() => setIsLoadingTrack(false))
+      .catch(() => setIsLoadingTrack(false));
   };
 
-  const changeVolume = (id: string, value: number) => {
-    setVolumes(prev => ({ ...prev, [id]: value }));
-    if (audioRefs.current[id]) {
-      audioRefs.current[id].volume = value;
+  const skipTrack = (dir: 1 | -1) => {
+    const next = getAdjacentTrack(dir);
+    if (next) playTrack(next.id, next.url);
+  };
+
+  const changeVolume = (val: number) => {
+    setVolume(val);
+    if (currentTrackId && audioRefs.current[currentTrackId]) {
+      audioRefs.current[currentTrackId].volume = val;
     }
   };
 
@@ -262,47 +319,27 @@ export default function FocusPage() {
               <h3 className="text-base font-bold flex items-center gap-2 text-white">
                 <Headphones className="w-4 h-4 text-green-400" /> Soundscape Mixer
               </h3>
-              <button 
-                onClick={shuffleTracks} 
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-green-400 hover:text-white bg-green-500/10 border border-green-500/20 hover:bg-green-600/30 transition-all hover:scale-105"
-              >
+              <button onClick={shuffleTracks} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-green-400 hover:text-white bg-green-500/10 border border-green-500/20 hover:bg-green-600/30 transition-all hover:scale-105">
                 <Shuffle className="w-3 h-3" /> Shuffle
               </button>
             </div>
 
-            {/* Liked Songs Tab */}
+            {/* Liked Songs */}
             {Object.values(likedSounds).some(Boolean) && (
               <div className="px-4 pt-3 pb-1">
                 <p className="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-2">❤️ Liked Songs</p>
                 <div className="space-y-1">
-                  {sortedSoundscapes.filter(s => likedSounds[s.id]).map(sound => (
-                    <div
-                      key={`liked-${sound.id}`}
-                      onClick={() => toggleSound(sound.id, sound.url)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition-all group ${
-                        activeSounds[sound.id] ? 'bg-green-500/15 border border-green-500/20' : 'hover:bg-white/5'
-                      }`}
-                    >
-                      {/* Playing animation or index */}
-                      <div className="w-6 flex items-center justify-center shrink-0">
-                        {loadingSounds[sound.id] ? (
-                          <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
-                        ) : activeSounds[sound.id] ? (
-                          <div className="flex items-end gap-[2px] h-4">
-                            {[1,2,3].map(i => (
-                              <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
-                                animate={{ height: ['4px','12px','6px','10px','4px'] }}
-                                transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15, ease:'easeInOut' }}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <Heart className="w-3.5 h-3.5 text-green-400 fill-green-400" />
-                        )}
+                  {soundscapes.filter(s => likedSounds[s.id]).map(sound => (
+                    <div key={`liked-${sound.id}`} onClick={() => playTrack(sound.id, sound.url)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition-all group ${currentTrackId === sound.id ? "bg-green-500/15 border border-green-500/20" : "hover:bg-white/5"}`}>
+                      <div className="w-5 flex items-center justify-center shrink-0">
+                        {isLoadingTrack && currentTrackId === sound.id
+                          ? <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
+                          : currentTrackId === sound.id && isPlaying
+                            ? <div className="flex items-end gap-[2px] h-4">{[1,2,3].map(i => <motion.div key={i} className="w-[3px] bg-green-400 rounded-full" animate={{ height: ["4px","12px","6px","10px","4px"] }} transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15 }} />)}</div>
+                            : <Heart className="w-3 h-3 text-green-400 fill-green-400" />}
                       </div>
-                      <span className={`text-xs flex-1 truncate ${
-                        activeSounds[sound.id] ? 'text-green-400 font-semibold' : 'text-slate-300'
-                      }`}>{sound.name}</span>
+                      <span className={`text-xs flex-1 truncate ${currentTrackId === sound.id ? "text-green-400 font-semibold" : "text-slate-300"}`}>{sound.name}</span>
                     </div>
                   ))}
                 </div>
@@ -310,71 +347,50 @@ export default function FocusPage() {
               </div>
             )}
 
-            {/* All Tracks */}
+            {/* Search + Filter */}
+            <div className="px-4 pt-3 space-y-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                <input type="text" placeholder="Search songs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-green-500/50 transition-colors" />
+                {searchQuery && <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-3 h-3 text-slate-500 hover:text-white" /></button>}
+              </div>
+              <div className="flex gap-1.5 items-center">
+                {(["ALL","EN","HI"] as const).map(f => (
+                  <button key={f} onClick={() => setLangFilter(f)}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all ${langFilter === f ? "bg-green-500 text-black" : "bg-white/5 text-slate-400 hover:text-white"}`}>
+                    {f === "ALL" ? "🌍 All" : f === "EN" ? "🇬🇧 EN" : "🇮🇳 HI"}
+                  </button>
+                ))}
+                <span className="ml-auto text-[10px] text-slate-500">{sortedSoundscapes.length} songs</span>
+              </div>
+            </div>
+
+            {/* Track List */}
             <div className="px-4 py-3">
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">All Songs</p>
-              <div className="space-y-0.5 max-h-[340px] overflow-y-auto pr-1" style={{scrollbarWidth:'thin', scrollbarColor:'#333 transparent'}}>
-                {sortedSoundscapes.map((sound, idx) => (
-                  <div key={sound.id} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
-                    activeSounds[sound.id] ? 'bg-white/10' : 'hover:bg-white/5'
-                  }`}>
-                    {/* Track number / playing indicator */}
+              <div className="space-y-0.5 max-h-[300px] overflow-y-auto pr-1" style={{scrollbarWidth:"thin", scrollbarColor:"#333 transparent"}}>
+                {sortedSoundscapes.length === 0
+                  ? <p className="text-center text-slate-500 text-xs py-6">No songs found</p>
+                  : sortedSoundscapes.map((sound, idx) => (
+                  <div key={sound.id} onClick={() => playTrack(sound.id, sound.url)}
+                    className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${currentTrackId === sound.id ? "bg-white/10" : "hover:bg-white/5"}`}>
                     <div className="w-5 flex items-center justify-center shrink-0">
-                      {loadingSounds[sound.id] ? (
-                        <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
-                      ) : activeSounds[sound.id] ? (
-                        <div className="flex items-end gap-[2px] h-4">
-                          {[1,2,3].map(i => (
-                            <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
-                              animate={{ height: ['4px','12px','6px','10px','4px'] }}
-                              transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15, ease:'easeInOut' }}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-[11px] text-slate-500 group-hover:hidden">{idx + 1}</span>
-                      )}
-                      {!activeSounds[sound.id] && !loadingSounds[sound.id] && (
-                        <Play className="w-3.5 h-3.5 text-white hidden group-hover:block" />
-                      )}
+                      {isLoadingTrack && currentTrackId === sound.id
+                        ? <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
+                        : currentTrackId === sound.id && isPlaying
+                          ? <div className="flex items-end gap-[2px] h-4">{[1,2,3].map(i => <motion.div key={i} className="w-[3px] bg-green-400 rounded-full" animate={{ height: ["4px","12px","6px","10px","4px"] }} transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15 }} />)}</div>
+                          : <><span className="text-[11px] text-slate-500 group-hover:hidden">{idx + 1}</span><Play className="w-3.5 h-3.5 text-white hidden group-hover:block" /></>}
                     </div>
-
-                    {/* Song name */}
-                    <div className="flex-1 min-w-0" onClick={() => toggleSound(sound.id, sound.url)}>
-                      <p className={`text-sm truncate transition-colors ${
-                        activeSounds[sound.id] ? 'text-green-400 font-semibold' : 'text-slate-300 group-hover:text-white'
-                      }`}>{sound.name}</p>
-                      {loadingSounds[sound.id] && (
-                        <p className="text-[10px] text-slate-500 animate-pulse">Loading...</p>
-                      )}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm truncate transition-colors ${currentTrackId === sound.id ? "text-green-400 font-semibold" : "text-slate-300 group-hover:text-white"}`}>{sound.name}</p>
+                      {isLoadingTrack && currentTrackId === sound.id && <p className="text-[10px] text-slate-500 animate-pulse">Loading…</p>}
                     </div>
-
-                    {/* Like button */}
-                    <button
-                      onClick={(e) => toggleLike(sound.id, e)}
-                      className={`shrink-0 p-1 rounded-full transition-all opacity-0 group-hover:opacity-100 ${
-                        likedSounds[sound.id] ? '!opacity-100' : ''
-                      } hover:scale-110`}
-                      title={likedSounds[sound.id] ? 'Remove from Liked' : 'Add to Liked'}
-                    >
-                      <Heart className={`w-3.5 h-3.5 transition-colors ${
-                        likedSounds[sound.id] ? 'fill-green-400 text-green-400' : 'text-slate-500 hover:text-white'
-                      }`} />
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${("lang" in sound) && (sound as {lang:string}).lang === "HI" ? "bg-orange-500/20 text-orange-400" : "bg-blue-500/10 text-blue-400"}`}>
+                      {"lang" in sound ? (sound as {lang:string}).lang : "EN"}
+                    </span>
+                    <button onClick={e => toggleLike(sound.id, e)} className={`shrink-0 p-1 rounded-full transition-all opacity-0 group-hover:opacity-100 ${likedSounds[sound.id] ? "!opacity-100" : ""} hover:scale-110`}>
+                      <Heart className={`w-3.5 h-3.5 ${likedSounds[sound.id] ? "fill-green-400 text-green-400" : "text-slate-500 hover:text-white"}`} />
                     </button>
-
-                    {/* Volume slider when active */}
-                    {activeSounds[sound.id] && (
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <Volume2 className="w-3 h-3 text-slate-400" />
-                        <input
-                          type="range" min="0" max="1" step="0.01"
-                          value={volumes[sound.id] ?? 0.7}
-                          onChange={(e) => { e.stopPropagation(); changeVolume(sound.id, parseFloat(e.target.value)); }}
-                          onClick={e => e.stopPropagation()}
-                          className="w-16 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-400"
-                        />
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -382,37 +398,33 @@ export default function FocusPage() {
 
             {/* Now Playing Bar */}
             <AnimatePresence>
-              {activeSongName && (
-                <motion.div
-                  initial={{ y: 60, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 60, opacity: 0 }}
-                  className="border-t border-white/5 px-5 py-3 bg-[#181818] flex items-center gap-3"
-                >
-                  <div className="flex items-end gap-[3px] h-5 shrink-0">
-                    {[1,2,3,4].map(i => (
-                      <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
-                        animate={{ height: ['4px','16px','8px','12px','4px'] }}
-                        transition={{ duration: 0.9, repeat: Infinity, delay: i*0.12, ease:'easeInOut' }}
-                      />
-                    ))}
+              {currentTrack && (
+                <motion.div initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
+                  className="border-t border-white/5 px-4 py-3 bg-[#181818]">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-end gap-[3px] h-5 shrink-0">
+                      {isPlaying ? [1,2,3,4].map(i => <motion.div key={i} className="w-[3px] bg-green-400 rounded-full" animate={{ height: ["4px","16px","8px","12px","4px"] }} transition={{ duration: 0.9, repeat: Infinity, delay: i*0.12 }} />) : [1,2,3,4].map(i => <div key={i} className="w-[3px] h-[4px] bg-slate-600 rounded-full" />)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-green-400 font-semibold truncate">{currentTrack.name}</p>
+                      <p className="text-[10px] text-slate-500">{isLoadingTrack ? "Loading…" : isPlaying ? "Now Playing" : "Paused"}</p>
+                    </div>
+                    <button onClick={e => toggleLike(currentTrack.id, e)} className="shrink-0">
+                      <Heart className={`w-4 h-4 transition-colors ${likedSounds[currentTrack.id] ? "fill-green-400 text-green-400" : "text-slate-500 hover:text-green-400"}`} />
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-green-400 font-semibold truncate">{activeSongName}</p>
-                    <p className="text-[10px] text-slate-500">Now Playing</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <button onClick={() => setIsRepeat(r => !r)} title="Repeat" className={`p-1.5 rounded-full transition-colors ${isRepeat ? "text-green-400" : "text-slate-500 hover:text-white"}`}><Repeat className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => skipTrack(-1)} className="p-1.5 text-slate-400 hover:text-white transition-colors"><SkipBack className="w-4 h-4 fill-current" /></button>
+                    <button onClick={() => playTrack(currentTrack.id, currentTrack.url)} className="w-9 h-9 bg-green-400 hover:bg-green-300 rounded-full flex items-center justify-center transition-colors shrink-0">
+                      {isLoadingTrack ? <Loader2 className="w-4 h-4 text-black animate-spin" /> : isPlaying ? <Pause className="w-4 h-4 text-black fill-black" /> : <Play className="w-4 h-4 text-black fill-black ml-0.5" />}
+                    </button>
+                    <button onClick={() => skipTrack(1)} className="p-1.5 text-slate-400 hover:text-white transition-colors"><SkipForward className="w-4 h-4 fill-current" /></button>
+                    <div className="flex items-center gap-1.5">
+                      <Volume2 className="w-3.5 h-3.5 text-slate-500" />
+                      <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => changeVolume(parseFloat(e.target.value))} className="w-14 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-400" />
+                    </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      const activeId = Object.entries(activeSounds).find(([,v]) => v)?.[0];
-                      if (activeId) {
-                        const s = soundscapes.find(x => x.id === activeId);
-                        if (s) toggleSound(s.id, s.url);
-                      }
-                    }}
-                    className="w-7 h-7 bg-green-400 hover:bg-green-300 rounded-full flex items-center justify-center transition-colors shrink-0"
-                  >
-                    <Pause className="w-3.5 h-3.5 text-black fill-black" />
-                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
