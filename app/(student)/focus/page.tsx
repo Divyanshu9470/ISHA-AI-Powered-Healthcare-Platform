@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Play, Pause, RotateCcw, Headphones, Users, CheckCircle2, 
   Circle, Volume2, ShieldAlert, Trophy, Brain, Activity, 
   Stethoscope, Clock, Zap, Heart, RefreshCw, BarChart2, Flame,
-  Shuffle
+  Shuffle, Loader2
 } from "lucide-react";
 
 const SOUNDSCAPES = [
@@ -36,6 +36,13 @@ export default function FocusPage() {
   const [isActive, setIsActive] = useState(false);
   const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
   const [volumes, setVolumes] = useState<Record<string, number>>({});
+  const [loadingSounds, setLoadingSounds] = useState<Record<string, boolean>>({});
+  const [likedSounds, setLikedSounds] = useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try { return JSON.parse(localStorage.getItem('ishamedLiked') || '{}'); } catch { return {}; }
+    }
+    return {};
+  });
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
   const [soundscapes, setSoundscapes] = useState(SOUNDSCAPES);
 
@@ -50,9 +57,30 @@ export default function FocusPage() {
     });
   };
 
+  useEffect(() => { shuffleTracks(); }, []);
+
+  // Persist liked songs
   useEffect(() => {
-    shuffleTracks();
-  }, []);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ishamedLiked', JSON.stringify(likedSounds));
+    }
+  }, [likedSounds]);
+
+  const toggleLike = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLikedSounds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  // Derived: sort liked songs to top
+  const sortedSoundscapes = [...soundscapes].sort((a, b) => {
+    if (likedSounds[a.id] && !likedSounds[b.id]) return -1;
+    if (!likedSounds[a.id] && likedSounds[b.id]) return 1;
+    return 0;
+  });
+
+  const activeSongName = Object.entries(activeSounds).find(([, v]) => v)
+    ? soundscapes.find(s => activeSounds[s.id])?.name
+    : null;
 
   const [tasks, setTasks] = useState([
     { id: 1, text: "Review Upper Limb Anatomy", completed: false },
@@ -94,15 +122,23 @@ export default function FocusPage() {
     if (!audioRefs.current[id]) {
       const audio = new Audio(url);
       audio.loop = true;
-      audio.volume = volumes[id] || 0.5;
+      audio.volume = volumes[id] ?? 0.7;
+      // Loading events
+      audio.addEventListener('waiting', () => setLoadingSounds(p => ({ ...p, [id]: true })));
+      audio.addEventListener('playing', () => setLoadingSounds(p => ({ ...p, [id]: false })));
+      audio.addEventListener('canplay', () => setLoadingSounds(p => ({ ...p, [id]: false })));
       audioRefs.current[id] = audio;
     }
 
     if (isCurrentlyActive) {
       audioRefs.current[id].pause();
       setActiveSounds(prev => ({ ...prev, [id]: false }));
+      setLoadingSounds(prev => ({ ...prev, [id]: false }));
     } else {
-      audioRefs.current[id].play().catch(e => console.log("Audio play failed:", e));
+      setLoadingSounds(prev => ({ ...prev, [id]: true }));
+      audioRefs.current[id].play()
+        .then(() => setLoadingSounds(p => ({ ...p, [id]: false })))
+        .catch(e => { console.log("Audio play failed:", e); setLoadingSounds(p => ({ ...p, [id]: false })); });
       setActiveSounds(prev => ({ ...prev, [id]: true }));
     }
   };
@@ -219,47 +255,167 @@ export default function FocusPage() {
 
         {/* Right Column: Tasks & Ambience */}
         <div className="w-full lg:w-96 flex flex-col gap-6">
-          {/* Soundscape Mixer */}
-          <div className="bg-slate-900/30 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-100">
-                <Headphones className="w-5 h-5 text-purple-400" /> Soundscape Mixer
+          {/* Soundscape Mixer — Spotify Style */}
+          <div className="bg-[#121212] backdrop-blur-xl border border-white/5 rounded-3xl shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-white/5">
+              <h3 className="text-base font-bold flex items-center gap-2 text-white">
+                <Headphones className="w-4 h-4 text-green-400" /> Soundscape Mixer
               </h3>
               <button 
                 onClick={shuffleTracks} 
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:text-white bg-purple-500/10 border border-purple-500/20 hover:bg-purple-600/30 transition-all hover:scale-105"
-                title="Shuffle Tracks"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-green-400 hover:text-white bg-green-500/10 border border-green-500/20 hover:bg-green-600/30 transition-all hover:scale-105"
               >
-                <Shuffle className="w-3.5 h-3.5" /> Shuffle
+                <Shuffle className="w-3 h-3" /> Shuffle
               </button>
             </div>
-            <div className="space-y-5">
-              {soundscapes.map(sound => (
-                <div key={sound.id} className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between cursor-pointer" onClick={() => toggleSound(sound.id, sound.url)}>
-                    <span className={`text-sm transition-colors ${activeSounds[sound.id] ? 'text-white font-medium' : 'text-slate-400'}`}>
-                      {sound.name}
-                    </span>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors ${activeSounds[sound.id] ? 'bg-blue-500' : 'bg-slate-800'}`}>
-                      <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${activeSounds[sound.id] ? 'left-5' : 'left-0.5'}`}></div>
+
+            {/* Liked Songs Tab */}
+            {Object.values(likedSounds).some(Boolean) && (
+              <div className="px-4 pt-3 pb-1">
+                <p className="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-2">❤️ Liked Songs</p>
+                <div className="space-y-1">
+                  {sortedSoundscapes.filter(s => likedSounds[s.id]).map(sound => (
+                    <div
+                      key={`liked-${sound.id}`}
+                      onClick={() => toggleSound(sound.id, sound.url)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition-all group ${
+                        activeSounds[sound.id] ? 'bg-green-500/15 border border-green-500/20' : 'hover:bg-white/5'
+                      }`}
+                    >
+                      {/* Playing animation or index */}
+                      <div className="w-6 flex items-center justify-center shrink-0">
+                        {loadingSounds[sound.id] ? (
+                          <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
+                        ) : activeSounds[sound.id] ? (
+                          <div className="flex items-end gap-[2px] h-4">
+                            {[1,2,3].map(i => (
+                              <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
+                                animate={{ height: ['4px','12px','6px','10px','4px'] }}
+                                transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15, ease:'easeInOut' }}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <Heart className="w-3.5 h-3.5 text-green-400 fill-green-400" />
+                        )}
+                      </div>
+                      <span className={`text-xs flex-1 truncate ${
+                        activeSounds[sound.id] ? 'text-green-400 font-semibold' : 'text-slate-300'
+                      }`}>{sound.name}</span>
                     </div>
-                  </div>
-                  
-                  {activeSounds[sound.id] && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="flex items-center gap-3 pl-2">
-                      <Volume2 className="w-4 h-4 text-slate-400" />
-                      <input 
-                        type="range" 
-                        min="0" max="1" step="0.01" 
-                        value={volumes[sound.id] ?? 0.5} 
-                        onChange={(e) => changeVolume(sound.id, parseFloat(e.target.value))}
-                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                      />
-                    </motion.div>
-                  )}
+                  ))}
                 </div>
-              ))}
+                <div className="border-t border-white/5 mt-3 mb-1" />
+              </div>
+            )}
+
+            {/* All Tracks */}
+            <div className="px-4 py-3">
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">All Songs</p>
+              <div className="space-y-0.5 max-h-[340px] overflow-y-auto pr-1" style={{scrollbarWidth:'thin', scrollbarColor:'#333 transparent'}}>
+                {sortedSoundscapes.map((sound, idx) => (
+                  <div key={sound.id} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
+                    activeSounds[sound.id] ? 'bg-white/10' : 'hover:bg-white/5'
+                  }`}>
+                    {/* Track number / playing indicator */}
+                    <div className="w-5 flex items-center justify-center shrink-0">
+                      {loadingSounds[sound.id] ? (
+                        <Loader2 className="w-3.5 h-3.5 text-green-400 animate-spin" />
+                      ) : activeSounds[sound.id] ? (
+                        <div className="flex items-end gap-[2px] h-4">
+                          {[1,2,3].map(i => (
+                            <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
+                              animate={{ height: ['4px','12px','6px','10px','4px'] }}
+                              transition={{ duration: 0.8, repeat: Infinity, delay: i*0.15, ease:'easeInOut' }}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-slate-500 group-hover:hidden">{idx + 1}</span>
+                      )}
+                      {!activeSounds[sound.id] && !loadingSounds[sound.id] && (
+                        <Play className="w-3.5 h-3.5 text-white hidden group-hover:block" />
+                      )}
+                    </div>
+
+                    {/* Song name */}
+                    <div className="flex-1 min-w-0" onClick={() => toggleSound(sound.id, sound.url)}>
+                      <p className={`text-sm truncate transition-colors ${
+                        activeSounds[sound.id] ? 'text-green-400 font-semibold' : 'text-slate-300 group-hover:text-white'
+                      }`}>{sound.name}</p>
+                      {loadingSounds[sound.id] && (
+                        <p className="text-[10px] text-slate-500 animate-pulse">Loading...</p>
+                      )}
+                    </div>
+
+                    {/* Like button */}
+                    <button
+                      onClick={(e) => toggleLike(sound.id, e)}
+                      className={`shrink-0 p-1 rounded-full transition-all opacity-0 group-hover:opacity-100 ${
+                        likedSounds[sound.id] ? '!opacity-100' : ''
+                      } hover:scale-110`}
+                      title={likedSounds[sound.id] ? 'Remove from Liked' : 'Add to Liked'}
+                    >
+                      <Heart className={`w-3.5 h-3.5 transition-colors ${
+                        likedSounds[sound.id] ? 'fill-green-400 text-green-400' : 'text-slate-500 hover:text-white'
+                      }`} />
+                    </button>
+
+                    {/* Volume slider when active */}
+                    {activeSounds[sound.id] && (
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Volume2 className="w-3 h-3 text-slate-400" />
+                        <input
+                          type="range" min="0" max="1" step="0.01"
+                          value={volumes[sound.id] ?? 0.7}
+                          onChange={(e) => { e.stopPropagation(); changeVolume(sound.id, parseFloat(e.target.value)); }}
+                          onClick={e => e.stopPropagation()}
+                          className="w-16 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-400"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Now Playing Bar */}
+            <AnimatePresence>
+              {activeSongName && (
+                <motion.div
+                  initial={{ y: 60, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 60, opacity: 0 }}
+                  className="border-t border-white/5 px-5 py-3 bg-[#181818] flex items-center gap-3"
+                >
+                  <div className="flex items-end gap-[3px] h-5 shrink-0">
+                    {[1,2,3,4].map(i => (
+                      <motion.div key={i} className="w-[3px] bg-green-400 rounded-full"
+                        animate={{ height: ['4px','16px','8px','12px','4px'] }}
+                        transition={{ duration: 0.9, repeat: Infinity, delay: i*0.12, ease:'easeInOut' }}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-green-400 font-semibold truncate">{activeSongName}</p>
+                    <p className="text-[10px] text-slate-500">Now Playing</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const activeId = Object.entries(activeSounds).find(([,v]) => v)?.[0];
+                      if (activeId) {
+                        const s = soundscapes.find(x => x.id === activeId);
+                        if (s) toggleSound(s.id, s.url);
+                      }
+                    }}
+                    className="w-7 h-7 bg-green-400 hover:bg-green-300 rounded-full flex items-center justify-center transition-colors shrink-0"
+                  >
+                    <Pause className="w-3.5 h-3.5 text-black fill-black" />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Study Goals */}
