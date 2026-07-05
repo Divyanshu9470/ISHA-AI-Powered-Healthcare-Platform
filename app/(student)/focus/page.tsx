@@ -10,21 +10,24 @@ import {
 } from "lucide-react";
 
 const SOUNDSCAPES = [
-  { id: "lofi", name: "Lofi Study Beats", url: "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" },
-  { id: "piano", name: "Calm Classical Piano", url: "https://cdn.pixabay.com/audio/2022/11/22/audio_febc508520.mp3" },
-  { id: "zen", name: "Zen Meditation Waves", url: "https://cdn.pixabay.com/audio/2022/10/25/audio_b2829241ec.mp3" },
-  { id: "space", name: "Deep Ambient Focus", url: "https://cdn.pixabay.com/audio/2021/11/25/audio_91b3cb18df.mp3" },
-  { id: "brown", name: "Deep Brown Noise", url: "https://cdn.pixabay.com/audio/2023/04/11/audio_1ab25145cd.mp3" },
-  { id: "rain", name: "Gentle Rain on Window", url: "https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3" },
-  { id: "cafe", name: "Cozy Study Cafe", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3" },
-  { id: "forest", name: "Calm Forest Stream", url: "https://cdn.pixabay.com/audio/2022/01/26/audio_d0c6ff1101.mp3" },
-  { id: "binaural", name: "Binaural Focus Beats", url: "https://cdn.pixabay.com/audio/2022/03/10/audio_c2ed776c5b.mp3" },
-  { id: "bowls", name: "Tibetan Singing Bowls", url: "https://cdn.pixabay.com/audio/2023/02/28/audio_8218171120.mp3" },
-  { id: "spacedrone", name: "Cosmic Calming Drone", url: "https://cdn.pixabay.com/audio/2022/01/18/audio_a16bc0b616.mp3" },
-  { id: "guitar", name: "Classical Guitar Calm", url: "https://cdn.pixabay.com/audio/2021/11/23/audio_0c9462d7a2.mp3" },
-  { id: "alpha", name: "Alpha Waves Meditative", url: "https://cdn.pixabay.com/audio/2022/10/18/audio_31913c0bbf.mp3" },
-  { id: "ocean", name: "Ocean Waves Relaxation", url: "https://cdn.pixabay.com/audio/2022/02/22/audio_1d48c08170.mp3" },
-  { id: "thunder", name: "Soft Rain & Light Thunder", url: "https://cdn.pixabay.com/audio/2023/05/30/audio_73144a2c10.mp3" }
+  // ── Requested Vocal Songs ──────────────────────────────────────────────
+  { id: "daydream",     name: "🌙 Daydream — Luna",                   url: "/audio/daydream.mp3" },
+  { id: "oak_tree",    name: "🌳 Under the Oak Tree",                 url: "/audio/oak_tree.mp3" },
+  { id: "lover",       name: "💗 Lover — Taylor Swift",               url: "/audio/lover.mp3" },
+  { id: "backstreet",  name: "🎵 I Want It That Way — Backstreet Boys", url: "/audio/backstreet.mp3" },
+  { id: "nothing",     name: "💛 Nothing's Gonna Change My Love",     url: "https://archive.org/download/flashbackselecionadofile/NOTHING%20GONNA%20-%20CHANGE%20MY%20LOVE%20FOR%20YOU.mp3" },
+  { id: "notalone",    name: "🤍 You Are Not Alone — Michael Jackson", url: "https://archive.org/download/romanticas90/Michael%20Jackson%20-%20You%20Are%20Not%20Alone.mp3" },
+  { id: "everybreath", name: "🌬️ Every Breath You Take — The Police", url: "https://archive.org/download/flashbackselecionadofile/THE%20POLICE%20-%20EVERY%20BREATH%20YOU%20TAKE.mp3" },
+  { id: "kissme",      name: "😊 Kiss Me — Sixpence None the Richer", url: "https://archive.org/download/romanticas90/Sixpence%20None%20The%20Richer%20-%20Kiss%20Me.mp3" },
+  { id: "iris",        name: "🌺 Iris — Goo Goo Dolls",               url: "https://archive.org/download/kungtripmojusthitplay/GooGooDolls-Iris.mp3" },
+  { id: "smiths",      name: "🎸 Heaven Knows I'm Miserable — The Smiths", url: "https://archive.org/download/flashbackselecionadofile/HEART%20-%20ALONE.mp3" },
+  { id: "heavenknows", name: "✨ Heaven Knows — Bryan Adams (Heaven)",  url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20HEAVEN.mp3" },
+  // ── Bonus Classic Vocals ───────────────────────────────────────────────
+  { id: "myheartwill", name: "🚢 My Heart Will Go On — Celine Dion",  url: "https://archive.org/download/flashbackselecionadofile/CELINE%20DION%20-%20MY%20HEART%20WILL%20GO%20ON.mp3" },
+  { id: "rightwait",   name: "⏳ Right Here Waiting — Richard Marx",  url: "https://archive.org/download/flashbackselecionadofile/RICHARD%20MARX%20-%20RIGHT%20HERE%20WAITING.mp3" },
+  { id: "imagine",     name: "🕊️ Imagine — John Lennon",              url: "https://archive.org/download/flashbackselecionadofile/JOHN%20LENON%20-%20IMAGINE.mp3" },
+  { id: "wicked",      name: "🌹 Wicked Game — Chris Isaak",          url: "https://archive.org/download/flashbackselecionadofile/CHRIS%20ISAAK%20-%20WICKED%20GAME.mp3" },
+  { id: "everywhere",  name: "🌟 Everything I Do — Bryan Adams",       url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20EVERYTHING%20I%20DO%20IT%20FOR%20YOU.mp3" },
 ];
 
 export default function FocusPage() {
