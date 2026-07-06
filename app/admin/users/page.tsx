@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Shield, GraduationCap } from "lucide-react";
+import { Users, Shield, GraduationCap, Phone, School, Hash, MapPin } from "lucide-react";
 
 interface User {
     id: string;
@@ -105,31 +105,43 @@ export default function AdminUsersPage() {
                                 >
                                     <td className="px-5 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
                                                 {(user.name || user.email)[0].toUpperCase()}
                                             </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-foreground">
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-semibold text-foreground">
                                                     {user.name || "—"}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
                                                     {user.email}
                                                 </p>
-                                                {user.phone && (
-                                                    <p className="text-[10px] text-muted-foreground/85 mt-0.5 font-sans">
-                                                        📞 {user.phone}
-                                                    </p>
-                                                )}
-                                                {(user.university || user.rollNumber || user.state || user.country) && (
-                                                    <div className="text-[9px] text-muted-foreground/75 mt-1 border-t border-border/20 pt-1 space-y-0.5 max-w-[200px] leading-tight">
+                                                
+                                                {/* Detailed user profile info badges */}
+                                                {(user.phone || user.university || user.rollNumber || user.state || user.country) && (
+                                                    <div className="flex flex-wrap gap-1.5 mt-2 max-w-xl">
+                                                        {user.phone && (
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted/60 border border-border/30 text-xs text-foreground/80 hover:bg-muted transition-colors whitespace-nowrap">
+                                                                <Phone size={10} className="text-muted-foreground" />
+                                                                {user.phone}
+                                                            </span>
+                                                        )}
                                                         {user.university && (
-                                                            <p className="truncate">🏫 {user.university}</p>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted/60 border border-border/30 text-xs text-foreground/80 hover:bg-muted transition-colors whitespace-nowrap capitalize">
+                                                                <School size={10} className="text-muted-foreground" />
+                                                                {user.university}
+                                                            </span>
                                                         )}
                                                         {user.rollNumber && (
-                                                            <p className="truncate">🆔 Roll: {user.rollNumber}</p>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted/60 border border-border/30 text-xs text-foreground/80 hover:bg-muted transition-colors whitespace-nowrap">
+                                                                <Hash size={10} className="text-muted-foreground" />
+                                                                Roll: {user.rollNumber}
+                                                            </span>
                                                         )}
                                                         {(user.state || user.country) && (
-                                                            <p className="truncate">📍 {[user.state, user.country].filter(Boolean).join(", ")}</p>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted/60 border border-border/30 text-xs text-foreground/80 hover:bg-muted transition-colors whitespace-nowrap capitalize">
+                                                                <MapPin size={10} className="text-muted-foreground" />
+                                                                {[user.state, user.country].filter(Boolean).join(", ")}
+                                                            </span>
                                                         )}
                                                     </div>
                                                 )}
