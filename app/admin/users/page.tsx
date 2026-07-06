@@ -8,6 +8,10 @@ interface User {
     name: string | null;
     email: string;
     phone: string | null;
+    country: string | null;
+    state: string | null;
+    university: string | null;
+    rollNumber: string | null;
     role: string;
     createdAt: string;
     _count: { enrollments: number };
@@ -115,6 +119,19 @@ export default function AdminUsersPage() {
                                                     <p className="text-[10px] text-muted-foreground/85 mt-0.5 font-sans">
                                                         📞 {user.phone}
                                                     </p>
+                                                )}
+                                                {(user.university || user.rollNumber || user.state || user.country) && (
+                                                    <div className="text-[9px] text-muted-foreground/75 mt-1 border-t border-border/20 pt-1 space-y-0.5 max-w-[200px] leading-tight">
+                                                        {user.university && (
+                                                            <p className="truncate">🏫 {user.university}</p>
+                                                        )}
+                                                        {user.rollNumber && (
+                                                            <p className="truncate">🆔 Roll: {user.rollNumber}</p>
+                                                        )}
+                                                        {(user.state || user.country) && (
+                                                            <p className="truncate">📍 {[user.state, user.country].filter(Boolean).join(", ")}</p>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
