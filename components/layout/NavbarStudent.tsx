@@ -36,8 +36,6 @@ export function NavbarStudent() {
         };
     }, []);
 
-    if (!mounted) return null;
-
     const toggleDark = () => {
         setIsDark(!isDark);
         if (!isDark) {
@@ -111,10 +109,19 @@ export function NavbarStudent() {
                         className="w-9 h-9 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-300"
                         aria-label="Toggle dark mode"
                     >
-                        {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                        {!mounted ? <Moon size={18} /> : isDark ? <Sun size={18} /> : <Moon size={18} />}
                     </button>
 
-                    {session ? (
+                    {!mounted ? (
+                        <>
+                            <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                                Log in
+                            </Link>
+                            <Link href="/register" className="inline-flex items-center justify-center whitespace-nowrap text-sm bg-primary text-primary-foreground h-10 px-6 font-semibold shadow-lg shadow-primary/20 rounded-full hover:scale-[1.02] transition-all duration-300">
+                                Get Started
+                            </Link>
+                        </>
+                    ) : session ? (
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2 text-sm font-medium">
                                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -145,7 +152,7 @@ export function NavbarStudent() {
                         className="w-9 h-9 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground transition-all"
                         aria-label="Toggle dark mode"
                     >
-                        {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                        {!mounted ? <Moon size={18} /> : isDark ? <Sun size={18} /> : <Moon size={18} />}
                     </button>
                     <button
                         className="p-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -176,16 +183,25 @@ export function NavbarStudent() {
                             </Link>
                         )}
                         <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border">
-                            {session ? (
+                            {!mounted ? (
+                                <>
+                                    <Link href="/login" className="flex items-center justify-center w-full py-2 text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>
+                                        Log in
+                                    </Link>
+                                    <Link href="/register" className="flex items-center justify-center w-full bg-primary text-primary-foreground py-2.5 rounded-full font-semibold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>
+                                        Get Started
+                                    </Link>
+                                </>
+                            ) : session ? (
                                 <button onClick={() => signOut()} className="flex items-center justify-center gap-2 w-full text-red-500 font-medium py-2 hover:bg-red-50 rounded-xl transition-colors">
                                     <LogOut size={18} /> Sign Out
                                 </button>
                             ) : (
                                 <>
-                                    <Link href="/login" className="flex items-center justify-center w-full py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                                    <Link href="/login" className="flex items-center justify-center w-full py-2 text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>
                                         Log in
                                     </Link>
-                                    <Link href="/register" className="flex items-center justify-center w-full bg-primary text-primary-foreground py-2.5 rounded-full font-semibold shadow-md">
+                                    <Link href="/register" className="flex items-center justify-center w-full bg-primary text-primary-foreground py-2.5 rounded-full font-semibold shadow-md" onClick={() => setIsMobileMenuOpen(false)}>
                                         Get Started
                                     </Link>
                                 </>

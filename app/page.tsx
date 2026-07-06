@@ -1,5 +1,3 @@
-"use client";
-
 import { NavbarStudent } from "@/components/layout/NavbarStudent";
 import { FooterStudent } from "@/components/layout/FooterStudent";
 import { HeroStudent } from "@/components/sections/HeroStudent";
@@ -13,6 +11,27 @@ import { SEOArticles } from "@/components/sections/SEOArticles";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "IshaMed — AI-Powered Medical Education Platform for Students",
+    description: "Prepare for USMLE, PLAB, NEET PG, FMGE, and INICET with IshaMed. Access interactive clinical triage simulators, 3D anatomy dissection labs, spaced-repetition flashcards, and high-yield board prep courses.",
+    keywords: [
+        "AI medical platform for students",
+        "USMLE board prep",
+        "NEET PG preparation",
+        "FMGE online coaching",
+        "triage simulator",
+        "spaced repetition flashcards",
+        "3D anatomy viewer",
+        "medical learning dashboard"
+    ],
+    openGraph: {
+        title: "IshaMed — AI-Powered Medical Education Platform for Students",
+        description: "Prepare for USMLE, PLAB, NEET PG, FMGE, and INICET with IshaMed. Access interactive clinical triage simulators, 3D anatomy dissection labs, spaced-repetition flashcards, and high-yield board prep courses.",
+        type: "website",
+    }
+};
 
 export default function Home() {
     return (

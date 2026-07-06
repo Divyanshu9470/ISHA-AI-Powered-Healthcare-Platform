@@ -71,6 +71,8 @@ export function FooterStudent() {
                         <ul className="space-y-3 text-sm">
                             {[
                                 { name: "Courses", href: "/courses" },
+                                { name: "Student Log In", href: "/login" },
+                                { name: "Student Registration", href: "/register" },
                                 { name: "Mentors", href: "/mentors" },
                                 { name: "Study Material", href: "/study-material" },
                                 { name: "Q&A Forum", href: "/forum" },

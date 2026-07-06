@@ -1,6 +1,13 @@
 import { CourseCard } from "@/components/ui/CourseCard";
 import { CourseSidebar } from "@/components/layout/CourseSidebar";
 import { prisma } from "@/lib/db";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Medical Board Prep Course Catalog | IshaMed",
+    description: "Browse high-yield medical courses designed for USMLE, PLAB, NEET PG, and FMGE. Filter by specialty, syllabus, or exam level to find the right module.",
+    keywords: ["medical board prep", "USMLE prep courses", "NEET PG medical coaching", "FMGE preparation", "medical learning syllabus"]
+};
 
 interface CoursesPageProps {
     searchParams: Promise<{

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, CheckCircle, AlertTriangle, Play, Sparkles, TrendingDown, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 type ReportType = "CBC" | "LFT" | "ECG";
 
@@ -136,7 +137,7 @@ export function InteractiveDemo() {
                                     </div>
                                     <div>
                                         <div className="font-semibold text-base text-white">{type === "CBC" ? "CBC Blood Count" : type === "LFT" ? "Liver Function Test" : "12-Lead ECG"}</div>
-                                        <div className="text-xs text-slate-500 font-light mt-0.5">Click to run analysis</div>
+                                        <div className="text-xs text-slate-400 font-light mt-0.5">Click to run analysis</div>
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity translate-x-1" />
@@ -145,12 +146,14 @@ export function InteractiveDemo() {
 
                         <div className="p-5 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] mt-6">
                             <h4 className="text-sm font-semibold text-slate-300 mb-2">Want to try your own?</h4>
-                            <p className="text-xs text-slate-500 leading-relaxed mb-4 font-light">
+                            <p className="text-xs text-slate-400 leading-relaxed mb-4 font-light">
                                 Sign up to upload custom PDF reports, handwritten notes, or DICOM scans for real-time analysis.
                             </p>
-                            <Button className="w-full rounded-full bg-slate-800 hover:bg-slate-700 text-white text-xs border border-white/10 py-5">
-                                Create Free Provider Account
-                            </Button>
+                            <Link href="/register" className="block w-full">
+                                <Button className="w-full rounded-full bg-slate-800 hover:bg-slate-700 text-white text-xs border border-white/10 py-5">
+                                    Create Free Provider Account
+                                </Button>
+                            </Link>
                         </div>
                     </div>
 
@@ -172,10 +175,10 @@ export function InteractiveDemo() {
                                         <Sparkles className="w-8 h-8 text-blue-400 animate-pulse" />
                                     </div>
                                     <h4 className="text-xl font-bold mb-2 text-slate-200">AI Medical Copilot Sandbox</h4>
-                                    <p className="text-sm text-slate-500 max-w-sm font-light">
+                                    <p className="text-sm text-slate-400 max-w-sm font-light">
                                         Select a report type on the left to see how ISHA instantly synthesizes complex diagnostic records.
                                     </p>
-                                    <div className="mt-8 flex items-center gap-2 text-xs text-slate-600 bg-slate-950 px-4 py-2 rounded-full border border-white/5 font-mono">
+                                    <div className="mt-8 flex items-center gap-2 text-xs text-slate-400 bg-slate-950 px-4 py-2 rounded-full border border-white/5 font-mono">
                                         <Play className="w-3 h-3 text-blue-500 fill-blue-500" /> Waiting for report input...
                                     </div>
                                 </motion.div>
@@ -198,7 +201,7 @@ export function InteractiveDemo() {
                                         </div>
                                     </div>
                                     <h4 className="text-lg font-bold text-slate-200 animate-pulse">Running Optical Character Recognition (OCR)...</h4>
-                                    <p className="text-xs text-slate-500 mt-2 font-mono">Matching values to clinical reference data & patient timeline...</p>
+                                    <p className="text-xs text-slate-400 mt-2 font-mono">Matching values to clinical reference data & patient timeline...</p>
                                 </motion.div>
                             )}
 
@@ -224,13 +227,13 @@ export function InteractiveDemo() {
 
                                     {/* Summary */}
                                     <div className="bg-slate-950/60 p-4 rounded-xl border border-white/5">
-                                        <h4 className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1.5">AI Synthesis & Summary</h4>
+                                        <h4 className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1.5">AI Synthesis & Summary</h4>
                                         <p className="text-sm text-slate-300 leading-relaxed font-light">{analyzedData.summary}</p>
                                     </div>
 
                                     {/* Abnormal Values Table */}
                                     <div>
-                                        <h4 className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-3">Flagged Abnormal Values</h4>
+                                        <h4 className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-3">Flagged Abnormal Values</h4>
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-left text-sm border-collapse">
                                                 <thead>
@@ -246,7 +249,7 @@ export function InteractiveDemo() {
                                                         <tr key={idx} className="border-b border-white/5 py-2.5 text-slate-200">
                                                             <td className="py-2.5 font-medium">{item.parameter}</td>
                                                             <td className="py-2.5 font-mono text-white">{item.value}</td>
-                                                            <td className="py-2.5 text-slate-500">{item.reference}</td>
+                                                            <td className="py-2.5 text-slate-400">{item.reference}</td>
                                                             <td className="py-2.5 text-right">
                                                                 <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold ${
                                                                     item.status === "Critical" || item.status === "Critical Elevation"
@@ -265,7 +268,7 @@ export function InteractiveDemo() {
 
                                     {/* Timeline & Historical Comparison */}
                                     <div className="bg-slate-950/60 p-4 rounded-xl border border-white/5">
-                                        <h4 className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                        <h4 className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                             <TrendingDown className="w-4 h-4 text-blue-400" /> Historical Comparison & Trends
                                         </h4>
                                         <p className="text-sm text-slate-300 leading-relaxed font-light">{analyzedData.history}</p>
@@ -273,7 +276,7 @@ export function InteractiveDemo() {
 
                                     {/* Differential Diagnoses */}
                                     <div>
-                                        <h4 className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-3">AI-Suggested Differential Diagnoses</h4>
+                                        <h4 className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-3">AI-Suggested Differential Diagnoses</h4>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             {analyzedData.differentials.map((diff, idx) => (
                                                 <div key={idx} className="p-4 rounded-xl border border-white/5 bg-slate-900/80">
@@ -284,7 +287,7 @@ export function InteractiveDemo() {
                                                                 ? "bg-rose-500/10 text-rose-400"
                                                                 : diff.probability.includes("Medium")
                                                                 ? "bg-blue-500/10 text-blue-400"
-                                                                : "bg-slate-800 text-slate-500"
+                                                                : "bg-slate-800 text-slate-400"
                                                         }`}>
                                                             {diff.probability.split(" ")[0]}
                                                         </span>
@@ -297,7 +300,7 @@ export function InteractiveDemo() {
 
                                     {/* Suggested Patient Questions */}
                                     <div className="border-t border-white/5 pt-4">
-                                        <h4 className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-2.5">Suggested Next Clinical Inquiries</h4>
+                                        <h4 className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-2.5">Suggested Next Clinical Inquiries</h4>
                                         <ul className="space-y-2">
                                             {analyzedData.questions.map((q, idx) => (
                                                 <li key={idx} className="flex gap-2.5 items-start text-sm text-slate-300">
