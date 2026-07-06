@@ -7,6 +7,7 @@ interface User {
     id: string;
     name: string | null;
     email: string;
+    phone: string | null;
     role: string;
     createdAt: string;
     _count: { enrollments: number };
@@ -110,6 +111,11 @@ export default function AdminUsersPage() {
                                                 <p className="text-xs text-muted-foreground">
                                                     {user.email}
                                                 </p>
+                                                {user.phone && (
+                                                    <p className="text-[10px] text-muted-foreground/85 mt-0.5 font-sans">
+                                                        📞 {user.phone}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </td>
