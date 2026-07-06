@@ -10,6 +10,7 @@ import {
     FileText,
     TrendingUp,
     Clock,
+    MessageSquare,
 } from "lucide-react";
 
 interface Stats {
@@ -21,11 +22,21 @@ interface Stats {
     totalEnrollments: number;
     totalLiveClasses: number;
     totalRevenue: number;
+    totalFeedbacks: number;
     recentEnrollments: {
         id: string;
         createdAt: string;
         user: { name: string | null; email: string };
         course: { title: string };
+    }[];
+    recentFeedbacks: {
+        id: string;
+        name: string | null;
+        email: string | null;
+        type: "SUGGESTION" | "BUG" | "FEATURE_REQUEST" | "OTHER";
+        message: string;
+        rating: number;
+        createdAt: string;
     }[];
 }
 
@@ -124,6 +135,13 @@ export default function AdminDashboard() {
             color: "text-emerald-500",
             bg: "bg-emerald-500/10",
         },
+        {
+            label: "User Feedback",
+            value: stats.totalFeedbacks || 0,
+            icon: MessageSquare,
+            color: "text-amber-500",
+            bg: "bg-amber-500/10",
+        },
     ];
 
     return (
@@ -158,41 +176,97 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                    <Clock size={20} className="text-primary" />
-                    Recent Enrollments
-                </h2>
-                {stats.recentEnrollments.length === 0 ? (
-                    <p className="text-muted-foreground text-sm py-4">No enrollments yet.</p>
-                ) : (
-                    <div className="space-y-3">
-                        {stats.recentEnrollments.map((enrollment) => (
-                            <div
-                                key={enrollment.id}
-                                className="flex items-center justify-between py-3 px-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
-                            >
-                                <div className="flex items-center gap-3 min-w-0">
-                                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
-                                        {(enrollment.user.name || enrollment.user.email)[0].toUpperCase()}
+            {/* Recent Activity Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Enrollments */}
+                <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                            <Clock size={20} className="text-primary" />
+                            Recent Enrollments
+                        </h2>
+                        {stats.recentEnrollments.length === 0 ? (
+                            <p className="text-muted-foreground text-sm py-4">No enrollments yet.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {stats.recentEnrollments.map((enrollment) => (
+                                    <div
+                                        key={enrollment.id}
+                                        className="flex items-center justify-between py-3 px-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
+                                    >
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+                                                {(enrollment.user.name || enrollment.user.email)[0].toUpperCase()}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-medium text-foreground truncate">
+                                                    {enrollment.user.name || enrollment.user.email}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground truncate">
+                                                    Enrolled in <span className="font-medium text-primary">{enrollment.course.title}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span className="text-xs text-muted-foreground shrink-0 ml-4">
+                                            {new Date(enrollment.createdAt).toLocaleDateString()}
+                                        </span>
                                     </div>
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-medium text-foreground truncate">
-                                            {enrollment.user.name || enrollment.user.email}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground truncate">
-                                            Enrolled in <span className="font-medium text-primary">{enrollment.course.title}</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <span className="text-xs text-muted-foreground shrink-0 ml-4">
-                                    {new Date(enrollment.createdAt).toLocaleDateString()}
-                                </span>
+                                ))}
                             </div>
-                        ))}
+                        )}
                     </div>
-                )}
+                </div>
+
+                {/* Recent Feedbacks */}
+                <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                            <MessageSquare size={20} className="text-amber-500" />
+                            Recent Feedbacks
+                        </h2>
+                        {stats.recentFeedbacks.length === 0 ? (
+                            <p className="text-muted-foreground text-sm py-4">No feedback submitted yet.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {stats.recentFeedbacks.map((feedback) => (
+                                    <div
+                                        key={feedback.id}
+                                        className="flex items-start justify-between py-3 px-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
+                                    >
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-sm font-bold text-foreground truncate">
+                                                    {feedback.name || "Anonymous"}
+                                                </span>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
+                                                    feedback.type === "BUG"
+                                                        ? "bg-red-500/10 text-red-600 border-red-500/20"
+                                                        : feedback.type === "FEATURE_REQUEST"
+                                                        ? "bg-indigo-500/10 text-indigo-600 border-indigo-500/20"
+                                                        : "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                                                }`}>
+                                                    {feedback.type}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-300 line-clamp-2 italic">
+                                                &quot;{feedback.message}&quot;
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-end shrink-0 ml-4">
+                                            <div className="flex items-center gap-0.5 text-amber-400 mb-1">
+                                                <span className="text-xs font-bold">{feedback.rating}</span>
+                                                <span className="text-[10px]">★</span>
+                                            </div>
+                                            <span className="text-[10px] text-muted-foreground">
+                                                {new Date(feedback.createdAt).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

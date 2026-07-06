@@ -3,13 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const [totalUsers, totalCourses, totalEnrollments, totalLiveClasses, totalLessons] =
+        const [totalUsers, totalCourses, totalEnrollments, totalLiveClasses, totalLessons, totalFeedbacks] =
             await Promise.all([
                 prisma.user.count(),
                 prisma.course.count(),
                 prisma.enrollment.count(),
                 prisma.liveClass.count(),
                 prisma.lesson.count(),
+                prisma.feedback.count(),
             ]);
 
         const studentCount = await prisma.user.count({ where: { role: "STUDENT" } });
@@ -21,6 +22,11 @@ export async function GET() {
                 user: { select: { name: true, email: true } },
                 course: { select: { title: true } },
             },
+        });
+
+        const recentFeedbacks = await prisma.feedback.findMany({
+            take: 5,
+            orderBy: { createdAt: "desc" },
         });
 
         const publishedCourses = await prisma.course.count({ where: { published: true } });
@@ -43,7 +49,9 @@ export async function GET() {
             totalEnrollments,
             totalLiveClasses,
             totalRevenue,
+            totalFeedbacks,
             recentEnrollments,
+            recentFeedbacks,
         });
     } catch (error) {
         console.error("Stats API error:", error);

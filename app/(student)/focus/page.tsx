@@ -15,36 +15,36 @@ const SOUNDSCAPES = [
   { id: "oak_tree",    name: "🌳 Under the Oak Tree",                  url: "/audio/oak_tree.mp3",   lang: "EN" },
   { id: "lover",       name: "💗 Lover — Taylor Swift",                url: "/audio/lover.mp3",      lang: "EN" },
   { id: "backstreet",  name: "🎵 I Want It That Way — Backstreet Boys", url: "/audio/backstreet.mp3", lang: "EN" },
-  { id: "nothing",     name: "💛 Nothing's Gonna Change My Love",      url: "https://archive.org/download/flashbackselecionadofile/NOTHING%20GONNA%20-%20CHANGE%20MY%20LOVE%20FOR%20YOU.mp3", lang: "EN" },
-  { id: "notalone",    name: "🤍 You Are Not Alone — Michael Jackson",  url: "https://archive.org/download/romanticas90/Michael%20Jackson%20-%20You%20Are%20Not%20Alone.mp3", lang: "EN" },
-  { id: "everybreath", name: "🌬️ Every Breath You Take — The Police",  url: "https://archive.org/download/flashbackselecionadofile/THE%20POLICE%20-%20EVERY%20BREATH%20YOU%20TAKE.mp3", lang: "EN" },
-  { id: "kissme",      name: "😊 Kiss Me — Sixpence None the Richer",  url: "https://archive.org/download/romanticas90/Sixpence%20None%20The%20Richer%20-%20Kiss%20Me.mp3", lang: "EN" },
-  { id: "iris",        name: "🌺 Iris — Goo Goo Dolls",                url: "https://archive.org/download/kungtripmojusthitplay/GooGooDolls-Iris.mp3", lang: "EN" },
-  { id: "heavenknows", name: "✨ Heaven — Bryan Adams",                 url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20HEAVEN.mp3", lang: "EN" },
-  { id: "myheartwill", name: "🚢 My Heart Will Go On — Celine Dion",   url: "https://archive.org/download/flashbackselecionadofile/CELINE%20DION%20-%20MY%20HEART%20WILL%20GO%20ON.mp3", lang: "EN" },
-  { id: "rightwait",   name: "⏳ Right Here Waiting — Richard Marx",   url: "https://archive.org/download/flashbackselecionadofile/RICHARD%20MARX%20-%20RIGHT%20HERE%20WAITING.mp3", lang: "EN" },
-  { id: "imagine",     name: "🕊️ Imagine — John Lennon",               url: "https://archive.org/download/flashbackselecionadofile/JOHN%20LENON%20-%20IMAGINE.mp3", lang: "EN" },
-  { id: "wicked",      name: "🌹 Wicked Game — Chris Isaak",           url: "https://archive.org/download/flashbackselecionadofile/CHRIS%20ISAAK%20-%20WICKED%20GAME.mp3", lang: "EN" },
-  { id: "everywhere",  name: "🌟 Everything I Do — Bryan Adams",        url: "https://archive.org/download/flashbackselecionadofile/BRYAN%20ADAMS%20-%20EVERYTHING%20I%20DO%20IT%20FOR%20YOU.mp3", lang: "EN" },
-  { id: "careless",   name: "🎷 Careless Whisper — George Michael",    url: "https://archive.org/download/flashbackselecionadofile/GEORGE%20MICHAEL%20-%20CARELES%20WHISPER.mp3", lang: "EN" },
-  { id: "hero",        name: "🦸 Hero — Mariah Carey",                  url: "https://archive.org/download/flashbackselecionadofile/MARIA%20CAREY%20-%20HERO.mp3", lang: "EN" },
-  { id: "sacrifice",   name: "🕯️ Sacrifice — Elton John",              url: "https://archive.org/download/flashbackselecionadofile/ELTON%20JOHN%20-%20SACRIFICE%20.mp3", lang: "EN" },
-  { id: "eternal",     name: "🔥 Eternal Flame — Roxette",              url: "https://archive.org/download/flashbackselecionadofile/ROXETE%20-%20ETERNAL%20FLAME%20.mp3", lang: "EN" },
-  { id: "heart_alone", name: "💔 Alone — Heart",                        url: "https://archive.org/download/flashbackselecionadofile/HEART%20-%20ALONE.mp3", lang: "EN" },
-  { id: "still_loving",name: "🦂 Still Loving You — Scorpions",         url: "https://archive.org/download/flashbackselecionadofile/SCORPIONS%20-%20STILL%20LOVING%20YOU.mp3", lang: "EN" },
-  { id: "neverup",    name: "🎤 Never Gonna Give You Up — Rick Astley", url: "https://archive.org/download/flashbackselecionadofile/RICK%20ASTLEY%20-%20NEVER%20GONNA%20GIVE%20YOU%20UP.mp3", lang: "EN" },
-  { id: "total_eclipse",name:"🌑 Total Eclipse of the Heart — Bonnie Tyler", url: "https://archive.org/download/flashbackselecionadofile/BONNIE%20TYLER%20-%20TOTAL%20ECLIPSE%20OF%20THE%20HEART.mp3", lang: "EN" },
-  { id: "more_than_words", name: "🎸 More Than Words — Extreme",        url: "https://archive.org/download/flashbackselecionadofile/EXTREME%20-%20MORE%20THAN%20WORDS.mp3", lang: "EN" },
-  { id: "iloveyou",    name: "💚 I Will Always Love You — Whitney",     url: "https://archive.org/download/flashbackselecionadofile/WHITNEY%20HOUSTON%20-%20I%20WILL%20ALWAYS%20LOVE%20YOU.mp3", lang: "EN" },
+  { id: "nothing",     name: "💛 Nothing's Gonna Change My Love",      url: "/audio/nothing.mp3",    lang: "EN" },
+  { id: "notalone",    name: "🤍 You Are Not Alone — Michael Jackson",  url: "/audio/notalone.mp3",   lang: "EN" },
+  { id: "everybreath", name: "🌬️ Every Breath You Take — The Police",  url: "/audio/everybreath.mp3", lang: "EN" },
+  { id: "kissme",      name: "😊 Kiss Me — Sixpence None the Richer",  url: "/audio/kissme.mp3",      lang: "EN" },
+  { id: "iris",        name: "🌺 Iris — Goo Goo Dolls",                url: "/audio/iris.mp3",        lang: "EN" },
+  { id: "heavenknows", name: "✨ Heaven — Bryan Adams",                 url: "/audio/heavenknows.mp3", lang: "EN" },
+  { id: "myheartwill", name: "🚢 My Heart Will Go On — Celine Dion",   url: "/audio/myheartwill.mp3", lang: "EN" },
+  { id: "rightwait",   name: "⏳ Right Here Waiting — Richard Marx",   url: "/audio/rightwait.mp3",   lang: "EN" },
+  { id: "imagine",     name: "🕊️ Imagine — John Lennon",               url: "/audio/imagine.mp3",     lang: "EN" },
+  { id: "wicked",      name: "🌹 Wicked Game — Chris Isaak",           url: "/audio/wicked.mp3",      lang: "EN" },
+  { id: "everywhere",  name: "🌟 Everything I Do — Bryan Adams",        url: "/audio/everywhere.mp3",  lang: "EN" },
+  { id: "careless",   name: "🎷 Careless Whisper — George Michael",    url: "/audio/careless.mp3",    lang: "EN" },
+  { id: "hero",        name: "🦸 Hero — Mariah Carey",                  url: "/audio/hero.mp3",        lang: "EN" },
+  { id: "sacrifice",   name: "🕯️ Sacrifice — Elton John",              url: "/audio/sacrifice.mp3",   lang: "EN" },
+  { id: "eternal",     name: "🔥 Eternal Flame — Roxette",              url: "/audio/eternal.mp3",     lang: "EN" },
+  { id: "heart_alone", name: "💔 Alone — Heart",                        url: "/audio/heart_alone.mp3", lang: "EN" },
+  { id: "still_loving",name: "🦂 Still Loving You — Scorpions",         url: "/audio/still_loving.mp3", lang: "EN" },
+  { id: "neverup",    name: "🎤 Never Gonna Give You Up — Rick Astley", url: "/audio/neverup.mp3",     lang: "EN" },
+  { id: "total_eclipse",name:"🌑 Total Eclipse of the Heart — Bonnie Tyler", url: "/audio/total_eclipse.mp3", lang: "EN" },
+  { id: "more_than_words", name: "🎸 More Than Words — Extreme",        url: "/audio/more_than_words.mp3", lang: "EN" },
+  { id: "iloveyou",    name: "💚 I Will Always Love You — Whitney",     url: "/audio/iloveyou.mp3",    lang: "EN" },
   // ── 🇮🇳 Hindi / Bollywood ─────────────────────────────────────────────
-  { id: "tum_hi_ho",   name: "🌹 Tum Hi Ho — Aashiqui 2",              url: "https://archive.org/download/BollywoodHits2013/Tum%20Hi%20Ho%20-%20Aashiqui%202.mp3", lang: "HI" },
-  { id: "kal_ho",      name: "🌅 Kal Ho Na Ho — Title Track",           url: "https://archive.org/download/KalHoNaHo2003/01%20-%20Kal%20Ho%20Na%20Ho%20%28Title%20Song%29.mp3", lang: "HI" },
-  { id: "kabhi_alvida",name: "🛫 Kabhi Alvida Naa Kehna",               url: "https://archive.org/download/KabhibhiAlvidaNaaKehna/01%20-%20Kabhi%20Alvida%20Naa%20Kehna.mp3", lang: "HI" },
-  { id: "ae_dil",      name: "💜 Ae Dil Hai Mushkil — Title",           url: "https://archive.org/download/AeDilHaiMushkil2016/Ae%20Dil%20Hai%20Mushkil%20-%20Title%20Track.mp3", lang: "HI" },
-  { id: "raabta",      name: "✨ Raabta — Agent Sai Srinivasa",          url: "https://archive.org/download/RaabtaOriginalMotionPictureSoundtrack/01.%20Raabta%20%28Title%20Track%29.mp3", lang: "HI" },
-  { id: "channa_mereya",name:"💛 Channa Mereya — Ae Dil Hai Mushkil",  url: "https://archive.org/download/AeDilHaiMushkil2016/Channa%20Mereya.mp3", lang: "HI" },
-  { id: "mann",        name: "🎵 Mann — Title Song",                    url: "https://archive.org/download/MannOriginalMotionPictureSoundtrack/Mann%20-%20Title%20Song.mp3", lang: "HI" },
-  { id: "phir_le_aya", name: "🌙 Phir Le Aya Dil — Barfi",              url: "https://archive.org/download/BarfiSoundtrack/Phir%20Le%20Aya%20Dil.mp3", lang: "HI" },
+  { id: "tum_hi_ho",   name: "🌹 Tum Hi Ho — Aashiqui 2",              url: "/audio/tum_hi_ho.mp3",   lang: "HI" },
+  { id: "kal_ho",      name: "🌅 Ab Tere Bin — Aashiqui",               url: "/audio/kal_ho.mp3",      lang: "HI" },
+  { id: "kabhi_alvida",name: "🛫 Kabhi Alvida Naa Kehna",               url: "/audio/kabhi_alvida.mp3",lang: "HI" },
+  { id: "ae_dil",      name: "💜 Ae Dil Hai Mushkil — Title",           url: "/audio/ae_dil.mp3",      lang: "HI" },
+  { id: "raabta",      name: "✨ Ajj Din Chadheya — Love Aaj Kal",      url: "/audio/raabta.mp3",      lang: "HI" },
+  { id: "channa_mereya",name:"💛 Channa Mereya — Ae Dil",               url: "/audio/channa_mereya.mp3",lang: "HI" },
+  { id: "mann",        name: "🎵 Mera Mann — Mann",                    url: "/audio/mann.mp3",        lang: "HI" },
+  { id: "phir_le_aya", name: "🌙 Aaoge Jab Tum — Jab We Met",          url: "/audio/phir_le_aya.mp3", lang: "HI" },
 ];
 
 export default function FocusPage() {
@@ -78,7 +78,12 @@ export default function FocusPage() {
     });
   };
 
-  useEffect(() => { shuffleTracks(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      shuffleTracks();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Persist liked songs
   useEffect(() => {

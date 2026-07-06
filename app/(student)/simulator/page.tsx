@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, User, Bot, Activity, FileText, Pill, ChevronLeft, 
@@ -17,12 +17,126 @@ const DIAGNOSIS_OPTIONS = [
   "Renal Colic"
 ];
 
+export interface PatientCase {
+  id: string;
+  name: string;
+  age: number;
+  gender: "male" | "female";
+  chiefComplaint: string;
+  initialSystemMessage: string;
+  initialPatientMessage: string;
+  vitals: {
+    hr: string;
+    bp: string;
+    temp: string;
+    spo2: string;
+    hrAlert?: boolean;
+    tempAlert?: boolean;
+  };
+  medications: string[];
+  diagnosis: string;
+  cbcResults: string;
+  usResults: string;
+  ctResults: string;
+  explanation: string;
+  incorrectExplanation: string;
+}
+
+const PATIENT_CASES: PatientCase[] = [
+  {
+    id: "#842",
+    name: "John Doe",
+    age: 45,
+    gender: "male",
+    chiefComplaint: "Abdominal Pain",
+    initialSystemMessage: "You are now interacting with a 45-year-old male patient complaining of severe abdominal pain.",
+    initialPatientMessage: "Doctor, my stomach hurts so much. It started last night around my belly button and now it's moved to the lower right side.",
+    vitals: { hr: "110 bpm", bp: "130/85", temp: "101.2 °F", spo2: "98%", hrAlert: true, tempAlert: true },
+    medications: ["Lisinopril 10mg (Daily)", "Atorvastatin 20mg (Daily)"],
+    diagnosis: "Acute Appendicitis",
+    cbcResults: "• WBC: 14.5 x10³/µL (High)\n• Neutrophils: 82% (High)\n• CRP: 24 mg/L (High)",
+    usResults: "• Appendix: 8.5 mm (dilated)\n• Target sign positive\n• Free fluid in RLQ",
+    ctResults: "• Appendix: 9.0 mm dilated\n• Pericecal fat stranding\n• Appendicolith seen",
+    explanation: "Excellent job, doctor! The patient presents with classic migratory abdominal pain (starting periumbilical and localizing to the RLQ), low-grade fever, tachycardia, and tenderness at McBurney's point. This is highly indicative of Acute Appendicitis.",
+    incorrectExplanation: "Incorrect diagnosis. Although the patient presents with abdominal pain, the classic migration of pain from the umbilicus to the RLQ, associated with fever and McBurney's point tenderness, is pathognomonic for Acute Appendicitis."
+  },
+  {
+    id: "#294",
+    name: "Sarah Jenkins",
+    age: 52,
+    gender: "female",
+    chiefComplaint: "Right Upper Quadrant Pain",
+    initialSystemMessage: "You are now interacting with a 52-year-old female patient complaining of severe upper stomach pain.",
+    initialPatientMessage: "Doctor, I have this horrible pain in the upper right side of my stomach. It started after I ate a cheeseburger last night, and it's radiating to my right shoulder blade. I've thrown up twice.",
+    vitals: { hr: "105 bpm", bp: "142/90", temp: "100.8 °F", spo2: "97%", hrAlert: true, tempAlert: true },
+    medications: ["Metformin 500mg (Twice daily)", "Levothyroxine 75mcg (Daily)"],
+    diagnosis: "Acute Cholecystitis",
+    cbcResults: "• WBC: 12.8 x10³/µL (High)\n• LFTs: Alk Phos: 135 U/L (Elevated)\n• Bilirubin: 1.1 mg/dL (Normal)",
+    usResults: "• Gallbladder wall: 5 mm (thickened)\n• Pericholecystic fluid present\n• Sonographic Murphy's sign positive\n• Multiple gallstones visualized",
+    ctResults: "• Gallbladder distended with wall enhancement\n• Surrounding inflammatory changes\n• No gallstone duct obstruction",
+    explanation: "Excellent job, doctor! The patient presents with severe right upper quadrant pain radiating to the shoulder blade, triggered by fatty meals (postprandial), associated with vomiting, fever, and leukocytosis. The positive Murphy's sign and ultrasound findings confirm Acute Cholecystitis.",
+    incorrectExplanation: "Incorrect diagnosis. The patient's right upper quadrant pain triggered by fat ingestion, radiating to the right scapula, coupled with gallbladder wall thickening and sonographic Murphy's sign, is classic for Acute Cholecystitis."
+  },
+  {
+    id: "#511",
+    name: "Robert Miller",
+    age: 68,
+    gender: "male",
+    chiefComplaint: "Left Lower Quadrant Pain",
+    initialSystemMessage: "You are now interacting with a 68-year-old male patient complaining of left-sided lower abdominal pain.",
+    initialPatientMessage: "Doctor, my stomach is hurting terribly on the lower left side. It's been constant for the last two days, and I've been feeling chilled, constipated, and bloated.",
+    vitals: { hr: "95 bpm", bp: "138/82", temp: "101.5 °F", spo2: "96%", hrAlert: false, tempAlert: true },
+    medications: ["Amlodipine 5mg (Daily)", "Tamsulosin 0.4mg (Daily)"],
+    diagnosis: "Diverticulitis",
+    cbcResults: "• WBC: 15.2 x10³/µL (High)\n• Neutrophils: 85% (High)\n• CRP: 42 mg/L (High)",
+    usResults: "• Thickenings of colonic wall in LLQ\n• Suboptimal evaluation due to overlying bowel gas",
+    ctResults: "• Sigmoid colon wall thickening & multiple outpouchings\n• Pericolic fat stranding\n• No abscess or free air detected",
+    explanation: "Excellent job, doctor! The patient presents with classic left lower quadrant pain ('left-sided appendicitis'), fever, leucocytosis, and altered bowel habits. The abdominal CT scan confirming sigmoid colonic wall thickening and fat stranding is diagnostic for acute diverticulitis.",
+    incorrectExplanation: "Incorrect diagnosis. Left lower quadrant pain, constipation, fever, and leukocytosis in an older patient is the classic presentation of acute Sigmoid Diverticulitis, confirmed by fat stranding and wall thickening on CT scan."
+  },
+  {
+    id: "#107",
+    name: "Emily Watson",
+    age: 29,
+    gender: "female",
+    chiefComplaint: "Diffuse Abdominal Pain & Diarrhea",
+    initialSystemMessage: "You are now interacting with a 29-year-old female patient complaining of cramping stomach pain, nausea, and diarrhea.",
+    initialPatientMessage: "Doctor, I've been running to the bathroom all day. I have watery diarrhea, vomiting, and this horrible cramping pain all over my stomach that comes and goes.",
+    vitals: { hr: "112 bpm", bp: "110/70", temp: "100.2 °F", spo2: "99%", hrAlert: true, tempAlert: true },
+    medications: ["Oral Contraceptive Pill (Daily)"],
+    diagnosis: "Gastroenteritis",
+    cbcResults: "• WBC: 9.8 x10³/µL (Normal)\n• Hematocrit: 47% (High, indicating dehydration)\n• Potassium: 3.4 mEq/L (Low)",
+    usResults: "• Normal appendix, gallbladder, and kidneys\n• No free fluid in abdomen",
+    ctResults: "• Diffuse, mild small and large bowel wall thickening\n• No inflammatory fat stranding or focal pathology",
+    explanation: "Excellent job, doctor! The patient presents with cramping, diffuse abdominal pain, watery diarrhea, vomiting, low-grade fever, and mild hypokalemia/dehydration. The lack of localized tenderness and negative imaging confirm acute Gastroenteritis.",
+    incorrectExplanation: "Incorrect diagnosis. The combination of diffuse cramping pain, vomiting, profuse watery diarrhea, hyperactive bowel sounds, and normal inflammatory markers/imaging is diagnostic for Gastroenteritis."
+  },
+  {
+    id: "#733",
+    name: "David Vance",
+    age: 38,
+    gender: "male",
+    chiefComplaint: "Severe Flank Pain",
+    initialSystemMessage: "You are now interacting with a 38-year-old male patient complaining of sudden, agonizing flank pain.",
+    initialPatientMessage: "Doctor, help! I have this sharp, stabbing pain in my lower back and side that's coming in waves. It's so bad I can't find any comfortable position. The pain is traveling down towards my groin, and I feel like throwing up.",
+    vitals: { hr: "115 bpm", bp: "152/95", temp: "98.6 °F", spo2: "98%", hrAlert: true, tempAlert: false },
+    medications: ["None"],
+    diagnosis: "Renal Colic",
+    cbcResults: "• WBC: 8.5 x10³/µL (Normal)\n• Urinalysis: RBC >50/hpf (Hematuria)\n• Calcium oxalate crystals seen",
+    usResults: "• Right kidney: Mild hydronephrosis\n• Dilated right proximal ureter",
+    ctResults: "• 4 mm calcified stone in the right distal ureter\n• Proximal ureteral dilatation",
+    explanation: "Excellent job, doctor! The patient presents with classic renal colic: sudden, severe unilateral flank pain radiating to the groin, coming in waves (colicky), associated with microscopic hematuria, hydronephrosis on ultrasound, and a distal ureteral stone on non-contrast CT.",
+    incorrectExplanation: "Incorrect diagnosis. Sudden, agonizing, colicky flank pain radiating to the groin, coupled with hematuria and hydronephrosis/stone on CT, is the textbook presentation of Renal Colic (Nephrolithiasis)."
+  }
+];
+
 export default function SimulatorPage() {
   const { data: session, status } = useSession();
   
+  const [currentCase, setCurrentCase] = useState<PatientCase>(PATIENT_CASES[0]);
   const [messages, setMessages] = useState([
-    { role: "system", content: "You are now interacting with a 45-year-old male patient complaining of severe abdominal pain." },
-    { role: "patient", content: "Doctor, my stomach hurts so much. It started last night around my belly button and now it's moved to the lower right side." }
+    { role: "system", content: PATIENT_CASES[0].initialSystemMessage },
+    { role: "patient", content: PATIENT_CASES[0].initialPatientMessage }
   ]);
   const [orderedLabs, setOrderedLabs] = useState<string[]>([]);
   const [input, setInput] = useState("");
@@ -31,6 +145,17 @@ export default function SimulatorPage() {
   const [selectedDiagnosis, setSelectedDiagnosis] = useState("");
   const [evaluationResult, setEvaluationResult] = useState<any>(null);
   const [savingResult, setSavingResult] = useState(false);
+
+  // Initialize random case on mount to prevent Next.js hydration mismatch
+  useEffect(() => {
+    const rand = Math.floor(Math.random() * PATIENT_CASES.length);
+    const selected = PATIENT_CASES[rand];
+    setCurrentCase(selected);
+    setMessages([
+      { role: "system", content: selected.initialSystemMessage },
+      { role: "patient", content: selected.initialPatientMessage }
+    ]);
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -63,7 +188,7 @@ export default function SimulatorPage() {
       const res = await fetch("/api/simulator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, caseId: currentCase.id }),
       });
       const data = await res.json();
       
@@ -84,7 +209,7 @@ export default function SimulatorPage() {
     setSelectedDiagnosis(diagnosis);
     const doctorMessagesCount = messages.filter(m => m.role === "doctor").length;
     
-    const isCorrect = diagnosis === "Acute Appendicitis";
+    const isCorrect = diagnosis === currentCase.diagnosis;
     const baseScore = isCorrect ? 80 : 0;
     // Efficiency bonus: fewer questions asked results in a higher score
     const efficiencyBonus = isCorrect ? Math.max(20 - doctorMessagesCount * 2, 0) : 0;
@@ -95,9 +220,7 @@ export default function SimulatorPage() {
       score: finalScore,
       doctorMessagesCount,
       diagnosis,
-      explanation: isCorrect 
-        ? "Excellent job, doctor! The patient presents with classic migratory abdominal pain (starting periumbilical and localizing to the RLQ), low-grade fever, tachycardia, and tenderness at McBurney's point. This is highly indicative of Acute Appendicitis."
-        : "Incorrect diagnosis. Although the patient presents with abdominal pain, the classic migration of pain from the umbilicus to the RLQ, associated with fever and McBurney's point tenderness, is pathognomonic for Acute Appendicitis."
+      explanation: isCorrect ? currentCase.explanation : currentCase.incorrectExplanation
     };
     
     setEvaluationResult(evalData);
@@ -109,7 +232,7 @@ export default function SimulatorPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            patientCase: "Case #842: John Doe (Appendicitis)",
+            patientCase: `Case ${currentCase.id}: ${currentCase.name} (${currentCase.diagnosis})`,
             score: finalScore,
             status: isCorrect ? "COMPLETED" : "FAILED",
           }),
@@ -123,10 +246,14 @@ export default function SimulatorPage() {
   };
 
   const handleRestart = () => {
+    const rand = Math.floor(Math.random() * PATIENT_CASES.length);
+    const selected = PATIENT_CASES[rand];
+    setCurrentCase(selected);
     setMessages([
-      { role: "system", content: "You are now interacting with a 45-year-old male patient complaining of severe abdominal pain." },
-      { role: "patient", content: "Doctor, my stomach hurts so much. It started last night around my belly button and now it's moved to the lower right side." }
+      { role: "system", content: selected.initialSystemMessage },
+      { role: "patient", content: selected.initialPatientMessage }
     ]);
+    setOrderedLabs([]);
     setInput("");
     setSelectedDiagnosis("");
     setEvaluationResult(null);
@@ -154,9 +281,9 @@ export default function SimulatorPage() {
           <div>
             <h1 className="text-xl font-bold text-white flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-              Virtual Patient: Case #842
+              Virtual Patient: Case {currentCase.id}
             </h1>
-            <p className="text-sm text-slate-400">Chief Complaint: Abdominal Pain</p>
+            <p className="text-sm text-slate-400">Chief Complaint: {currentCase.chiefComplaint}</p>
           </div>
         </div>
         <button 
@@ -253,7 +380,7 @@ export default function SimulatorPage() {
           <div className="p-6">
             {/* Real-time EKG Visualization */}
             <div className="mb-8 p-4 bg-black rounded-2xl border border-emerald-500/20 relative overflow-hidden h-32">
-              <div className="absolute top-2 left-4 text-[10px] text-emerald-500 font-mono uppercase tracking-widest opacity-50">Heart Rate: 110 BPM</div>
+              <div className="absolute top-2 left-4 text-[10px] text-emerald-500 font-mono uppercase tracking-widest opacity-50">Heart Rate: {currentCase.vitals.hr}</div>
               <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
                 <motion.path 
                   d="M0,50 L50,50 L60,20 L70,80 L80,50 L150,50 L160,10 L170,90 L180,50 L250,50 L260,30 L270,70 L280,50 L400,50" 
@@ -270,10 +397,10 @@ export default function SimulatorPage() {
             <div className="space-y-6">
               <SidebarSection icon={Activity} title="Vitals" color="text-red-400">
                 <div className="grid grid-cols-2 gap-4">
-                  <VitalItem label="HR" value="110 bpm" alert />
-                  <VitalItem label="BP" value="130/85" />
-                  <VitalItem label="Temp" value="101.2 °F" alert />
-                  <VitalItem label="SpO2" value="98%" />
+                  <VitalItem label="HR" value={currentCase.vitals.hr} alert={currentCase.vitals.hrAlert} />
+                  <VitalItem label="BP" value={currentCase.vitals.bp} />
+                  <VitalItem label="Temp" value={currentCase.vitals.temp} alert={currentCase.vitals.tempAlert} />
+                  <VitalItem label="SpO2" value={currentCase.vitals.spo2} />
                 </div>
               </SidebarSection>
 
@@ -290,24 +417,18 @@ export default function SimulatorPage() {
                         <div key={lab} className="border-b border-white/5 pb-2 last:border-b-0 last:pb-0">
                           <div className="font-semibold text-white text-xs uppercase tracking-wider">{lab}</div>
                           {lab === "CBC" && (
-                            <div className="text-xs text-red-400 mt-1 font-mono leading-relaxed">
-                              • WBC: 14.5 x10³/µL (High)<br />
-                              • Neutrophils: 82% (High)<br />
-                              • CRP: 24 mg/L (High)
+                            <div className="text-xs text-red-400 mt-1 font-mono whitespace-pre-line leading-relaxed">
+                              {currentCase.cbcResults}
                             </div>
                           )}
                           {lab === "Ultrasound" && (
-                            <div className="text-xs text-amber-400 mt-1 font-mono leading-relaxed">
-                              • Appendix: 8.5 mm (dilated)<br />
-                              • Target sign positive<br />
-                              • Free fluid in RLQ
+                            <div className="text-xs text-amber-400 mt-1 font-mono whitespace-pre-line leading-relaxed">
+                              {currentCase.usResults}
                             </div>
                           )}
                           {lab === "CT Scan" && (
-                            <div className="text-xs text-amber-400 mt-1 font-mono leading-relaxed">
-                              • Appendix: 9.0 mm dilated<br />
-                              • Pericecal fat stranding<br />
-                              • Appendicolith seen
+                            <div className="text-xs text-amber-400 mt-1 font-mono whitespace-pre-line leading-relaxed">
+                              {currentCase.ctResults}
                             </div>
                           )}
                         </div>
@@ -319,8 +440,9 @@ export default function SimulatorPage() {
 
               <SidebarSection icon={Pill} title="Medications" color="text-purple-400">
                 <ul className="text-sm text-slate-300 space-y-2 list-disc pl-4">
-                  <li>Lisinopril 10mg (Daily)</li>
-                  <li>Atorvastatin 20mg (Daily)</li>
+                  {currentCase.medications.map((med) => (
+                    <li key={med}>{med}</li>
+                  ))}
                 </ul>
               </SidebarSection>
             </div>
@@ -352,7 +474,7 @@ export default function SimulatorPage() {
                     <HelpCircle className="w-6 h-6 text-blue-400" /> Submit Diagnosis
                   </h3>
                   <p className="text-slate-400 text-sm mb-6">
-                    Based on your consultation and findings, select the primary diagnosis for Case #842.
+                    Based on your consultation and findings, select the primary diagnosis for Case {currentCase.id}.
                   </p>
                   
                   <div className="space-y-3 mb-8">

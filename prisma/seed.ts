@@ -23,6 +23,8 @@ async function main() {
 
     // 1. Create Expert Mentors (Admin role)
     const mentors = [
+        { email: 'edivyanshu.dvs700@gmail.com', name: 'Divyanshu Singh' },
+        { email: 'imishamishra8@gmail.com', name: 'Isha Mishra' },
         { email: 'isha@example.com', name: 'Dr. Isha Mishra' },
         { email: 'ashwani@example.com', name: 'Dr. Ashwani Kumar' },
         { email: 'rajeev@example.com', name: 'Dr. Rajeev Seth' },

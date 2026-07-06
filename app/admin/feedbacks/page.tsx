@@ -19,10 +19,6 @@ export default function AdminFeedbacksPage() {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<"ALL" | "SUGGESTION" | "BUG" | "FEATURE_REQUEST" | "OTHER">("ALL");
 
-    useEffect(() => {
-        fetchFeedbacks();
-    }, []);
-
     const fetchFeedbacks = () => {
         setLoading(true);
         fetch("/api/admin/feedbacks")
@@ -33,6 +29,13 @@ export default function AdminFeedbacksPage() {
             })
             .catch(() => setLoading(false));
     };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchFeedbacks();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this feedback?")) return;

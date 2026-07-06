@@ -8,15 +8,15 @@ import { clinicalCases as allCases, ClinicalCase } from "./cases";
 
 export default function ArenaPage() {
   const [activeCases, setActiveCases] = useState<ClinicalCase[]>(() => {
-    // Shuffle all cases and pick 3
+    // Shuffle all cases and pick 10
     const shuffled = [...allCases].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3);
+    return shuffled.slice(0, 10);
   });
   const [gameState, setGameState] = useState<'finding' | 'incoming' | 'playing' | 'result' | 'finished'>('finding');
   const [currentCase, setCurrentCase] = useState(0);
   const [score, setScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(20);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [visibleSymptoms, setVisibleSymptoms] = useState<number>(0);
 
@@ -30,7 +30,7 @@ export default function ArenaPage() {
       const timer = setTimeout(() => {
         setGameState('playing');
         setVisibleSymptoms(0);
-        setTimeLeft(20);
+        setTimeLeft(30);
       }, 2500);
       return () => clearTimeout(timer);
     }
@@ -80,6 +80,19 @@ export default function ArenaPage() {
       setGameState('finished');
     }
   }, [currentCase, activeCases.length]);
+
+  const startNextShift = useCallback(() => {
+    const shuffled = [...allCases].sort(() => Math.random() - 0.5);
+    setActiveCases(shuffled.slice(0, 10));
+    setCurrentCase(0);
+    setScore(0);
+    setOpponentScore(0);
+    setTimeLeft(30);
+    setSelectedOption(null);
+    setVisibleSymptoms(0);
+    setHasSaved(false);
+    setGameState('finding');
+  }, []);
 
   const handleSelect = useCallback((idx: number) => {
     if (selectedOption !== null || gameState !== 'playing' || activeCases.length === 0) return;
@@ -158,7 +171,7 @@ export default function ArenaPage() {
         </div>
         
         <div className="flex gap-4 z-10">
-          <button onClick={() => window.location.reload()} className="bg-red-600 hover:bg-red-500 text-white px-8 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-[0_0_20px_rgba(220,38,38,0.4)]">Start Next Shift</button>
+          <button onClick={startNextShift} className="bg-red-600 hover:bg-red-500 text-white px-8 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-[0_0_20px_rgba(220,38,38,0.4)]">Start Next Shift</button>
           <Link href="/courses" className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-3 rounded-full font-bold transition-all">Back to Studies</Link>
         </div>
       </div>
@@ -193,7 +206,7 @@ export default function ArenaPage() {
               <span className="font-mono text-red-500 font-bold tracking-widest text-sm">TRAUMA BAY 1</span>
             </div>
             <div className="h-6 w-px bg-white/10"></div>
-            <div className="font-mono text-slate-400 text-sm">CASE {currentCase + 1}/3</div>
+            <div className="font-mono text-slate-400 text-sm">CASE {currentCase + 1}/{activeCases.length}</div>
           </div>
           
           <div className="flex items-center gap-12">
@@ -277,7 +290,7 @@ export default function ArenaPage() {
                 
                 {/* Timer Box */}
                 <div className="bg-[#0a0a0f] border border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center relative overflow-hidden">
-                  <div className={`absolute bottom-0 left-0 h-1 transition-all ease-linear ${timeLeft < 5 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${(timeLeft / 20) * 100}%` }}></div>
+                  <div className={`absolute bottom-0 left-0 h-1 transition-all ease-linear ${timeLeft < 5 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${(timeLeft / 30) * 100}%` }}></div>
                   <p className="text-xs text-slate-500 font-mono uppercase mb-2">Time to Crash</p>
                   <div className={`text-6xl font-mono font-black tracking-tighter ${timeLeft < 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
                     00:{timeLeft.toString().padStart(2, '0')}

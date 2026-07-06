@@ -15,6 +15,8 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<{ qIndex: number; selected: number; isCorrect: boolean }[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [timerEnabled, setTimerEnabled] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(30);
 
   const [hasSaved, setHasSaved] = useState(false);
 
@@ -60,6 +62,7 @@ export default function QuizPage() {
     setSelectedOption(null);
     setShowExplanation(false);
     setHasSaved(false);
+    setTimeLeft(30);
     setGameState('playing');
   };
 
@@ -73,11 +76,25 @@ export default function QuizPage() {
     setShowExplanation(true);
   };
 
+  // Timer countdown hook
+  useEffect(() => {
+    if (gameState !== 'playing' || !timerEnabled || selectedOption !== null) return;
+    if (timeLeft <= 0) {
+      handleSelect(-1); // Timeout
+      return;
+    }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [gameState, timerEnabled, timeLeft, selectedOption]);
+
   const nextQuestion = () => {
     if (currentQIndex < activeQuestions.length - 1) {
       setCurrentQIndex(c => c + 1);
       setSelectedOption(null);
       setShowExplanation(false);
+      setTimeLeft(30);
     } else {
       setGameState('results');
     }
@@ -92,9 +109,21 @@ export default function QuizPage() {
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             Subject Mastery Quiz
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+          <p className="text-slate-400 max-w-2xl mx-auto text-lg mb-8">
             Test your knowledge with high-yield clinical vignettes modeled after real board exams (USMLE, PLAB, etc.).
           </p>
+          <div className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full backdrop-blur-md w-fit mx-auto">
+            <input
+              type="checkbox"
+              id="timer-toggle"
+              checked={timerEnabled}
+              onChange={(e) => setTimerEnabled(e.target.checked)}
+              className="w-5 h-5 rounded border-white/20 bg-black text-blue-500 focus:ring-blue-500 focus:ring-offset-black accent-blue-500 cursor-pointer"
+            />
+            <label htmlFor="timer-toggle" className="text-sm font-medium text-slate-300 cursor-pointer select-none">
+              Enable Timer (30s per question)
+            </label>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full relative z-10">
@@ -170,6 +199,11 @@ export default function QuizPage() {
             <div className="h-4 w-px bg-white/20"></div>
             <span className="text-blue-400 font-bold uppercase tracking-widest">{subject}</span>
           </div>
+          {timerEnabled && (
+            <div className={`font-mono text-lg font-bold px-4 py-1.5 rounded-full border ${timeLeft < 10 ? 'text-red-500 border-red-500/30 bg-red-500/10 animate-pulse' : 'text-slate-300 border-white/10 bg-white/5'}`}>
+              00:{timeLeft.toString().padStart(2, '0')}
+            </div>
+          )}
           <div className="text-slate-400 font-mono">
             Question {currentQIndex + 1} of {activeQuestions.length}
           </div>
