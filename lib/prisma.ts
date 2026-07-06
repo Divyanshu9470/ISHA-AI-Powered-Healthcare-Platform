@@ -3,19 +3,37 @@ import fs from "fs";
 import path from "path";
 
 // On Vercel, the serverless environment is read-only.
-// We copy the seeded SQLite database file to /tmp/dev.db so that Prisma can read and write to it.
+// We copy the seeded SQLite database to /tmp so Prisma can read and write to it.
 if (process.env.VERCEL || process.env.NODE_ENV === "production") {
   const dbName = "dev.db";
-  const src = path.join(process.cwd(), "prisma", dbName);
   const dest = path.join("/tmp", dbName);
+
+  // Try multiple possible source locations
+  const possibleSources = [
+    path.join(process.cwd(), "prisma", dbName),
+    path.join(process.cwd(), dbName),
+    path.join("/var/task", "prisma", dbName),
+    path.join("/var/task", dbName),
+  ];
 
   try {
     if (!fs.existsSync(dest)) {
-      console.log(`Copying database from ${src} to ${dest}`);
-      fs.copyFileSync(src, dest);
-      console.log("Database copied successfully.");
+      let copied = false;
+      for (const src of possibleSources) {
+        if (fs.existsSync(src)) {
+          console.log(`Copying database from ${src} to ${dest}`);
+          fs.copyFileSync(src, dest);
+          console.log("Database copied successfully.");
+          copied = true;
+          break;
+        }
+      }
+      if (!copied) {
+        console.error("Could not find source database file in any expected location.");
+        console.error("Tried:", possibleSources);
+      }
     }
-    // Set the DATABASE_URL to point to the writable database in /tmp
+    // Always point DATABASE_URL to the writable /tmp location
     process.env.DATABASE_URL = `file:${dest}`;
   } catch (error) {
     console.error("Failed to copy database file:", error);
@@ -27,7 +45,7 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient };
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
-    log: ["query"],
+    log: process.env.NODE_ENV === "development" ? ["query"] : [],
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

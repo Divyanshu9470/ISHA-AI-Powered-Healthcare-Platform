@@ -42,9 +42,11 @@ next-env.d.ts
 
 /lib/generated/prisma
 
-# SQLite database files
-*.db
+# SQLite database files - keep *.db-journal ignored but allow seeded dbs
 *.db-journal
-dev.db
+# Allow the seeded production database to be committed for Vercel
+!prisma/dev.db
+!dev.db
 /scratch
+
 
