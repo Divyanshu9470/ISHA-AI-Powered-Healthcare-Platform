@@ -17,21 +17,20 @@ if (process.env.VERCEL || process.env.NODE_ENV === "production") {
   ];
 
   try {
-    if (!fs.existsSync(dest)) {
-      let copied = false;
-      for (const src of possibleSources) {
-        if (fs.existsSync(src)) {
-          console.log(`Copying database from ${src} to ${dest}`);
-          fs.copyFileSync(src, dest);
-          console.log("Database copied successfully.");
-          copied = true;
-          break;
-        }
+    // Always overwrite /tmp/dev.db to flush stale cache from previous deployments
+    let copied = false;
+    for (const src of possibleSources) {
+      if (fs.existsSync(src)) {
+        console.log(`Copying database from ${src} to ${dest}`);
+        fs.copyFileSync(src, dest);
+        console.log("Database copied successfully.");
+        copied = true;
+        break;
       }
-      if (!copied) {
-        console.error("Could not find source database file in any expected location.");
-        console.error("Tried:", possibleSources);
-      }
+    }
+    if (!copied) {
+      console.error("Could not find source database file in any expected location.");
+      console.error("Tried:", possibleSources);
     }
     // Always point DATABASE_URL to the writable /tmp location
     process.env.DATABASE_URL = `file:${dest}`;
