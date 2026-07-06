@@ -3,24 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
-
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  phone     String?
-  country   String?
-  state     String?
+  id         String   @id @default(cuid())
+  name       String?
+  email      String   @unique
+  password   String
+  phone      String?
+  country    String?
+  state      String?
   university String?
   rollNumber String?
-  role      String   @default("STUDENT") // "ADMIN" or "STUDENT"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role       String   @default("STUDENT")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   enrollments       Enrollment[]
   testScores        TestScore[]
@@ -63,7 +63,7 @@ model LiveClass {
   title       String
   meetLink    String
   scheduledAt DateTime
-  status      String   @default("SCHEDULED") // "SCHEDULED", "LIVE", "COMPLETED"
+  status      String   @default("SCHEDULED")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -96,7 +96,7 @@ model FlashcardDeck {
   title       String
   description String?
   subject     String   @default("General Medicine")
-  category    String?  // e.g., "Anatomy", "Physiology"
+  category    String?
   imageUrl    String?
   isPublic    Boolean  @default(true)
   createdBy   String?
@@ -114,8 +114,8 @@ model Flashcard {
   explanation String?
   image       String?
   topic       String?
-  difficulty  String   @default("Medium") // "Easy", "Medium", "Hard"
-  tags        String?  // Comma-separated or JSON
+  difficulty  String   @default("Medium")
+  tags        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -127,11 +127,11 @@ model FlashcardProgress {
   id          String   @id @default(cuid())
   userId      String
   flashcardId String
-  interval    Int      @default(0) // in days
+  interval    Int      @default(0)
   easeFactor  Float    @default(2.5)
   repetitions Int      @default(0)
   nextReview  DateTime @default(now())
-  status      String   @default("NEW") // "NEW", "LEARNING", "REVIEW", "MASTERED"
+  status      String   @default("NEW")
   lastReview  DateTime?
   streak      Int      @default(0)
 
@@ -144,9 +144,9 @@ model FlashcardProgress {
 model SimulatorSession {
   id          String   @id @default(cuid())
   userId      String
-  patientCase String   // e.g., "Acute Appendicitis"
+  patientCase String
   score       Float?
-  status      String   @default("IN_PROGRESS") // "IN_PROGRESS", "COMPLETED"
+  status      String   @default("IN_PROGRESS")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -159,9 +159,9 @@ model Transaction {
   courseId        String
   amount          Float
   currency        String   @default("INR")
-  status          String   @default("PENDING") // "PENDING", "SUCCESS", "FAILED"
-  paymentMethod   String?  // "UPI", "CARD", "NETBANKING"
-  provider        String   @default("MOCK")    // "RAZORPAY", "STRIPE", etc.
+  status          String   @default("PENDING")
+  paymentMethod   String?
+  provider        String   @default("MOCK")
   providerOrderId String?  @unique
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -173,9 +173,9 @@ model Feedback {
   id         String   @id @default(cuid())
   name       String?
   email      String?
-  type       String   @default("SUGGESTION") // "SUGGESTION", "BUG", "FEATURE_REQUEST", "OTHER"
+  type       String   @default("SUGGESTION")
   message    String
   rating     Int      @default(5)
-  difficulty String   @default("NONE") // "EASY", "NORMAL", "DIFFICULT", "NONE"
+  difficulty String   @default("NONE")
   createdAt  DateTime @default(now())
 }
