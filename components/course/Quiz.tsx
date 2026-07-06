@@ -114,7 +114,8 @@ export function Quiz({ category }: QuizProps) {
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [score, setScore] = useState(0);
-    const [showResult, setShowResult] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveStatus, setSaveStatus] = useState("");
 
     const questions = QUESTIONS_BY_CATEGORY[category || "General"] || QUESTIONS_BY_CATEGORY["General"];
     const currentQuestion = questions[currentQuestionIndex];
@@ -128,6 +129,31 @@ export function Quiz({ category }: QuizProps) {
         }
     };
 
+    const saveScore = async (finalScore: number) => {
+        setIsSaving(true);
+        setSaveStatus("Saving score to dashboard...");
+        try {
+            const res = await fetch("/api/tests/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    subject: category || "General",
+                    score: finalScore,
+                    maxScore: questions.length
+                })
+            });
+            if (res.ok) {
+                setSaveStatus("Saved to dashboard!");
+            } else {
+                setSaveStatus("Failed to save score");
+            }
+        } catch (e) {
+            setSaveStatus("Failed to save score");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const handleNext = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -135,6 +161,7 @@ export function Quiz({ category }: QuizProps) {
             setIsAnswered(false);
         } else {
             setShowResult(true);
+            saveScore(score);
         }
     };
 
@@ -144,6 +171,7 @@ export function Quiz({ category }: QuizProps) {
         setIsAnswered(false);
         setScore(0);
         setShowResult(false);
+        setSaveStatus("");
     };
 
     if (!currentQuestion) {
@@ -155,7 +183,12 @@ export function Quiz({ category }: QuizProps) {
             <div className="bg-card border border-border rounded-xl p-8 text-center animate-in zoom-in duration-300">
                 <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
                 <div className="text-6xl font-bold text-primary mb-2">{Math.round((score / questions.length) * 100)}%</div>
-                <p className="text-muted-foreground mb-6">You scored {score} out of {questions.length}</p>
+                <p className="text-muted-foreground mb-4">You scored {score} out of {questions.length}</p>
+                {saveStatus && (
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-6 animate-pulse">
+                        {saveStatus}
+                    </p>
+                )}
                 <Button onClick={handleRetry} className="gap-2">
                     <RefreshCcw size={16} /> Retry Quiz
                 </Button>
