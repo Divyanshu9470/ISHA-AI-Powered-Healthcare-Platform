@@ -116,8 +116,10 @@ export function Quiz({ category }: QuizProps) {
     const [score, setScore] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState("");
+    const [showResult, setShowResult] = useState(false);
 
     const questions = QUESTIONS_BY_CATEGORY[category || "General"] || QUESTIONS_BY_CATEGORY["General"];
+
     const currentQuestion = questions[currentQuestionIndex];
 
     const handleOptionSelect = (index: number) => {
