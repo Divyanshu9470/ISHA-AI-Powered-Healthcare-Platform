@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { headers } from "next/headers";
 
 const fontSerif = Playfair_Display({
   subsets: ["latin"],
@@ -22,15 +23,17 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/components/providers/AuthProvider";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") || undefined;
+
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${fontSerif.variable} ${fontSans.variable} font-sans antialiased bg-background text-foreground min-h-screen cursor-default`}>
-        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async nonce={nonce}></script>
         <AuthProvider>
           {children}
         </AuthProvider>
@@ -38,4 +41,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 

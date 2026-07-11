@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const resultSchema = z.object({
+  patientCase: z.string().min(1).max(200),
+  score: z.number().nonnegative().optional().nullable(),
+  status: z.enum(["COMPLETED", "FAILED", "IN_PROGRESS"]).optional(),
+});
 
 export async function POST(req: Request) {
   try {
@@ -10,17 +17,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { patientCase, score, status } = await req.json();
-
-    if (!patientCase) {
-      return NextResponse.json({ error: "Missing patient case" }, { status: 400 });
+    const body = await req.json();
+    const parsed = resultSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.format() },
+        { status: 422 }
+      );
     }
+
+    const { patientCase, score, status } = parsed.data;
+
 
     const simulatorSession = await prisma.simulatorSession.create({
       data: {
         userId: session.user.id,
         patientCase,
-        score: score ? parseFloat(score) : null,
+        score: score ?? null,
         status: status || "COMPLETED",
       },
     });

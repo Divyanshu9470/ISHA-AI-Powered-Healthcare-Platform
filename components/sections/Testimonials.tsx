@@ -74,92 +74,73 @@ export function Testimonials() {
     };
 
     return (
-        <section className="py-24 lg:py-32 relative overflow-hidden bg-muted/20" ref={ref}>
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/[0.03] rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal/[0.03] rounded-full blur-[100px]" />
-
+        <section className="py-24 lg:py-32 relative overflow-hidden bg-[#080c14]" ref={ref}>
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 {/* Header */}
-                <motion.div
-                    className="text-center mb-16 lg:mb-20"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                >
-                    <span className="inline-block text-sm font-semibold text-primary uppercase tracking-widest mb-4">
+                <div className="text-center mb-16 lg:mb-20">
+                    <span className="inline-block text-sm font-semibold text-emerald-400 uppercase tracking-widest mb-4">
                         Success Stories
                     </span>
-                    <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground leading-tight">
-                        Trusted by{" "}
-                        <span className="text-gradient-primary">Top Rankers</span>
+                    <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
+                        Trusted by <span className="text-primary">Top Rankers</span>
                     </h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
                         Join a community of successful medical professionals who achieved their dreams with us.
                     </p>
-                </motion.div>
+                </div>
 
                 {/* Carousel */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.2 }}
+                <div
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                        <AnimatePresence mode="sync">
-                            {getVisibleCards().map((testimonial, index) => (
-                                <motion.div
-                                    key={`${activeIndex}-${index}`}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ duration: 0.4, delay: index * 0.08 }}
-                                    className="group relative bg-card p-8 rounded-2xl border border-border/60 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-500"
-                                >
-                                    {/* Gradient top border */}
-                                    <div className={`absolute top-0 left-6 right-6 h-[3px] rounded-full bg-gradient-to-r ${testimonial.gradient} opacity-60 group-hover:opacity-100 transition-opacity`} />
+                        {getVisibleCards().map((testimonial, index) => (
+                            <div
+                                key={`${activeIndex}-${index}`}
+                                className="group relative bg-slate-900 p-8 rounded-2xl border border-white/5 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-500"
+                            >
+                                {/* Gradient top border */}
+                                <div className={`absolute top-0 left-6 right-6 h-[3px] rounded-full bg-gradient-to-r ${testimonial.gradient} opacity-60 group-hover:opacity-100 transition-opacity`} />
 
-                                    {/* Quote icon */}
-                                    <Quote className="absolute top-8 right-8 text-primary/[0.08] w-14 h-14" />
+                                {/* Quote icon */}
+                                <Quote className="absolute top-8 right-8 text-primary/[0.08] w-14 h-14" />
 
-                                    {/* Stars */}
-                                    <div className="flex gap-1 mb-6">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} size={15} className="text-amber-400 fill-amber-400" />
-                                        ))}
+                                {/* Stars */}
+                                <div className="flex gap-1 mb-6">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} size={15} className="text-amber-400 fill-amber-400" />
+                                    ))}
+                                </div>
+
+                                {/* Quote - Serif */}
+                                <p className="font-serif text-slate-200 mb-8 leading-relaxed text-[17px] italic">
+                                    &ldquo;{testimonial.content}&rdquo;
+                                </p>
+
+                                {/* Author */}
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white font-bold text-sm shadow-md`}>
+                                        {testimonial.initials}
                                     </div>
-
-                                    {/* Quote - Serif */}
-                                    <p className="font-serif text-foreground/80 mb-8 leading-relaxed text-[17px] italic">
-                                        &ldquo;{testimonial.content}&rdquo;
-                                    </p>
-
-                                    {/* Author */}
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white font-bold text-sm shadow-md`}>
-                                            {testimonial.initials}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-foreground text-[15px]">
-                                                {testimonial.name}
-                                            </h4>
-                                            <p className="text-sm text-primary font-medium">
-                                                {testimonial.role}
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <h4 className="font-bold text-white text-[15px]">
+                                            {testimonial.name}
+                                        </h4>
+                                        <p className="text-sm text-primary font-medium">
+                                            {testimonial.role}
+                                        </p>
                                     </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
                     {/* Carousel Controls */}
                     <div className="flex items-center justify-center gap-4 mt-10">
                         <button
                             onClick={prevSlide}
-                            className="w-10 h-10 rounded-full border border-border bg-card hover:bg-primary hover:text-white hover:border-primary flex items-center justify-center transition-all duration-300"
+                            className="w-10 h-10 rounded-full border border-white/10 bg-slate-900 text-slate-300 hover:bg-primary hover:text-white hover:border-primary flex items-center justify-center transition-all duration-300"
                             aria-label="Previous testimonial"
                         >
                             <ChevronLeft size={18} />
@@ -173,7 +154,7 @@ export function Testimonials() {
                                     onClick={() => setActiveIndex(i)}
                                     className={`h-2 rounded-full transition-all duration-300 ${i === activeIndex
                                         ? "w-8 bg-primary"
-                                        : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                                        : "w-2 bg-slate-700 hover:bg-slate-500"
                                         }`}
                                     aria-label={`Go to testimonial ${i + 1}`}
                                 />
@@ -182,13 +163,13 @@ export function Testimonials() {
 
                         <button
                             onClick={nextSlide}
-                            className="w-10 h-10 rounded-full border border-border bg-card hover:bg-primary hover:text-white hover:border-primary flex items-center justify-center transition-all duration-300"
+                            className="w-10 h-10 rounded-full border border-white/10 bg-slate-900 text-slate-300 hover:bg-primary hover:text-white hover:border-primary flex items-center justify-center transition-all duration-300"
                             aria-label="Next testimonial"
                         >
                             <ChevronRight size={18} />
                         </button>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

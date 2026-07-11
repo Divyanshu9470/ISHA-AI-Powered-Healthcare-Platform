@@ -7,7 +7,7 @@ if [[ "$DATABASE_URL" == postgres* ]] || [[ "$DATABASE_URL" == postgresql* ]]; t
   cp prisma/schema.postgresql.prisma prisma/schema.prisma
   npx prisma generate
   npx prisma migrate deploy || npx prisma db push --accept-data-loss
-  node prisma/seed-postgres.js || echo "[build] Seed skipped (data may already exist)"
+  npx prisma db seed || echo "[build] Seed skipped (data may already exist)"
 else
   echo "[build] SQLite detected — using local schema"
   npx prisma generate

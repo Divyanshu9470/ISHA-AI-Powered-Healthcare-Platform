@@ -38,12 +38,28 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
+          console.warn(
+            JSON.stringify({
+              event: "AUTH_FAILURE",
+              email: credentials.email,
+              reason: "user_not_found",
+              timestamp: new Date().toISOString(),
+            })
+          );
           throw new Error("Invalid credentials");
         }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isValid) {
+          console.warn(
+            JSON.stringify({
+              event: "AUTH_FAILURE",
+              email: credentials.email,
+              reason: "incorrect_password",
+              timestamp: new Date().toISOString(),
+            })
+          );
           throw new Error("Invalid credentials");
         }
 
@@ -74,8 +90,9 @@ export const authOptions: NextAuthOptions = {
                 email: user.email,
                 name: user.name || user.email.split("@")[0],
                 // Google users have no password — use a placeholder hash
-                password: await bcrypt.hash(Math.random().toString(36), 10),
+                password: await bcrypt.hash(Math.random().toString(36), 12),
                 role,
+                passwordChangedAt: new Date(),
               },
             });
           }
@@ -136,6 +153,19 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // Exactly 7 days
+  },
+  useSecureCookies: process.env.NODE_ENV === "production",
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
   },
   secret: process.env.NEXTAUTH_SECRET || "supersecretkey123",
 };

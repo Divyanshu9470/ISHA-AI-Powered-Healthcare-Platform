@@ -1,18 +1,52 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { z } from "zod";
+
+const copilotSchema = z.object({
+  symptoms: z.string().min(5).max(2000),
+});
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy-key");
 
+function sanitizeSymptoms(input: string): string {
+  // Cap at 2000 characters server-side
+  let sanitized = input.slice(0, 2000);
+
+  // Strip patterns that attempt to override the system prompt
+  const patterns = [
+    /ignore\s+previous\s+instructions/gi,
+    /you\s+are\s+now/gi,
+    /disregard/gi,
+    /new\s+task:/gi,
+    /system\s+prompt/gi,
+    /override/gi,
+  ];
+
+  for (const pattern of patterns) {
+    sanitized = sanitized.replace(pattern, "");
+  }
+
+  return sanitized;
+}
 
 export async function analyzeSymptoms(symptoms: string) {
+  // Zod validation
+  const parsed = copilotSchema.safeParse({ symptoms });
+  if (!parsed.success) {
+    throw new Error("Validation failed: " + JSON.stringify(parsed.error.format()));
+  }
+
+  const sanitized = sanitizeSymptoms(parsed.data.symptoms);
+
   const prompt = `
 You are a highly experienced clinical diagnostic assistant.
 
 Analyze the following patient presentation and provide a structured clinical differential diagnosis.
 
-Patient Presentation:
-"${symptoms}"
+[BEGIN STUDENT INPUT]
+${sanitized}
+[END STUDENT INPUT]
 
 Respond ONLY with valid JSON.
 
@@ -35,6 +69,7 @@ Respond ONLY with valid JSON.
     "Relevant medical lecture title"
 }
 `;
+
 
   const modelsToTry = [
     "gemini-flash-latest",

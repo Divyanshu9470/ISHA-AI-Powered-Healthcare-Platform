@@ -20,16 +20,8 @@ export function FooterClinical() {
     };
 
     return (
-        <footer ref={ref} className="bg-slate-955 border-t border-white/5 mt-auto pt-20 pb-8 relative overflow-hidden text-slate-400">
-            {/* Background decoration */}
-            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-500/[0.01] rounded-full blur-[100px]" />
-
-            <motion.div
-                className="container mx-auto px-4 md:px-6 relative z-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isVisible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6 }}
-            >
+        <footer className="bg-[#030712] border-t border-white/5 mt-auto pt-20 pb-8 relative overflow-hidden text-slate-400">
+            <div className="container mx-auto px-4 md:px-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
                     {/* Brand */}
                     <div className="lg:col-span-1">
@@ -41,7 +33,7 @@ export function FooterClinical() {
                                 Isha<span className="text-primary">Clinical</span>
                             </span>
                         </Link>
-                        <p className="text-sm leading-relaxed mb-6 text-slate-400">
+                        <p className="text-sm leading-relaxed mb-6 text-slate-300">
                             Empowering doctors and clinics with advanced medical OCR, structured SOAP note dictation, and evidence-based diagnostic synthesis.
                         </p>
                         <div className="flex gap-3">
@@ -57,7 +49,7 @@ export function FooterClinical() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={social.label}
-                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-900 border border-white/5 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 hover:scale-105"
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-900 border border-white/5 text-slate-400 hover:text-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
                                 >
                                     <social.icon size={16} />
                                 </a>
@@ -76,7 +68,7 @@ export function FooterClinical() {
                                 { name: "Pricing Plans", href: "/clinical-copilot#pricing" }
                             ].map((item) => (
                                 <li key={item.name}>
-                                    <Link href={item.href} className="hover:text-primary transition-colors duration-200 flex items-center gap-1 group">
+                                    <Link href={item.href} className="text-slate-400 hover:text-white transition-colors duration-200 flex items-center gap-1 group">
                                         <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                         {item.name}
                                     </Link>
@@ -97,7 +89,7 @@ export function FooterClinical() {
                                 { name: "Accessibility Center", href: "/accessibility" }
                             ].map((item) => (
                                 <li key={item.name}>
-                                    <Link href={item.href} className="hover:text-primary transition-colors duration-200 flex items-center gap-1 group">
+                                    <Link href={item.href} className="text-slate-400 hover:text-white transition-colors duration-200 flex items-center gap-1 group">
                                         <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                         {item.name}
                                     </Link>
@@ -118,7 +110,7 @@ export function FooterClinical() {
                                 { name: "FAQs", href: "/faq" }
                             ].map((item) => (
                                 <li key={item.name}>
-                                    <Link href={item.href} className="hover:text-primary transition-colors duration-200 flex items-center gap-1 group">
+                                    <Link href={item.href} className="text-slate-400 hover:text-white transition-colors duration-200 flex items-center gap-1 group">
                                         <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                         {item.name}
                                     </Link>
@@ -130,7 +122,7 @@ export function FooterClinical() {
                     {/* Newsletter */}
                     <div>
                         <h3 className="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Stay Updated</h3>
-                        <p className="text-sm leading-relaxed mb-5 text-slate-400">
+                        <p className="text-sm leading-relaxed mb-5 text-slate-300">
                             Get latest updates on HIPAA standards, product feature updates, and technical documentations.
                         </p>
                         {isSubmitted ? (
@@ -151,7 +143,7 @@ export function FooterClinical() {
                                 </div>
                                 <button
                                     type="submit"
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] shadow-md shadow-blue-500/20 flex items-center gap-1 shrink-0"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md shadow-blue-500/20 flex items-center gap-1 shrink-0"
                                 >
                                     Join <ArrowRight size={14} />
                                 </button>
@@ -161,7 +153,7 @@ export function FooterClinical() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+                <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
                     <p>&copy; {new Date().getFullYear()} Isha Clinical. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="/privacy" className="hover:text-white transition-colors duration-200">Privacy Policy</Link>
@@ -170,10 +162,10 @@ export function FooterClinical() {
                     </div>
                 </div>
 
-                <div className="mt-8 text-center text-xs text-slate-600 flex items-center justify-center gap-1.5">
+                <div className="mt-8 text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
                     Made with <Heart size={11} className="text-red-500 fill-red-500" /> for modern clinicians.
                 </div>
-            </motion.div>
+            </div>
         </footer>
     );
 }

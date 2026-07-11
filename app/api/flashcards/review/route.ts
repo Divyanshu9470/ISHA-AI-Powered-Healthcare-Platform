@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const reviewSchema = z.object({
+  flashcardId: z.string().cuid(),
+  rating: z.enum(["easy", "medium", "hard"]),
+});
 
 export async function POST(req: Request) {
     try {
@@ -10,7 +16,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { flashcardId, rating } = await req.json(); // rating: 'easy', 'medium', 'hard'
+        const body = await req.json();
+        const parsed = reviewSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json(
+                { error: "Validation failed", details: parsed.error.format() },
+                { status: 422 }
+            );
+        }
+
+        const { flashcardId, rating } = parsed.data;
+
 
         const progress = await prisma.flashcardProgress.findUnique({
             where: {

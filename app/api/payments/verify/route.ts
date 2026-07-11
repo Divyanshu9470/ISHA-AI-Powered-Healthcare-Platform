@@ -3,6 +3,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
+import { z } from "zod";
+
+const verifyPaymentSchema = z.object({
+  razorpay_order_id: z.string(),
+  razorpay_payment_id: z.string(),
+  razorpay_signature: z.string(),
+  courseId: z.string().cuid(),
+});
 
 export async function POST(req: Request) {
   try {
@@ -11,12 +19,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const body = await req.json();
+    const parsed = verifyPaymentSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.format() },
+        { status: 422 }
+      );
+    }
+
     const { 
       razorpay_order_id, 
       razorpay_payment_id, 
       razorpay_signature,
       courseId
-    } = await req.json();
+    } = parsed.data;
+
 
     const secret = process.env.RAZORPAY_KEY_SECRET;
     if (!secret) {
@@ -26,10 +44,10 @@ export async function POST(req: Request) {
     }
 
     // 1. Enforce signature validation
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const payload = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
       .createHmac("sha256", secret)
-      .update(body.toString())
+      .update(payload)
       .digest("hex");
 
     const isAuthentic = expectedSignature === razorpay_signature;

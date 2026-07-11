@@ -2,8 +2,39 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { z } from "zod";
+
+const messageSchema = z.object({
+  role: z.string().max(50),
+  content: z.string().max(2000),
+});
+
+const simulatorPostSchema = z.object({
+  messages: z.array(messageSchema),
+  caseId: z.string().max(100).optional(),
+});
+
+function sanitizeAIInput(input: string): string {
+  let sanitized = input.slice(0, 2000);
+
+  const patterns = [
+    /ignore\s+previous\s+instructions/gi,
+    /you\s+are\s+now/gi,
+    /disregard/gi,
+    /new\s+task:/gi,
+    /system\s+prompt/gi,
+    /override/gi,
+  ];
+
+  for (const pattern of patterns) {
+    sanitized = sanitized.replace(pattern, "");
+  }
+
+  return sanitized;
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy-key");
+
 
 
 const CASES_DB: Record<string, { systemPrompt: string; fallbackResponses: Record<string, string> }> = {
@@ -107,8 +138,17 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const userIdentifier = session?.user?.email || "Guest";
     const body = await req.json();
-    messages = body.messages || [];
-    caseId = body.caseId || "#842";
+    
+    const parsed = simulatorPostSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.format() },
+        { status: 422 }
+      );
+    }
+
+    messages = parsed.data.messages || [];
+    caseId = parsed.data.caseId || "#842";
     console.log(`Simulator received messages from ${userIdentifier} for case ${caseId}:`, JSON.stringify(messages));
     
     const patientCase = CASES_DB[caseId] || CASES_DB["#842"];
@@ -146,13 +186,20 @@ export async function POST(req: Request) {
       .map(m => `${m.role === 'user' ? 'Doctor' : 'Patient'}: ${m.parts[0].text}`)
       .join('\n');
 
+    // Section 5: Sanitize input and wrap in delimiters to mitigate prompt injection
+    const sanitizedLastMessage = sanitizeAIInput(lastMessage);
+
     const fullPrompt = `
 ${systemPrompt}
 
 RECENT CONVERSATION:
 ${conversationHistory}
 
-Doctor: ${lastMessage}
+Doctor:
+[BEGIN STUDENT INPUT]
+${sanitizedLastMessage}
+[END STUDENT INPUT]
+
 Patient:`;
 
     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
@@ -165,6 +212,7 @@ Patient:`;
     }
 
     return NextResponse.json({ role: "patient", content: aiResponse });
+
 
   } catch (error: any) {
     console.error("Simulator Gemini Error, falling back to mock response:", error);

@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const progressSchema = z.object({
+  cardId: z.string().cuid(),
+  quality: z.number().int().min(0).max(5),
+});
 
 // Fetch due flashcards
 export async function GET() {
@@ -39,7 +45,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { cardId, quality } = await req.json(); // quality 0-5
+    const body = await req.json();
+    const parsed = progressSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.format() },
+        { status: 422 }
+      );
+    }
+
+    const { cardId, quality } = parsed.data;
+
 
     const progress = await prisma.flashcardProgress.findUnique({
       where: {

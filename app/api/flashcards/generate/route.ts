@@ -3,6 +3,32 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const generateSchema = z.object({
+  text: z.string().min(5).max(10000),
+  title: z.string().max(200).optional(),
+  subject: z.string().max(100).optional(),
+});
+
+function sanitizeAIInput(input: string): string {
+  let sanitized = input.slice(0, 10000);
+
+  const patterns = [
+    /ignore\s+previous\s+instructions/gi,
+    /you\s+are\s+now/gi,
+    /disregard/gi,
+    /new\s+task:/gi,
+    /system\s+prompt/gi,
+    /override/gi,
+  ];
+
+  for (const pattern of patterns) {
+    sanitized = sanitized.replace(pattern, "");
+  }
+
+  return sanitized;
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
@@ -19,13 +45,19 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const text = body.text;
-        title = body.title || "";
-        subject = body.subject || "";
-
-        if (!text) {
-            return NextResponse.json({ error: "No text provided" }, { status: 400 });
+        const parsed = generateSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json(
+                { error: "Validation failed", details: parsed.error.format() },
+                { status: 422 }
+            );
         }
+
+        const { text, title: inputTitle, subject: inputSubject } = parsed.data;
+        title = inputTitle || "";
+        subject = inputSubject || "";
+
+        const sanitizedText = sanitizeAIInput(text);
 
         const prompt = `
             You are a medical education expert. Generate a set of high-yield medical flashcards from the provided text.
@@ -34,12 +66,15 @@ export async function POST(req: Request) {
             2. Answer: Direct and accurate.
             3. Explanation: A brief clinical pearl or explanation for deeper understanding.
 
-            Text: """${text}"""
+            [BEGIN STUDENT INPUT]
+            ${sanitizedText}
+            [END STUDENT INPUT]
 
             Format the output as a JSON array of objects:
             [{ "question": "...", "answer": "...", "explanation": "..." }]
             Limit to 10 high-quality cards. Respond ONLY with the JSON array.
         `;
+
 
         const result = await model.generateContent(prompt);
         const response = await result.response;

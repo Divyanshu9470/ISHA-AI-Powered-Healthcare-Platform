@@ -63,7 +63,9 @@ export function Navbar() {
     const filteredNavLinks = [...navLinks];
     if (session) {
         filteredNavLinks.push({ name: "Analytics", href: "/student/analytics" });
-        filteredNavLinks.push({ name: "Payments", href: "/student/transactions" });
+        if (session.user?.role === "ADMIN") {
+            filteredNavLinks.push({ name: "Payments", href: "/student/transactions" });
+        }
     }
 
     return (
@@ -71,7 +73,7 @@ export function Navbar() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out border-b border-transparent",
                 isScrolled
-                    ? "bg-background/70 backdrop-blur-xl border-border/50 shadow-sm py-2"
+                    ? "bg-background border-border/50 shadow-sm py-2"
                     : "bg-transparent py-4"
             )}
         >
@@ -128,7 +130,7 @@ export function Navbar() {
                                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                     <UserIcon size={16} />
                                 </div>
-                                <span className="hidden lg:block text-foreground">{session.user?.name || "Student"}</span>
+                                <span className="hidden lg:block text-slate-800 dark:text-slate-100 font-semibold">{session.user?.name || "Student"}</span>
                             </div>
                             <button onClick={() => signOut()} className="text-muted-foreground hover:text-red-500 transition-colors p-2" title="Sign Out">
                                 <LogOut size={18} />

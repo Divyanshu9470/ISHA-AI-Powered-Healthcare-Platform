@@ -2,21 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Receipt, CheckCircle2, XCircle, Clock, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function TransactionsPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      redirect("/login");
+      router.push("/login");
+    } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
+      router.push("/students");
     }
-  }, [status]);
+  }, [status, session, router]);
 
   useEffect(() => {
     fetch('/api/student/transactions')
@@ -66,10 +68,8 @@ export default function TransactionsPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {transactions.map((tx) => (
-                <motion.tr 
+                <tr 
                   key={tx.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
                   className="hover:bg-slate-50/50 transition-colors"
                 >
                   <td className="p-6">
@@ -101,7 +101,7 @@ export default function TransactionsPage() {
                       <Receipt className="w-4 h-4" /> Download
                     </button>
                   </td>
-                </motion.tr>
+                </tr>
               ))}
               {transactions.length === 0 && (
                 <tr>

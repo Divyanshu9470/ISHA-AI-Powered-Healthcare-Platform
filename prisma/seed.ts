@@ -18,8 +18,8 @@ async function main() {
     await prisma.course.deleteMany();
     await prisma.user.deleteMany();
 
-    const hashedPasswordAdmin = await bcrypt.hash('password123', 10)
-    const hashedPasswordStudent = await bcrypt.hash('student123', 10)
+    const hashedPasswordAdmin = await bcrypt.hash('password123', 12)
+    const hashedPasswordStudent = await bcrypt.hash('student123', 12)
 
     // 1. Create Expert Mentors (Admin role)
     const mentors = [
@@ -39,7 +39,8 @@ async function main() {
                 email: mentor.email,
                 name: mentor.name,
                 password: hashedPasswordAdmin,
-                role: 'ADMIN'
+                role: 'ADMIN',
+                passwordChangedAt: new Date()
             }
         });
         adminUsers.push(admin);
@@ -52,7 +53,8 @@ async function main() {
             email: 'student@example.com',
             name: 'Test Student',
             password: hashedPasswordStudent,
-            role: 'STUDENT'
+            role: 'STUDENT',
+            passwordChangedAt: new Date()
         }
     });
 
@@ -70,7 +72,8 @@ async function main() {
                 email: `student${i + 1}@example.com`,
                 name: studentNames[i],
                 password: hashedPasswordStudent,
-                role: 'STUDENT'
+                role: 'STUDENT',
+                passwordChangedAt: new Date()
             }
         });
         allStudents.push(student);

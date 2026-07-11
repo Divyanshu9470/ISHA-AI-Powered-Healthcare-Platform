@@ -96,7 +96,7 @@ export default function Home() {
                             <Link href="/register">
                                 <Button
                                     size="lg"
-                                    className="rounded-full px-12 py-7 text-lg font-semibold bg-emerald-600 hover:bg-emerald-500 text-white border-0 hover:scale-[1.02] transition-transform duration-300"
+                                    className="rounded-full px-12 py-7 text-lg font-semibold bg-emerald-600 hover:bg-emerald-500 text-white border-0 transition-colors duration-300 shadow-lg shadow-emerald-950/20"
                                 >
                                     Start Studying Free <ArrowRight className="ml-2 w-5 h-5" />
                                 </Button>
@@ -105,7 +105,7 @@ export default function Home() {
                                 <Button
                                     variant="outline"
                                     size="lg"
-                                    className="rounded-full px-12 py-7 text-lg font-semibold border-white/20 text-white hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-sm bg-white/5"
+                                    className="rounded-full px-12 py-7 text-lg font-semibold border-white/20 text-white bg-white/5 hover:bg-white/10 transition-colors duration-300"
                                 >
                                     Explore Courses
                                 </Button>
