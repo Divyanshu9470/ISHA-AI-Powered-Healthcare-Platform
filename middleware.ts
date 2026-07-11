@@ -117,8 +117,12 @@ export async function middleware(request: NextRequest) {
         pathname === "/api/register" || 
         pathname === "/api/auth/register"
       );
-      const limit = isLoginOrRegister ? 15 : 100;
-      rateLimitResult = checkRateLimit(`auth:${ip}:${isLoginOrRegister ? "login" : "session"}`, limit, 15 * 60 * 1000);
+      if (isLoginOrRegister) {
+        const limit = 15;
+        rateLimitResult = checkRateLimit(`auth:${ip}:login`, limit, 15 * 60 * 1000);
+      } else {
+        rateLimitResult = { success: true, limit: 0, remaining: 0, reset: 0 };
+      }
     } 
     // 2. AI routes (/api/copilot, /api/simulator)
     else if (pathname === "/api/copilot" || pathname.startsWith("/api/simulator")) {
