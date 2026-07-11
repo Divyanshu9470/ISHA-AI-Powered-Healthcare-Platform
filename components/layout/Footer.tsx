@@ -138,10 +138,6 @@ export function Footer() {
                         <Link href="#" className="hover:text-white transition-colors duration-200">Refund Policy</Link>
                     </div>
                 </div>
-
-                <div className="mt-8 text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
-                    Made with <Heart size={11} className="text-coral fill-coral" /> for future doctors.
-                </div>
             </div>
         </footer>
     );
